@@ -1,0 +1,54 @@
+﻿@model Clinic.Models.InsuranceCompany
+
+@{
+    ViewData["Title"] = "Create";
+
+}
+
+<link rel="stylesheet" href="~/css/window.css" />
+<div class="window-wrapper">
+    <div class="window">
+            <div class="header">
+             Profile
+                <a href="/home" class="btn-X">X</a>
+            </div>
+            <div class="body">
+                <div class="row">
+                    <div class="col-lg-7">
+                        <h2>@Model.Name</h2>
+                        <div>Id: @Model.Insurance_Id</div>
+                        <div>Email: @Model.Email</div>
+                        <div>Phone: @Model.Phone</div>
+                        <div>Address: @Model.Address</div>
+                    </div>
+                    <div class="col-lg-5">
+                        <img src="~/images/@Model.Image" width="250" height="250" style="border-radius:5px;" />
+                    </div>
+
+                    <div class="col-lg-5">
+                        <br />
+                        <br />
+                    
+
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+
+                <form asp-action="Edit" method="get">
+                    <input type="submit" value="Edit" class="btn btn-success" />
+                </form>
+                
+               
+
+            </div>
+
+                </div>
+            </div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

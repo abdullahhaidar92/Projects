@@ -1,0 +1,189 @@
+﻿@model SearchMessages
+
+@{
+    ViewData["Title"] = "Inbox";
+
+}
+<style>
+    .window {
+        width: 80%;
+    }
+    .body{
+              min-height:initial;
+    }
+    .header{
+        font-size:20px;
+          font-family:Calibri;
+           padding: 5px 10px;
+    }
+    .txt{
+        color:black;
+    }
+    hr{
+        border-color:wheat;
+    }
+    
+</style>
+<div class="window-wrapper">
+    <div class="window">
+        <form asp-action="Index" method="get">
+            <div class="header">
+                Search Messages
+            </div>
+            <div class="body" style="padding-left:10px;padding-right:10px;">
+                <div class="row">
+                    <div class="col-lg-3 form-group">
+                        <label class="control-label">Date From</label>
+                        <input asp-for="DateFrom" class="form-control" value="@Model.DateFrom.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div class="col-lg-3 form-group">
+                        <label class="control-label">Date To</label>
+                        <input asp-for="DateTo" class="form-control" value="@Model.DateTo.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div class=" col-lg-3 form-group">
+                        <label class="control-label">Subject</label>
+                        <input asp-for="Subject" class="form-control" value="@Model.Subject" />
+                    </div>
+                    <div class=" col-lg-3 form-group">
+                        <label class="control-label">Email</label>
+                        <input asp-for="Email" class="form-control" value="@Model.Email" />
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success">Search</button>
+            </div>
+         
+        </form>
+    </div>
+    <br /><br />
+
+    <div class="window" >
+        <div class="header" style=" padding-left:50px;">
+            <div class="row">
+                <div class="col-10">
+                    <div class="row">
+                        <div class="col-4">
+                            Name
+                        </div>
+                        <div class="col-4">
+                            Subject
+                        </div>
+                        <div class="col-4">
+                            Date
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2">
+
+                </div>
+            </div>
+        </div>
+        <div class="body" style="padding-bottom:30px;  padding-left:40px;">
+        
+            @foreach (var item in Model.Messages)
+            {
+                <div class="row " >
+                    <div class="col-10">
+                        <div class="row srch-div" onclick='OpenModal("@("m"+item.Id)");'>
+                            <div class="col-4">
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </div>
+                            <div class="col-4">
+                                @Html.DisplayFor(modelItem => item.Subject)
+                            </div>
+                            <div class="col-4">
+                                @Html.DisplayFor(modelItem => item.DateTime)
+
+                                <div id="@("m"+item.Id)" style="display:none;color:blue;font-size:18px;">
+                                    <div>From: <span id="name" class="txt">@item.Name</span></div>
+                                    <div>Email: <span id="email" class="txt">@item.Email</span></div>
+                                    <div>Date: <span id="date" class="txt">@item.DateTime</span></div>
+                                    <div>Subject: <span id="email" class="txt">@item.Subject</span></div>
+                                    <hr />
+                                    <div>Message: <br /><span id="messageContent" class="txt">@item.Content</span></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-2" style="text-align:center">
+                        <form method="post">
+                            <button type="submit" class="btn btn-danger " asp-action="Delete" asp-route-id="@item.Id"> X </button>
+                        </form>
+
+                    </div>
+                </div>
+
+
+            }
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<!-- Modal -->
+
+
+<div class="modal fade" id="MessageView" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLongTitle" style="font-size:20px">
+                    Message 
+                </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body"  id="mContent" style="color:blue;">
+
+            </div>
+            <div class="modal-footer">
+                <div style="width:100%" id="response">
+                   
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+
+    form {
+        display: inline;
+    }
+
+</style>
+
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+<script type="text/javascript">
+
+    function OpenModal(id) {
+
+        document.getElementById("mContent").innerHTML = document.getElementById(id).innerHTML;
+
+        $("#MessageView").modal();
+    }
+
+
+</script>
+
+
+
+
+
+
+
+
+

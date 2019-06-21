@@ -1,0 +1,42 @@
+﻿@model Clinic.Models.Appointment
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Details</title>
+</head>
+<body>
+
+<div>
+    <h1>Appointment Details</h1>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html..DisplayNameFor(model => model.DateTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DateTime)
+        </dd>
+        <dt class="col-sm-2">
+            Doctor
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Doctor.DisplayName
+        </dd>
+        <dt class="col-sm-2">
+            Patient
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Patient.DisplayName
+        </dd>
+    </dl>
+</div>
+<div>
+    
+    <a asp-controller="Home" asp-action="Index">Home</a>
+</div>
+</body>
+</html>

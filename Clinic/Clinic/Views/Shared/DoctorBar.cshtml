@@ -1,0 +1,50 @@
+﻿<ul>
+    <li>
+        <a class="a1" asp-controller="Home" asp-action="Index">  <i class="fas fa-home" style="color:#fff;font-size:20px"></i> Clinic</a>
+    </li>
+    <li class="dropdown">
+        <a href="javascript:void(0)" class="dropbtn">Patients</a>
+        <div class="dropdown-content">
+            <a class="a1" asp-controller="Patients" asp-action="Create">Add patient</a>
+            <a class="a1" asp-controller="Patients" asp-action="Search">Find patient</a>
+          
+        </div>
+    </li>
+    <li class="dropdown">
+        <a href="javascript:void(0)" class="dropbtn">Consultations</a>
+        <div class="dropdown-content">
+            <a class="a1" asp-controller="Consultations" asp-action="Create">Add consultation</a>
+            <a class="a1" asp-controller="Consultations" asp-action="SearchDoctorsConsultations">Find consultation</a>
+        </div>
+    </li> 
+    <li class="dropdown">
+        <a class="a1" asp-controller="Assistants" asp-action="Profile"> Assistant</a>
+
+    </li>
+    <Partial name="Reminder_Account_Partial.cshtml">
+</ul>
+<partial name="_CookieConsentPartial" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            

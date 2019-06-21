@@ -1,0 +1,206 @@
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> _userManager
+@inject Clinic.Data.ApplicationDbContext _context
+@{
+    var id = _userManager.GetUserId(User);
+    Reminder[] reminders = _context.Reminders.Where(r => r.User.Id == id)
+                                                                                    .OrderBy(r => r.Priority).ToArray();
+
+    if (reminders == null)
+    {
+        reminders = new Reminder[0];
+    }
+    ViewData["model"] = new AddAppointment(_context);
+
+}
+
+   
+
+<li class="dropdown">
+    <a href="javascript:void(0)" class="dropbtn">
+        Reminders&nbsp;
+        <i class="fa fa-bell " style="color:#fff;font-size:20px"></i>
+        @if (reminders.Length > 0)
+        {
+            <span class="w3-badge w3-right w3-small w3-green">@reminders.Length</span>
+        }
+
+    </a>
+    <div class="dropdown-content">
+        <div style="padding:10px 10px;text-align:center;border-bottom:1px solid silver">
+            <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#ReminderCreate" style="width:230px;">
+                New Reminder
+            </button>
+        </div>
+        
+        @foreach (Reminder r in reminders)
+        {
+            <a  href="javascript:void(0)" class="a1" id="@("reminderTitle"+r.Id)" onclick="OpenReminder(@r.Id);"
+                style="border-bottom:1px solid silver">
+                @r.Title
+            </a>
+          
+            <input type="hidden" id="@("reminderContent"+r.Id)" value="@r.Content" />
+            <input type="hidden" id="@("reminderDate"+r.Id)" value="@r.Date" />
+        }
+    </div>
+</li>
+
+<li class="dropdown">
+    <a href="javascript:void(0)" class="dropbtn">Account</a>
+    <div class="dropdown-content">
+        @if (User.IsInRole("Doctor"))
+        {
+            <a asp-controller="Doctors" asp-action="Profile"  class="a1">My Profile</a>
+        }
+        else if (User.IsInRole("Admin"))
+        {
+            <a asp-controller="Admins" asp-action="Profile"  class="a1">My Profile</a>
+        }
+        else if (User.IsInRole("Assistant"))
+        {
+            <a asp-controller="Assistants" asp-action="Profile"  class="a1">My Profile</a>
+        }
+        else if (User.IsInRole("Patient"))
+        {
+            <a asp-controller="Patients" asp-action="Profile"  class="a1">My Profile</a>
+        }
+        else if (User.IsInRole("Insurance"))
+        {
+            <a asp-controller="InsuranceCompanies" asp-action="Profile" class="a1">My Profile</a>
+        }
+        <a href="~/Identity/Account/Manage" class="a1">Manage Account</a>
+
+        <form asp-area="Identity" asp-page="/Account/Logout"
+              asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            <div style="padding-bottom:5px;text-align:center">
+                <button type="submit" class="btn btn-primary btn-lg" style="width:90%">
+                    Log Out
+                </button>
+            </div>
+        </form>
+    </div>
+</li>
+
+
+
+
+<!--View  Modal -->
+<div class="modal fade" id="ReminderView" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="padding-top:10px;">
+                <h5 class="modal-title" id="exampleModalLongTitle" style="font-size:20px">
+                    Reminder<br />
+                    <span id="reminderTitle" style="font-size:15px;">surgery at </span>
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="reminderContent" style="  text-align:left;">
+            </div>
+            <div class="modal-footer">
+                <form asp-controller="Reminders" asp-action="Edit" method="get">
+                    <button type="submit" class="btn btn-success ">Edit </button>
+                    <input type="hidden" name="Id" id="reminderId1" />
+                </form>
+                <form asp-controller="Reminders" asp-action="Delete" method="post">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <input type="hidden" name="Id" id="reminderId2" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Create  Modal -->
+<div class="modal fade" id="ReminderCreate" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="padding-top:10px;">
+                <h5 class="modal-title" id="exampleModalLongTitle" style="font-size:20px">
+                    Create Reminder<br />
+
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="  text-align:left;">
+                <div class="form-group">
+                    <label class="control-label">Title</label>
+                    <input id="CreateTitle" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Date and time</label>
+                    <input type="datetime" id="CreateDate" class="form-control" value="@DateTime.Now.ToString()" />
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Priority</label>
+                    <input id="CreatePriority" class="form-control" type="number"/>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Content</label><br />
+                    <textarea id="CreateContent" rows="3" style="width:100%;border-radius:20px;padding-left:5px;"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div style="width:80%" id="response1"></div>
+                <button type="button" class="btn btn-danger " onclick="location.reload();">Close </button>
+                <button type="button" class="btn btn-primary" onclick="addReminder();">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+<script type="text/javascript">
+
+    function addReminder() {
+        document.getElementById("response1").innerHTML = "";
+        var X = document.getElementById("CreateTitle").value;
+        var Y = document.getElementById("CreateDate").value;
+        var U = document.getElementById("CreatePriority").value;
+        var V = document.getElementById("CreateContent").value;
+        //alert(X);
+        //alert(Y);
+        //alert("Hello");
+        $.ajax({
+            type: "GET",
+            url: '/Reminders/Create',
+            data: { "Title": X, "Date": Y, "Priority": U, "Content": V },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+               document.getElementById("response1").innerHTML = "Creating Reminder";
+            },
+            success: function (response) {
+
+
+                document.getElementById("response1").innerHTML = response.result;
+            },
+            complete: function () {
+               document.getElementById("response1").innerHTML = response.result;;
+            },
+            failure: function (jqXHR, textStatus, errorThrown) {
+                document.getElementById("response1").innerHTML = "Failed";
+                alert("HTTP Status: " + jqXHR.status + "; Error Text: " + jqXHR.responseText); // Display error message
+            }
+        });
+    }
+
+    function OpenReminder(id) {
+        document.getElementById("reminderContent").innerHTML = document.getElementById("reminderContent" + id).value;
+        document.getElementById("reminderTitle").innerHTML =
+            document.getElementById("reminderTitle" + id).innerHTML + " at " + document.getElementById("reminderDate" + id).value;
+        document.getElementById("reminderId1").value = "" + id;
+        document.getElementById("reminderId2").value = "" + id;
+        $("#ReminderView").modal();
+    }
+
+
+</script>

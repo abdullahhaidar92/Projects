@@ -1,0 +1,102 @@
+﻿@model Clinic.Models.Consultation
+
+@{
+    ViewData["Title"] = "Edit";
+
+}
+
+<style>
+    .top {
+        margin-top: 0px;
+        height: 78px;
+    }
+
+    td {
+        padding: 2px 30px;
+    }
+
+    select, textarea, input[type="text"] {
+        width: 100%;
+        border: 1px solid #999999;
+        border-radius: 30px;
+        padding: 10px;
+    }
+</style>
+
+<div class="window-wrapper">
+    <form asp-action="Edit" enctype="multipart/form-data">
+        <div class="window">
+            <div class="header">
+                Edit Consultation
+                <a  href="/home"  class="btn-X">X</a>
+            </div>
+            <div class="body">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="column">
+                            
+                            <div class="form-group">
+                                <label asp-for="Title" class="control-label"></label>
+                                <input asp-for="Title" class="form-control" />
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label asp-for="Temperature" class="control-label"></label>
+                                <input asp-for="Temperature" class="form-control" />
+                                <span asp-validation-for="Temperature" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="BloodPressure" class="control-label"></label>
+                                <input asp-for="BloodPressure" class="form-control" />
+                                <span asp-validation-for="BloodPressure" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Cost" class="control-label"></label>
+                                <input asp-for="Cost" class="form-control" />
+                                <span asp-validation-for="Cost" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-9">
+                        <div class="table1">
+
+                            <div class="form-group">
+                                <label asp-for="Symptoms" class="control-label"></label><br />
+                                <textarea asp-for="Symptoms" rows="4"></textarea>
+                                <span asp-validation-for="Symptoms" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Diagnosis" class="control-label"></label><br />
+                                <textarea asp-for="Diagnosis" rows="4"></textarea>
+                                <span asp-validation-for="Diagnosis" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Treatment" class="control-label"></label><br />
+                                <textarea asp-for="Treatment" rows="4" cols="90%"></textarea>
+                                <span asp-validation-for="Treatment" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <input type="submit" value="Save" class="btn btn-success" />
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="Type" />
+            </div>
+        </div>
+    </form>
+</div>
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<h1>@ViewData["Error"]</h1>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+

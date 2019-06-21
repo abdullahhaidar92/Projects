@@ -1,0 +1,133 @@
+﻿@inject Clinic.Data.ApplicationDbContext _context
+    <ul>
+        <li>
+            <a   asp-controller="Home" asp-action="Index">  <i class="fas fa-home" style="color:#fff;font-size:20px"></i> Clinic</a>
+        </li>
+        <li class="dropdown">
+            <a href="javascript:void(0)" class="dropbtn">Doctors</a>
+            <div class="dropdown-content">
+                <a   asp-controller="Doctors" asp-action="Search">Find doctor</a>
+                <a   asp-controller="Doctors" asp-action="AssistantDoctor">My docor</a>
+            </div>
+        </li>
+        <li class="dropdown  ">
+            <a href="javascript:void(0)" class="dropbtn">Patients</a>
+            <div class="dropdown-content ">
+                <a   asp-controller="Patients" asp-action="Create">Add patient</a>
+                <a   asp-controller="Patients" asp-action="Search">Find patient</a>
+               
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="javascript:void(0)" class="dropbtn">Appointments</a>
+            <div class="dropdown-content">
+                <a  data-toggle="modal" data-target="#MakeAppointment" style="cursor:pointer">Make an Appointment</a>
+
+                <a  asp-controller="Appointments" asp-action="Index">View Appointments</a>
+            </div>
+        </li>
+        <Partial name="Reminder_Account_Partial.cshtml">
+    </ul>
+
+
+
+@{
+
+
+    var date = DateTime.Now.ToString();
+    AddAppointment add = new AddAppointment(_context);
+
+}
+<!-- Modal -->
+
+
+<div class="modal fade" id="MakeAppointment" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle" style="font-size:20px">Appointment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h4 class="text-danger">@ViewData["Message"]</h4>
+                <div class="form-group">
+                    <label class="control-label">Choose the patient</label>
+
+                    <select id="X" asp-items="@add.Patients" class="form-control ss"></select>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" >Choose a time</label>
+
+                    <input id="Y" value="@date" type='datetime' class="form-control ss" />
+
+
+                </div>
+            </div>
+            <div class="modal-footer" >
+
+                <div style="width:80%" id="response"></div>
+                <button type="button" class="btn btn-danger" onclick="location.reload();">Close</button>
+                <button type="button" class="btn btn-primary " onclick="addAppointment();">Save </button>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<partial name="_CookieConsentPartial" />
+
+
+
+<style>
+    .ss2 {
+       
+    }
+
+    .ss1 {
+        
+    }
+
+   
+    
+</style>
+
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+<script type="text/javascript">
+
+    function addAppointment() {
+        document.getElementById("response").innerHTML = "";
+        var X = document.getElementById("X").value;
+        var Y = document.getElementById("Y").value;
+        //alert(X);
+        //alert(Y);
+        //alert("Hello");
+        $.ajax({
+            type: "GET",
+            url: '/Appointments/Create',
+            data: { "patient": X, "appdate": Y },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            beforeSend: function () {
+                  document.getElementById("response").innerHTML = "Creating Appointment";
+            },
+            success: function (response) {
+
+                // Looping over emloyee list and display it
+                document.getElementById("response").innerHTML = response.result;
+            },
+            complete: function () {
+                  //document.getElementById("response").innerHTML = response.result;
+            },
+            failure: function (jqXHR, textStatus, errorThrown) {
+                alert("HTTP Status: " + jqXHR.status + "; Error Text: " + jqXHR.responseText); // Display error message
+            }
+        });
+    }
+</script>

@@ -1,0 +1,239 @@
+﻿@model SearchInsurance
+
+@{
+    ViewData["Title"] = "Search";
+    SelectListItem Asc = new SelectListItem() { Value = "asc", Text = "Ascending" };
+    SelectListItem Desc = new SelectListItem() { Value = "desc", Text = "Descending" };
+    if (Model.Order == "desc")
+    {
+        Desc.Selected = true;
+    }
+    else
+    {
+        Asc.Selected = true;
+    }
+    SelectListItem[] Orders = { Asc, Desc };
+    var X = "";
+    if (Model.SearchId != 0)
+    {
+        X = "" + Model.SearchId;
+    }
+
+
+}
+<style>
+    .window {
+        width: initial;
+    }
+
+    .col-lg-9 {
+        padding-left: 10px;
+    }
+
+    .col-lg-3 {
+        text-align: left;
+    }
+</style>
+<div class="window-wrapper" style="padding-top:10px;">
+    <div style="text-align:left;display:inline-block;min-width:80%;">
+        <div class="row">
+            <div class="col-lg-3 col-md-3 ">
+                <div class="window">
+                    <form asp-action="Search" method="get">
+                        <div class="header">
+                            Search Companies
+                        </div>
+                        <div class="body" style="padding-left:10px;padding-right:10px;">
+                            <div class="form-group">
+                                <label class="control-label">Company Id</label>
+                                <input asp-for="SearchId" class="form-control" type="text" value="@X" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label"> Name</label>
+                                <input asp-for="Name" class="form-control" value="@Model.Name" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Email</label>
+                                <input asp-for="Email" class="form-control" value="@Model.Email" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Address</label>
+                                <input asp-for="Address" class="form-control" value="@Model.Address" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Order</label>
+                                <select asp-for="Order" class="form-control ss" asp-items="@Orders"></select>
+                            </div>
+                        </div>
+                        <div class="footer">
+                            <button type="submit" class="btn btn-success">Search</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <div class="col-lg-9 col-md-9 ">
+                <div class="window" style="width:100%;">
+                    <div class="header">
+                        Results
+                    </div>
+                    <div class="body" style="min-height:470px;">
+                        <div style="font-size:15px;padding-bottom:10px;">Click on any search entry to view the profile of the company</div>
+
+                        @foreach (var item in Model.InsuranceCompanies)
+                        {
+
+                            <form   onclick="Show(@item.Insurance_Id);">
+                                <div class="srch-div" style="width:90%;margin-bottom:3px;">
+                                    <table style="width:100%">
+                                        <tr>
+                                            <td style="width:20%">
+                                                <img src="~/images/@item.Image" class="srch-img" />
+                                            </td>
+                                            <td>
+                                                <div style="padding-left:20px;padding-bottom:5px;padding-top:5px;font-size:15px;">
+
+                                                    <div style="font-size:20px;color:rgb(0,0,250);">@Html.DisplayFor(modelItem => item.Name)</div>
+
+                                                    Company Id: @item.Insurance_Id
+                                                    <br />
+                                                    Name: @Html.DisplayFor(modelItem => item.Name)
+                                                    <br>
+                                                    Phone Number:  @Html.DisplayFor(modelItem => item.Phone)
+                                                    <br />
+                                                    Address: @item.Address
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </form>
+                            <div class="modal fade" id="@item.Insurance_Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLongTitle" style="font-size:25px">Company's Profile</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body" style="padding-bottom:40px;">
+                                            <div class="row">
+                                                <div class="col-lg-7">
+                                                    <h2>@item.Name</h2>
+                                                    <div>Id: @item.Insurance_Id</div>
+                                                    <div>Email: @item.Email</div>
+                                                    <div>Phone: @item.Phone</div>
+                                                    <div>Address: @item.Address</div>
+                                                </div>
+                                                <div class="col-lg-5">
+                                                    <img src="~/images/@item.Image" width="250" height="250" style="border-radius:5px;" />
+                                                </div>
+
+                                                <div class="col-lg-5">
+                                                    <br />
+                                                    <br />
+                                                    <a asp-controller="InsuranceCompanies" asp-action="Edit" class="a2" asp-route-id="@item.Id">Edit Profile</a><br />
+                                                    <a href="javascript:void(0)" class="a2" onclick="Remove('@item.Id')" ;">Remove Insurance Company</a>
+
+                                                </div>
+                                            </div>
+                                            <div class="modal fade" id="@item.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <div class="modal-content" style="border-radius:10px;">
+                                                        <div class="modal-header" style="background-color: rgba(240, 0, 0, 0.85);border-top-left-radius:10px;border-top-right-radius:10px;">
+                                                            <h5 class="modal-title" id="exampleModalLongTitle" style="font-size:25px">Remove Assistant</h5>
+                                                            <button type="button" class="close" onclick="CloseDelete('@item.Id')" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <h3> Are you sure you want to delete this company?</h3>
+                                                            <h4>Name:  @item.Name</h4>
+                                                            <h4>Assistant Id: @item.Insurance_Id</h4>
+                                                        </div>
+                                                        <div class="modal-footer " style="background-color: rgba(255, 0, 0, 0.8);border-bottom-left-radius:10px;border-bottom-right-radius:10px;">
+                                                            <div style="text-align:center;display:inline-block;width:100%">
+                                                                <form asp-action="Delete" method="post">
+                                                                    <button class="btn btn-primary">Yes</button>
+                                                                    <input type="hidden" name="Id" value="@item.Id" />
+                                                                </form>
+                                                                <button class="btn btn-danger" onclick="CloseDelete('@item.Id');">No</button>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="modal-footer">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+<script type="text/javascript">
+    function Show(id) {
+        $("#" + id).modal();
+        }
+    function Remove(id) {
+          $("#" + id).modal();
+        }
+    function CloseDelete(id) {
+        $("#"+id).modal('hide');
+    }
+</script>
+
+<style>
+    .modal-header {
+        background-color: rgba(0,0, 250, 0.85);
+        color: white;
+        text-align: left;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+    .modal-body {
+        background-color: rgba(255,255,255,1);
+    }
+
+    .modal-footer {
+        background-color: rgba(0,0, 255, 0.8);
+        color: white;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+
+    .modal-content {
+        background-color: rgba(255,255, 255, 0.1);
+        box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        border-radius: 5px;
+    }
+
+    .modal-backdrop {
+        background-color: initial;
+    }
+
+
+    .a2, .a2:after {
+        color: blue;
+    }
+
+        .a2:hover {
+            color: dodgerblue;
+        }
+</style>

@@ -1,0 +1,41 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+}
+
+
+
+        <div class="bg">
+
+            <!-- main -->
+            <div class="main-w3layouts wrapper" style="padding-left:20px">
+
+                <div style="width:35%;background: rgba(0, 0, 0, 0.18);">
+                    <div class="agileits-top">
+                        <form id="account" method="post">
+                            <div asp-validation-summary="All" class="text-danger"></div>
+                            <input class="text email mine" asp-for="Input.Email" placeholder="Email" required="">
+                            <input class="text email mine" asp-for="Input.Password" placeholder="Password" required="">
+                            <input type="submit" value="LOG IN">
+                        </form>
+                        <form asp-controller="Messages" asp-action="Create" method="get">
+                            <input type="submit" value="Contac Us">
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+    
+
+
+
+
+
+    
+

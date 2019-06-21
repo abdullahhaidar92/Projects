@@ -1,0 +1,72 @@
+﻿@model IEnumerable<Clinic.Models.Doctor>
+
+@{
+    ViewData["Title"] = "My Doctors";
+       
+}
+<style>
+    td {
+        padding: 10px 8px;
+        width: 15%;
+    }
+
+    th {
+        padding: 10px 8px;
+        width: 15%;
+    }
+</style>
+
+<div class="table1" style=" background-color: rgba(0, 148, 255, 0.5);">
+    <table width="100%" class="all-table-th">
+
+        <tr>
+            <th>
+                @Html..DisplayNameFor(model => model.DisplayName)
+            </th>
+            <th>
+                @Html..DisplayNameFor(model => model.Gender)
+            </th>
+            <th>
+                @Html..DisplayNameFor(model => model.Phone)
+            </th>
+            <th>
+                @Html..DisplayNameFor(model => model.Speciality)
+            </th>
+            <th>
+                @Html..DisplayNameFor(model => model.Address)
+            </th>
+            <th style="width:30%"></th>
+        </tr>
+    </table>
+    <br />
+    @foreach (var item in Model)
+    {<table class="all-table">
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DisplayName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Gender)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Speciality)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td style="width:30%">
+
+                    <form asp-action="Details" asp-route-id="@item.Id">
+                        <button type="submit" class="btn btn-primary ">Details</button>
+                    </form>
+                    
+                </td>
+            </tr>
+        </table>
+    }
+
+
+</div>

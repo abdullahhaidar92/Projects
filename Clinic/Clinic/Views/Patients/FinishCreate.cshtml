@@ -1,0 +1,114 @@
+﻿@model Clinic.Models.RegisterPatient
+
+@{
+    ViewData["Title"] = "Create";
+     SelectListItem[] InsuranceCompanies = (SelectListItem[])ViewData["InsuranceCompanies"];
+}
+
+<link rel="stylesheet" href="~/css/window.css" />
+<div class="window-wrapper">
+    <div class="window">
+        <form asp-action="FinishCreate">
+            <div class="header">
+                Finish Patient's Profile
+                <a href="/home" class="btn-X">X</a>
+            </div>
+            <div class="body">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="column">
+                            <h3>Other Information</h3>
+                            <div class="form-group">
+                                <label asp-for="@Model.DisplayName" class="control-label"></label>
+                                <input asp-for="@Model.DisplayName" class="form-control" value="" />
+                                <span asp-validation-for="@Model.DisplayName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="@Model.Birthdate" class="control-label"></label>
+                                <input asp-for="@Model.Birthdate" class="form-control" value="@DateTime.Now.Date" />
+                                <span asp-validation-for="@Model.Birthdate" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="@Model.BloodType" class="control-label"></label>
+                                <input asp-for="@Model.BloodType" class="form-control" />
+                                <span asp-validation-for="@Model.BloodType" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Insurance Company</label>
+
+                                <select asp-for="@Model.SelectedInsuranceCompanyId" asp-items="@InsuranceCompanies" class="form-control ss"></select>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4 ">
+                        <div class="column">
+                            <h3>Contact Information</h3>
+                            <div class="form-group">
+                                <label class="control-label" asp-for="@Model.Phone"></label>
+                                <input asp-for="@Model.Phone" class="form-control" value="(541) 754-3010" />
+                                <span asp-validation-for="@Model.Phone" class="text-danger"></span>
+
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="@Model.Mobile"></label>
+                                <input asp-for="@Model.Mobile" class="form-control" value="(541) 754-3010" />
+                                <span asp-validation-for="@Model.Mobile" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="@Model.Address"></label>
+                                <input asp-for="@Model.Address" class="form-control" value="Beirut" />
+                                <span asp-validation-for="@Model.Address" class="text-danger"></span>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+
+
+                <input type="submit" value="Save" class="btn btn-success" />
+
+
+            </div>
+            <input type="hidden" asp-for="@Model.Patient_Id" value="@Model.Patient_Id" />
+            <input type="hidden" asp-for="@Model.FirstName" value="@Model.FirstName" />
+            <input type="hidden" asp-for="@Model.MiddleName" value="@Model.MiddleName" />
+            <input type="hidden" asp-for="@Model.LastName" value="@Model.LastName" />
+            <input type="hidden" asp-for="@Model.Gender" value="@Model.Gender" />
+            <input type="hidden" asp-for="@Model.Image" value="@Model.Image" />
+            <input type="hidden" asp-for="@Model.Email" value="@Model.Email" />
+            <input type="hidden" asp-for="@Model.Password" value="@Model.Password" />
+            <input type="hidden" asp-for="@Model.ConfirmPassword" value="@Model.ConfirmPassword" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        </form>
+    </div>
+</div>
+
+<h1>@ViewData["Error"]</h1>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#blah')
+                    .attr('src', e.target.result)
+                    ;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>

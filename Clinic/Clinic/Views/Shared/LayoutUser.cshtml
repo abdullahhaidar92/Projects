@@ -1,0 +1,12 @@
+﻿@using Microsoft.AspNetCore.Identity
+@{
+    ViewData["Title"] = "Details";
+
+    if (User.IsInRole("Doctor"))               { Layout = "~/Views/Shared/LayoutDoctor.cshtml"; }
+    else if (User.IsInRole("Admin"))       {  }
+    else if (User.IsInRole("Assistant"))   { Layout = "~/Views/Shared/LayoutAssistant.cshtml"; }
+    else if (User.IsInRole("Patient"))      { Layout = "~/Views/Shared/LayoutPatient.cshtml"; }
+    else if (User.IsInRole("Insurance")) { Layout = "~/Views/Shared/LayoutInsurance.cshtml"; }
+}
+
+@RenderBody()

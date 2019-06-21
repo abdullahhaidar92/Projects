@@ -1,0 +1,45 @@
+﻿<ul>
+    <li>
+      
+        <a class="a1" asp-controller="Home" asp-action="Index">  <i class="fas fa-home" style="color:#fff;font-size:20px"></i> Clinic</a>
+
+    </li>
+    <li class="dropdown">
+        <a href="javascript:void(0)" class="dropbtn">Doctors</a>
+        <div class="dropdown-content">
+            <a class="a1" asp-controller="Doctors" asp-action="Create">Add doctor</a>
+            <a class="a1" asp-controller="Doctors" asp-action="Search">Find doctor</a>
+
+        </div>
+    </li>
+    <li class="dropdown">
+        <a href="javascript:void(0)" class="dropbtn">Patients</a>
+        <div class="dropdown-content">
+            <a class="a1" asp-controller="Patients" asp-action="Create">Add patient</a>
+            <a class="a1" asp-controller="Patients" asp-action="Search">Find patient</a>
+
+        </div>
+    </li>
+    <li class="dropdown">
+        <a href="javascript:void(0)" class="dropbtn">Assistants</a>
+        <div class="dropdown-content">
+            <a class="a1" asp-controller="Assistants" asp-action="Create">Add assistant</a>
+            <a class="a1" asp-controller="Assistants" asp-action="Search">Find assistant</a>
+          
+        </div>
+    </li>
+    <li class="dropdown">
+        <a href="javascript:void(0)" class="dropbtn">Insurance Companies</a>
+        <div class="dropdown-content">
+            <a class="a1" asp-controller="InsuranceCompanies" asp-action="Create">Add insurance company</a>
+            <a class="a1" asp-controller="InsuranceCompanies" asp-action="Search">Find insurance company</a>
+
+        </div>
+    </li>
+    <li class="dropdown">
+        <a asp-controller="Messages" asp-action="Index" class="dropbtn">Inbox</a>
+        
+    </li>
+    <Partial name="Reminder_Account_Partial.cshtml">
+</ul>
+<partial name="_CookieConsentPartial" />

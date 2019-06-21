@@ -1,0 +1,41 @@
+﻿
+@{
+    Layout =  "~/Views/Shared/_Layout.cshtml";;
+}
+<style>
+    a{
+        text-decoration:none;
+    
+    }
+</style>
+<div class="window-wrapper" style="padding-top:20px;">
+    <div class="window">
+
+        <div class="header">
+            Change your account settings
+        </div>
+
+        <div class="body">
+
+            <div class="row">
+                <div class="col-md-3">
+                    <partial name="_ManageNav" />
+                </div>
+                <div class="col-md-9">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <br />
+            </div>
+    </div>
+
+</div>
+
+
+
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}

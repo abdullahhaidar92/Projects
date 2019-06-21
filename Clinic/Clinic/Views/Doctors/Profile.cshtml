@@ -1,0 +1,61 @@
+﻿@model Clinic.Models.Doctor
+
+@{
+    ViewData["Title"] = "Create";
+
+}
+
+<link rel="stylesheet" href="~/css/window.css" />
+<div class="window-wrapper">
+    <div class="window">
+            <div class="header">
+             Profile
+                <a href="/home" class="btn-X">X</a>
+            </div>
+            <div class="body">
+
+                <div class="row">
+                    <div class="col-lg-7">
+                        <h2>@Model.DisplayName</h2>
+                        <div>Full Name: @Model.FirstName @Model.MiddleName @Model.LastName</div>
+                        <p>@Model.About</p>
+                    </div>
+                    <div class="col-lg-5">
+                        <img src="~/images/@Model.Image" width="250" height="250" style="border-radius:5px;" />
+                    </div>
+                    <div class="col-lg-7">
+                        <div>Id: @Model.Doctor_Id</div>
+                        <div>Email: @Model.Email</div>
+                        <div>Specilaity: @Model.Speciality</div>
+                        <div>Phone: @Model.Phone</div>
+                        <div>Mobile: @Model.Mobile</div>
+                        <div>Address: @Model.Address</div>
+                        <div>Time: @Model.Time</div>
+                        <br />
+                        <br />
+                    </div>
+                  </div>
+                </div>
+            <div class="footer">
+                @if ((string)ViewData["Role"] == "Doctor")
+                {
+                    <form asp-action="Edit" method="get">
+                        <input type="submit" value="Edit" class="btn btn-success" />
+                    </form>
+
+                }
+
+
+
+
+            </div>
+
+                </div>
+            </div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

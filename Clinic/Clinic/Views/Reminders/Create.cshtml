@@ -1,0 +1,65 @@
+﻿@model Clinic.Models.Reminder
+
+@{
+    ViewData["Title"] = "Create";
+
+  
+}
+<style>
+    td {
+        padding: 2px 30px;
+    }
+
+    textarea {
+        width: 100%;
+        border: 1px solid #999999;
+        border-radius: 30px;
+        padding: 10px;
+    }
+</style>
+<h1>Create</h1>
+
+<h4>Reminder</h4>
+<hr />
+<form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <table width="100%">
+
+        <tr>
+            <td valign="top">
+                <div class="form-group">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Date" class="control-label"></label>
+                    <input asp-for="Date" class="form-control" />
+                    <span asp-validation-for="Date" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Priority" class="control-label"></label>
+                    <input asp-for="Priority" class="form-control" />
+                    <span asp-validation-for="Priority" class="text-danger"></span>
+                </div>
+
+            </td>
+            <td valign="top">
+                <div class="form-group">
+                    <label asp-for="Content" class="control-label"></label><br />
+                    <textarea asp-for="Content" rows="8"></textarea>
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
+            </td>
+        </tr>
+
+
+
+    </table>
+
+    <input type="submit" value="Create" class="btn btn-primary" />
+</form>
+
+
+
+

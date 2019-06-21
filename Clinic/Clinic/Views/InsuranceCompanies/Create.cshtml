@@ -1,0 +1,128 @@
+﻿@model Clinic.Models.RegisterInsuranceCompany
+
+@{
+    ViewData["Title"] = "Create";
+
+}
+
+<link rel="stylesheet" href="~/css/window.css" />
+<div class="window-wrapper">
+    <div class="window">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div class="header">
+                Create Insurance Company's Profile
+                <a href="/home" class="btn-X">X</a>
+            </div>
+            <div class="body">
+                <div class="row">
+                    <div class="col-lg-4 ">
+                        <div class="column">
+                            <h3>Account Information</h3>
+                            <div class="form-group">
+                                <label class="control-label" >Company Id</label>
+                                <input asp-for="@Model.InsuranceCompany.Insurance_Id"  class="form-control" value="@ViewData["in_id"]"/>
+                                <span asp-validation-for="@Model.InsuranceCompany.Insurance_Id" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="@Model.Email"></label>
+                                <input asp-for="@Model.Email" class="form-control" />
+                                <span asp-validation-for="@Model.Email" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="@Model.Password"></label>
+                                <input asp-for="@Model.Password" class="form-control" />
+                                <span asp-validation-for="@Model.Password" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="@Model.ConfirmPassword"></label>
+                                <input asp-for="@Model.ConfirmPassword" class="form-control" />
+                                <span asp-validation-for="@Model.ConfirmPassword" class="text-danger"></span>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="column">
+                            <h3>Company Information</h3>
+                            <div class="form-group">
+                                <label asp-for="@Model.InsuranceCompany.Name" class="control-label"></label>
+                                <input asp-for="@Model.InsuranceCompany.Name" class="form-control" />
+                                <span asp-validation-for="@Model.InsuranceCompany.Name" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="@Model.InsuranceCompany.Phone" class="control-label"></label>
+                                <input asp-for="@Model.InsuranceCompany.Phone" class="form-control" />
+                                <span asp-validation-for="@Model.InsuranceCompany.Phone" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="@Model.InsuranceCompany.Address" class="control-label"></label>
+                                <input asp-for="@Model.InsuranceCompany.Address" class="form-control" />
+                                <span asp-validation-for="@Model.InsuranceCompany.Address" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="@Model.InsuranceCompany.Fax" class="control-label"></label>
+                                <input asp-for="@Model.InsuranceCompany.Fax" class="form-control" />
+                                <span asp-validation-for="@Model.InsuranceCompany.Fax" class="text-danger"></span>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="column">
+                            <h3>Company's Image</h3>
+                            <br />
+                            <div class="form-group">
+                                <div class="pt-img">
+                                    <img id="blah" src="~/images/company.png" width="100%" height="100%" style="border-radius:20px;" />
+                                </div>
+                                <br />
+                                <br />
+                                <center>
+                                    <input type='file' onchange="readURL(this);" name="file" id="file" class="inputfile" />
+
+                                    <label for="file">choose an image</label>
+                                </center>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+
+                <div class="form-group">
+                    <input type="hidden" asp-for="@Model.InsuranceCompany.Id" value="none" />
+                    <input type="submit" value="Save" class="btn btn-success" />
+                </div>
+
+                
+
+
+            </div>
+        </form>
+    </div>
+</div>
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<h1>@ViewData["Error"]</h1>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#blah')
+                    .attr('src', e.target.result)
+                    ;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
