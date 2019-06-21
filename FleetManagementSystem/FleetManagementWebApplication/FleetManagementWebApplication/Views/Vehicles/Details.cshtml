@@ -1,0 +1,16 @@
+﻿@model FleetManagementWebApplication.Models.Vehicle
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "LayoutVehicle";
+}
+<h1>Properties</h1>
+<h5>License Plate : @Model.LicensePlate</h5>
+<h5>Make : @Model.Make</h5>
+<h5>Model : @Model.Model</h5>
+<h5>Purchase Date : @Model.purchaseDate</h5>
+<h5>Odometer : @Model.Odometer Km</h5>
+<h5>Pay Load : @Model.PayLoad Passengers</h5>
+<h5>Emission CO2 : @Model.EmissionsCO2 G/Km</h5>
+<h5>Fuel Consumption : @Model.FuelConsumption Litres/Km</h5>
+

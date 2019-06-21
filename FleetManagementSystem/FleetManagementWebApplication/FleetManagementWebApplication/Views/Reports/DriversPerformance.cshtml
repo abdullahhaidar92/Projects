@@ -1,0 +1,79 @@
+﻿@model IEnumerable<FleetManagementWebApplication.Models.Driver>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/LayoutManager.cshtml";
+}
+    <div class="box-wrapper">
+        <div class="box effect6">
+            <h3>Drivers Ranks</h3>
+            <div class="w3-container w3-padding">
+                <center>
+                    @foreach (Driver d in (Driver[])Model)
+                    {
+                        <table width="500px" cellspacing="0px" class='table3'>
+                            <tr>
+                                <td rowspan="3">
+                                    <div class="div5">
+                                        <img src="~/images/t.jpg" width='100' height='80' />
+                                    </div>
+                                </td>
+                                <td>
+                                    <h1>Rank @d.Rank</h1>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Name : @d.Name
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Score: @d.Score
+                                </td>
+                            </tr>
+                        </table>
+                        <br />
+                    }
+
+                </center>
+                </div>
+            </div>
+        </div>
+
+                <style>
+
+                    .div5 {
+                        border-color: yellow;
+                        border-radius: 100px;
+                        background-color: white;
+                        text-align: center;
+                        height: 140px;
+                        font-size: 40px;
+                        width: 140px;
+                        padding: 30px 26px;
+                        margin: 8px 0;
+                        box-sizing: border-box;
+                    }
+
+                    .table3 {
+                        border-radius: 40px;
+                        border-color: #990033;
+                        border-width: 10px;
+                        font-size: 20px;
+                        padding: 15px 20px;
+                        background-color: #f2f2f2;
+                    }
+                 .box {
+                        text-align: left;
+                        position: relative;
+                        top: 12px;
+                        padding: 10px 30px;
+                        width: 60%;
+                        padding-bottom: 30px;
+                        background: #FFF;
+                    }
+
+                   
+                     
+                </style>

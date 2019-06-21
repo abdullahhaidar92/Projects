@@ -1,0 +1,133 @@
+﻿@model FleetManagementWebApplication.Models.Driver
+@{
+    ViewData["Title"] = "Add Driver";
+    Layout = "LayoutManager";
+}
+
+<style>
+
+    .box {
+        width: 95%;
+        top: 12px;
+    }
+   .pt-img{
+       width:70%;
+   }
+</style>
+<div class="w3-container w3-padding" >
+    <form asp-controller="Drivers" asp-action="Create" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="box-wrapper" width="100%" >
+            <div class="box effect6">
+                <div width="100%">
+                    <div style="display:inline-block"><h3>New Driver</h3></div>
+
+                    <button type="submit" class="btn-save" style="float:right;margin-top:5px;">
+                        Save
+                        <!-- <i class='fas fa-angle-double-right'></i> -->
+                    </button>
+                </div>
+
+
+                <div class="w3-container w3-padding" >
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="row" style="padding-top:20px;padding-bottom:50px;">
+                        <div class="col-lg-4">
+                            <h4>Account Information</h4>
+                            <hr style="width:200px;" />
+                            <h6 class="w3-opacity">Full Name :</h6>
+                            <input asp-for="Name" style="width:80%" class="w3-border w3-padding" value="Hadi Haidar">
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                            <h6 class="w3-opacity"><label asp-for="Username"></label></h6>
+                            <input asp-for="Username" style="width:80%" class="w3-border w3-padding" value="hadi@gmail.com">
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                            <span class="text-danger">@ViewData["UsernameError"]</span>
+
+                            <h6 class="w3-opacity"><label asp-for="Password"></label></h6>
+                            <input asp-for="Password" style="width:80%" class="w3-border w3-padding" value="Aa12345$">
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <h4>Personal Information</h4>
+                            <hr style="width:200px;" />
+                            <h6 class="w3-opacity"><label asp-for="Birthdate"></label></h6>
+                            <input asp-for="Birthdate" style="width:80%" class="w3-border w3-padding"
+                                   value="@DateTime.Now.Date.ToString("yyyy-MM-dd")" type="date">
+                            <span asp-validation-for="Birthdate" class="text-danger"></span>
+
+                            <h6 class="w3-opacity"><label asp-for="Address"></label></h6>
+                            <input asp-for="Address" style="width:80%" class="w3-border w3-padding" value="Beirut">
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                            <h6 class="w3-opacity"><label asp-for="Phonenumber"></label></h6>
+                            <input asp-for="Phonenumber" style="width:80%" class="w3-border w3-padding" value="03333333">
+                            <span asp-validation-for="Phonenumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <h4>Photo</h4>
+                            <hr style="width:200px;" />
+                            
+                            <div class="form-group">
+                                <div class="pt-img">
+                                    
+                                    <img id="blah" src="~/images/avatar.jpg" width="100%" height="100%" style="border-radius:40px;" />
+
+                                    <br />
+
+                                    <br />
+                                    <div style="padding-left:25%">
+                                        <input type='file' onchange="readURL(this);" name="file" id="file" class="inputfile" />
+
+                                        <label for="file" style="display:initial">Choose a photo</label>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+
+                        </div>
+
+
+
+
+                        </div>
+                    </div>
+
+            </div>
+        </div>
+    </form>
+</div>
+
+<br />
+<br />
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#blah')
+                    .attr('src', e.target.result)
+                    ;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,143 @@
+﻿@model CreatePlanModel
+@{
+    ViewData["Title"] = "Create Plan";
+    Layout = "LayoutManager";
+}
+  
+        <div class="box-wrapper">
+            <div class="box effect6">
+                <h3>Create Plan</h3>
+
+                <div class="w3-container w3-padding">
+                    <form asp-controller="Plans" asp-action="AddPlanToVehicles">
+
+                        <h5 class="w3-opacity">Plan Name :</h5>
+                        <input asp-for="Title" style="width:100%" class="w3-border w3-padding" value="BMW CheckUp">
+                        <span asp-validation-for="Title"></span>
+
+                        <div width="100%" style="margin-top:5px;">
+                            <div style="display:inline-block"><h5 class="w3-opacity">Activities</h5></div>
+                            <button type="button" onclick="addNewActivity();" style="float:right;margin-top:5px;" class="  button1 w3-right">
+                                New Activity
+                            </button>
+                        </div>
+
+                        <br />
+
+                        <div id="Act_List">
+                            <div>
+                                <select name="SelectedServices" asp-items="Model.Services" style="width:60%" class="w3-border w3-padding"></select>
+                                <span style="padding-left:20px;padding-right:20px;">do every </span>
+                                <input type="number" name='ActivityPeriod' style="width:20%" class="w3-border w3-padding" value="15"> days
+                                <br />
+                                <br />
+                            </div>
+                        </div>
+
+
+
+
+
+                        <button type="submit" class="w3-button w3-theme w3-right  ">
+                            Next
+                            <!-- <i class='fas fa-angle-double-right'></i> -->
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script>
+            var prev = document.getElementById("Act_List").innerHTML;
+            function addNewActivity() {
+                $('#Act_List').append(prev);
+
+            }
+        </script>
+
+        @section Scripts {
+            @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+        }
+
+
+
+
+        <style>
+
+
+            .button1 {
+                background-color: #4CAF50; /* Green */
+                border: none;
+                color: white;
+                padding: 10px 15px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                -webkit-transition-duration: 0.4s; /* Safari */
+                transition-duration: 0.4s;
+                cursor: pointer;
+            }
+
+            .button1 {
+                background-color: darkgreen;
+                color: white;
+                font-weight: bold;
+            }
+
+                .button1:hover {
+                    background-color: darkgray;
+                    color: black;
+                    font-weight: bold;
+                }
+
+            html, body, h1, h2, h3, h4, h5 {
+                font-family: "Open Sans", sans-serif
+            }
+
+            body {
+                background: #ccc
+            }
+
+            .box {
+                text-align: left;
+                position: relative;
+                top: 30px;
+                padding: 10px 30px;
+                width: 70%;
+                padding-bottom: 40px;
+                background: #FFF;
+            }
+
+            .effect6 {
+                position: relative;
+                -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+                -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+                box-shadow: 0 1px 40px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+            }
+
+                .effect6:before, .effect6:after {
+                    content: "";
+                    position: absolute;
+                    z-index: -1;
+                    -webkit-box-shadow: 0 0 20px rgba(0,0,0,0.8);
+                    -moz-box-shadow: 0 0 20px rgba(0,0,0,0.8);
+                    box-shadow: 0 0 50px rgba(0,0,0,0.8);
+                    top: 50%;
+                    bottom: 0;
+                    left: 10px;
+                    right: 10px;
+                    -moz-border-radius: 100px / 10px;
+                    border-radius: 100px / 10px;
+                }
+
+                .effect6:after {
+                    right: 10px;
+                    left: auto;
+                    -webkit-transform: skew(8deg) rotate(3deg);
+                    -moz-transform: skew(8deg) rotate(3deg);
+                    -ms-transform: skew(8deg) rotate(3deg);
+                    -o-transform: skew(8deg) rotate(3deg);
+                    transform: skew(8deg) rotate(3deg);
+                }
+        </style>
