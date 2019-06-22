@@ -1,0 +1,31 @@
+.table-view {
+    -fx-base:white;
+    -fx-control-inner-background: white;
+    -fx-background-color: white;
+    -fx-table-cell-border-color: transparent;
+    -fx-table-header-border-color: transparent;
+    -fx-padding: 5;
+}
+.text-field {
+    -fx-font-size: 20pt;
+}
+.table-view .column-header{
+	
+	    -fx-background-color: Aqua;
+    -fx-font-size: 15;
+   
+    
+}
+.table-view .column-header .label{
+    -fx-alignment:CENTER_LEFT;
+}
+
+
+.table-cell {
+    -fx-font-size: 15px;
+    
+}
+.button{
+	 -fx-font-size: 15px;
+	-fx-body-color: red;
+}/* JavaF - Leave X CSSthis comment until you have at least create one rule which uses -fx-Property */
