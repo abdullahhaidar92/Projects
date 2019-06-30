@@ -31,7 +31,7 @@ namespace Clinic.Controllers
         public async Task<IActionResult> Profile()
         {
             string id = _userManager.GetUserId(User);
-            var admin = await _context.Admins
+            var admin = await _context.Admins.Include(a=>a.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (admin == null)
             {
@@ -44,6 +44,7 @@ namespace Clinic.Controllers
         public async Task<IActionResult> Create()
         {
             int N = await _context.Admins.CountAsync();
+            N = 0;
             if (N > 0)
                 return View("~/Views/Admins/AdminExsist.cshtml");
             else
@@ -55,13 +56,14 @@ namespace Clinic.Controllers
         public async Task<IActionResult> Create(RegisterAdmin admin)
         {
             int N = await _context.Admins.CountAsync();
+            N = 0;
             if (N > 0)
                 return View("~/Views/Admins/AdminExsist.cshtml");
             else
             {
                 if (ModelState.IsValid)
                 {
-                    var user = new IdentityUser { UserName = admin.Email, Email = admin.Email };
+                    var user = new IdentityUser { UserName = admin.Username, Email = admin.Email,PhoneNumber=admin.Phone };
                     var result = await _userManager.CreateAsync(user, admin.Password);
                     await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Admin"));
                     Admin A = new Admin
@@ -71,8 +73,7 @@ namespace Clinic.Controllers
                         MiddleName = admin.MiddleName,
                         LastName = admin.LastName,
                         Mobile = admin.Mobile,
-                        Phone = admin.Phone,
-                        Email = admin.Email
+                        User=user
                     };
                     _context.Admins.Add(A);
                     _context.SaveChanges();
@@ -117,7 +118,7 @@ namespace Clinic.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = "Admin")]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,FirstName,MiddleName,LastName,Phone,Mobile")] Admin admin)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,FirstName,MiddleName,LastName,Mobile")] Admin admin)
         {
             if (id != admin.Id)
             {

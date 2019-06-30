@@ -18,10 +18,11 @@
                         <h2>@Model.DisplayName</h2>
                         <div>Full Name: @Model.FirstName @Model.MiddleName @Model.LastName</div>
 
-                        <div>Id: @Model.Assistant_Id</div>
-                        <div>Email: @Model.Email</div>
+                        <div>Id: @Model.Id</div>
+                        <div>Username: @Model.User.UserName</div>
+                        <div>Email: @Model.User.Email</div>
                         <div>Gender: @Model.Gender</div>
-                        <div>Phone: @Model.Phone</div>
+                        <div>Phone: @Model.User.PhoneNumber</div>
                         <div>Address: @Model.Address</div>
                         <div>Doctor: @Model.Doctor.DisplayName</div>
 

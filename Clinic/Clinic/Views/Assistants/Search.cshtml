@@ -89,7 +89,7 @@
                         @foreach (var item in Model.Assistants)
                         {
 
-                            <form asp-action="Details" asp-route-id="@item.Id" onclick="Show(@item.Assistant_Id);">
+                            <form asp-action="Details" asp-route-id="@item.Id" onclick="Show(@item.Id);">
                                 <div class="srch-div" style="width:90%;margin-bottom:3px;">
                                     <table style="width:100%">
                                         <tr>
@@ -101,11 +101,11 @@
 
                                                     <div style="font-size:20px;color:rgb(0,0,250);">@Html.DisplayFor(modelItem => item.DisplayName)</div>
 
-                                                    Assistant Id: @item.Assistant_Id
+                                                    Assistant Id: @item.Id
                                                     <br />
                                                     Doctor :@Html.DisplayFor(modelItem => item.Doctor.DisplayName)
                                                     <br>
-                                                    Phone Number:  @Html.DisplayFor(modelItem => item.Phone)
+                                                    Phone Number:  @Html.DisplayFor(modelItem => item.User.PhoneNumber)
                                                     <br />
                                                     Address: @item.Address
                                                 </div>
@@ -114,7 +114,7 @@
                                     </table>
                                 </div>
                             </form>
-                            <div class="modal fade" id="@item.Assistant_Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal fade" id="@item.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -128,14 +128,15 @@
                                                 <div class="col-lg-7">
                                                     <h2>@item.DisplayName</h2>
                                                     <div>Full Name: @item.FirstName @item.MiddleName @item.LastName</div>
-                                                    
-                                                        <div>Id: @item.Assistant_Id</div>
-                                                        <div>Email: @item.Email</div>
-                                                        <div>Gender: @item.Gender</div>
-                                                        <div>Phone: @item.Phone</div>
-                                                        <div>Address: @item.Address</div>
-                                                        <div>Doctor: @item.Doctor.DisplayName</div>
-                                                    
+
+                                                    <div>Id: @item.Id</div>
+                                                    <div>Username: @item.User.UserName</div>
+                                                    <div>Email: @item.User.Email</div>
+                                                    <div>Gender: @item.Gender</div>
+                                                    <div>Phone: @item.User.PhoneNumber</div>
+                                                    <div>Address: @item.Address</div>
+                                                    <div>Doctor: @item.Doctor.DisplayName</div>
+
                                                 </div>
                                                 <div class="col-lg-5">
                                                     <img src="~/images/@item.Image" width="250" height="250" style="border-radius:5px;" />
@@ -145,23 +146,23 @@
                                                     <br />
                                                     <br />
                                                     <a asp-controller="Assistants" asp-action="Edit" class="a2" asp-route-id="@item.Id">Edit Profile</a><br />
-                                                    <a href="javascript:void(0)" class="a2" onclick="Remove('@item.Id')" ;">Remove Assistant</a>
+                                                    <a href="javascript:void(0)" class="a2" onclick="Remove('@item.User.Id')" ;">Remove Assistant</a>
 
                                                 </div>
                                             </div>
-                                            <div class="modal fade" id="@item.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                            <div class="modal fade" id="@item.User.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                                     <div class="modal-content" style="border-radius:10px;">
                                                         <div class="modal-header" style="background-color: rgba(240, 0, 0, 0.85);border-top-left-radius:10px;border-top-right-radius:10px;">
                                                             <h5 class="modal-title" id="exampleModalLongTitle" style="font-size:25px">Remove Assistant</h5>
-                                                            <button type="button" class="close" onclick="CloseDelete('@item.Id')" aria-label="Close">
+                                                            <button type="button" class="close" onclick="CloseDelete('@item.User.Id')" aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span>
                                                             </button>
                                                         </div>
                                                         <div class="modal-body">
                                                             <h3> Are you sure you want to delete this assistant?</h3>
                                                             <h4>Name:  @item.DisplayName</h4>
-                                                            <h4>Assistant Id: @item.Assistant_Id</h4>
+                                                            <h4>Assistant Id: @item.Id</h4>
                                                         </div>
                                                         <div class="modal-footer " style="background-color: rgba(255, 0, 0, 0.8);border-bottom-left-radius:10px;border-bottom-right-radius:10px;">
                                                             <div style="text-align:center;display:inline-block;width:100%">
@@ -170,7 +171,7 @@
                                                                     <button class="btn btn-primary">Yes</button>
                                                                 </form>
                                                            
-                                                                <button class="btn btn-danger" onclick="CloseDelete('@item.Id');">No</button>
+                                                                <button class="btn btn-danger" onclick="CloseDelete('@item.User.Id');">No</button>
                                                             </div>
 
                                                         </div>

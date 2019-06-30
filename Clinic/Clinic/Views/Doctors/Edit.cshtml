@@ -1,4 +1,4 @@
-﻿@model Clinic.Models.Doctor
+﻿@model Clinic.Models.EditDoctor
 
 @{
     ViewData["Title"] = "Edit";
@@ -18,6 +18,16 @@
                     <div class="col-lg-4">
                         <div class="column">
                             <div class="form-group">
+                                <label asp-for="Username" class="control-label"></label>
+                                <input asp-for="Username" class="form-control" value="@Model.Username" />
+                                <span asp-validation-for="Username" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Email" class="control-label"></label>
+                                <input asp-for="Email" class="form-control" value="@Model.Email" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
                                 <label asp-for="@Model.FirstName" class="control-label"></label>
                                 <input asp-for="@Model.FirstName" class="form-control" value="@Model.FirstName" />
                                 <span asp-validation-for="@Model.FirstName" class="text-danger"></span>
@@ -35,12 +45,7 @@
                             </div>
 
 
-                            <div class="form-group">
-                                <label class="control-label" asp-for="Phone"></label>
-                                <input asp-for="Phone" class="form-control" value="@Model.Phone" />
-                                <span asp-validation-for="Phone" class="text-danger"></span>
 
-                            </div>
                             <div class="form-group">
                                 <label asp-for="Mobile"></label>
                                 <input asp-for="Mobile" class="form-control" value="@Model.Mobile" />
@@ -74,13 +79,18 @@
                                 <span asp-validation-for="Address" class="text-danger"></span>
                             </div>
                             <div class="form-group">
+                                <label asp-for="Phone" class="control-label"></label>
+                                <input asp-for="Phone" class="form-control" value="@Model.Phone" />
+                                <span asp-validation-for="Phone" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
                                 <label asp-for="@Model.Gender" class="control-label"></label>
                                 <div class="form-control" style="background-color:inherit;border:none">
                                     <label class="containerRadio">
                                         Male
-                                        @if(Model.Gender=="Male")
+                                        @if (Model.Gender == "Male")
                                         {
-                                        <input class="inputRadio" type="radio" checked="checked" name="Gender" value="Male">
+                                            <input class="inputRadio" type="radio" checked="checked" name="Gender" value="Male">
                                         }
                                         <input class="inputRadio" type="radio" name="Gender" value="Male">
                                         <span class="checkmark"></span>
@@ -88,9 +98,9 @@
 
                                     <label class="containerRadio" style="float:right;">
                                         Female
-                                        @if(Model.Gender=="Female")
+                                        @if (Model.Gender == "Female")
                                         {
-                                        <input class="inputRadio" type="radio" checked="checked" name="Gender" value="Female">
+                                            <input class="inputRadio" type="radio" checked="checked" name="Gender" value="Female">
                                         }
                                         <input class="inputRadio" type="radio" name="Gender" value="Female">
                                         <span class="checkmark"></span>
@@ -133,10 +143,10 @@
             <div class="footer">
 
                 <input type="submit" value="Save" class="btn btn-success" />
-                <input type="hidden" name="Id" value="@Model.Id" />
-                <input type="hidden" asp-for="Doctor_Id" value="@Model.Doctor_Id" />
+                <input type="hidden" name="id" value="@Model.Id" />
+              
                 <input type="hidden" asp-for="Image" value="@Model.Image" />
-                <input type="hidden" asp-for="Email" value="@Model.Email" />
+             
 
             </div>
         </form>

@@ -12,6 +12,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Clinic.Controllers
 {
@@ -30,12 +31,13 @@ namespace Clinic.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Search(SearchAssis search)
         {
-            var query = _context.Assistants.Include(a=>a.Doctor).ToArray();
+            var query = _context.Assistants.Include(d => d.User).Include(a=>a.Doctor).ToArray();
             if (search.SearchId != 0)
             {
-                search.Assistants = query.Where(d => d.Assistant_Id == search.SearchId).ToArray();
+                search.Assistants = query.Where(d => d.Id == search.SearchId).ToArray();
                 return View(search);
             }
             if (search.FirstName != null)
@@ -54,23 +56,22 @@ namespace Clinic.Controllers
             return View(search);
         }
 
-     
 
-        // GET: Assistants/Details/5
+      [Authorize(Roles="Assistant")]
         public async Task<IActionResult> Profile()
         {
             string id = _userManager.GetUserId(User);
             Assistant assistant;
             if (User.IsInRole("Doctor"))
             {
-                assistant = await _context.Assistants.Include(p => p.Doctor).Where(p=>p.Doctor.Id==id)
+                assistant = await _context.Assistants.Include(p => p.Doctor).Include(p=>p.User).Where(p=>p.Doctor.User.Id==id)
                                                               .FirstOrDefaultAsync();
                 ViewData["Role"] = "Doctor";
             }
             else
             {
-                assistant = await _context.Assistants.Include(p => p.Doctor)
-                  .FirstOrDefaultAsync(m => m.Id == id);
+                assistant = await _context.Assistants.Include(p => p.Doctor).Include(p => p.User)
+                  .FirstOrDefaultAsync(m => m.User.Id == id);
             }
            
             if (assistant == null)
@@ -81,27 +82,17 @@ namespace Clinic.Controllers
             return View(assistant);
         }
 
-        // GET: Assistants/Create
+        [Authorize(Roles = "Admin,Doctor")]
         public IActionResult Create()
         {
-            long as_id = 1000;
-            try
-            {
-                as_id = _context.Assistants.Max(d => d.Assistant_Id) + 1;
-            }
-            catch (Exception)
-            {
-            }
-            ViewData["as_id"] = as_id;
-
-
+          
             SelectListItem[] Doctors;
             if (User.IsInRole("Doctor"))
             {
                
                 try
                 {
-                    Assistant assis = _context.Assistants.Where(a => a.Doctor.Id == _userManager.GetUserId(User)).First();
+                    Assistant assis = _context.Assistants.Where(a => a.Doctor.User.Id == _userManager.GetUserId(User)).First();
                     return View("/Views/Assistants/Details.cshtml", assis);
                 }
                 catch (Exception)
@@ -117,7 +108,7 @@ namespace Clinic.Controllers
             Doctors = new SelectListItem[IC.Length];
             for (int i = 0; i < IC.Length; i++)
             {
-                Doctors[i] = new SelectListItem { Value = IC[i].Id, Text = IC[i].DisplayName };
+                Doctors[i] = new SelectListItem { Value =""+ IC[i].Id, Text = IC[i].DisplayName };
             }
             ViewData["Doctors"] = Doctors;
 
@@ -128,9 +119,10 @@ namespace Clinic.Controllers
         // POST: Assistants/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Doctor")]
         public async Task<IActionResult> Create(RegisterAssistant registerAssistant, IFormFile file)
         {
-            if (_context.Assistants.Any(d => d.Assistant_Id== registerAssistant.Assistant_Id))
+            if (_context.Assistants.Any(d => d.User.UserName== registerAssistant.Username))
             {
                 ViewData["message"] = "Already Taken";
                 return View(registerAssistant);
@@ -147,25 +139,26 @@ namespace Clinic.Controllers
                   
                 }
 
-                var user = new IdentityUser { UserName = registerAssistant.Email, Email = registerAssistant.Email };
+                var user = new IdentityUser
+                { UserName = registerAssistant.Username,
+                 Email = registerAssistant.Email,
+                 PhoneNumber=registerAssistant.Phone
+                };
                 var result = await _userManager.CreateAsync(user, registerAssistant.Password);
-                IdentityUser X = await _userManager.FindByEmailAsync(registerAssistant.Email);
-                await _userManager.AddClaimAsync(X, new Claim(ClaimTypes.Role, "Assistant"));
+                await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Assistant"));
                 Doctor I = _context.Doctors.Find(registerAssistant.SelectedDoctorId);
                 Assistant p = new Assistant
                 {
-                    Id = user.Id,
-                    Assistant_Id=registerAssistant.Assistant_Id,
-                    FirstName=registerAssistant.FirstName,
-                    MiddleName=registerAssistant.MiddleName,
-                    LastName=registerAssistant.LastName,
+                    
+                    FirstName = registerAssistant.FirstName,
+                    MiddleName = registerAssistant.MiddleName,
+                    LastName = registerAssistant.LastName,
                     DisplayName = registerAssistant.DisplayName,
                     Address = registerAssistant.Address,
-                    Phone = registerAssistant.Phone,
-                    Email=registerAssistant.Email,
                     Doctor = I,
                     Gender = registerAssistant.Gender,
-                    Image=image
+                    Image = image,
+                    User = user
                 };
 
                 _context.Add(p);
@@ -177,46 +170,51 @@ namespace Clinic.Controllers
             SelectListItem[] Doctors = new SelectListItem[IC.Length];
             for (int i = 0; i < IC.Length; i++)
             {
-                Doctors[i] = new SelectListItem { Value = IC[i].Id, Text = IC[i].DisplayName };
+                Doctors[i] = new SelectListItem { Value = ""+IC[i].Id, Text = IC[i].DisplayName };
             }
             ViewData["Doctors"] = Doctors;
             return View(registerAssistant);
         }
 
         // GET: Assistants/Edit/5
-        public IActionResult Edit(string id)
+        public IActionResult Edit(long id)
         {
+            Assistant assistant = null;
             if (User.IsInRole("Assistant"))
-            {
-                id = _userManager.GetUserId(User);
-            }
-
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var assistant = _context.Assistants.Include(a => a.Doctor).Single(a => a.Id == id);
-            ViewData["Doctors"] = GetDoctors(assistant);
+               assistant =_context.Assistants.Where(a=>a.User.Id==_userManager.GetUserId(User)).Include(a => a.Doctor).Include(a => a.User).Single();
+            else
+                assistant = _context.Assistants.Include(a => a.Doctor).Include(a=>a.User).Single(a => a.Id == id);
             if (assistant == null)
             {
                 return NotFound();
             }
-            return View(assistant);
+            
+            ViewData["Doctors"] = GetDoctors(assistant.Doctor.Id);
+            EditAssistant model = new EditAssistant
+            {
+                Id = assistant.Id,
+                FirstName = assistant.FirstName,
+                MiddleName = assistant.MiddleName,
+                LastName = assistant.LastName,
+                DisplayName = assistant.DisplayName,
+                Address = assistant.Address,
+                Gender = assistant.Gender,
+                Image = assistant.Image,
+                Username = assistant.User.UserName,
+                Email=assistant.User.Email,
+                Phone=assistant.User.PhoneNumber
+  
+            };
+            return View(model);
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, Assistant assistant, IFormFile file, string SelectedDoctorId)
+        public async Task<IActionResult> Edit(long id, EditAssistant assistant, IFormFile file)
         {
             string returnAction = "Search";
-            if (User.IsInRole("Assistant"))
-            {
-                id = _userManager.GetUserId(User);
-                returnAction = "Profile";
-            }
-
+          
             if (id != assistant.Id)
             {
                 return NotFound();
@@ -236,8 +234,59 @@ namespace Clinic.Controllers
                                 filestream.Flush();
                             }
                         }
-                    assistant.Doctor = _context.Doctors.Find(SelectedDoctorId);
-                        _context.Update(assistant);
+                    Assistant A = _context.Assistants
+                        .Include(a => a.User)
+                        .Include(a => a.Doctor)
+                        .First(a => a.Id == assistant.Id);
+
+ 
+                        A.FirstName = assistant.FirstName;
+                        A.MiddleName = assistant.MiddleName;
+                        A.LastName = assistant.LastName;
+                        A.DisplayName = assistant.DisplayName;
+                        A.Address = assistant.Address;
+                        A.Gender = assistant.Gender;
+                        A.Image = assistant.Image;
+                        A.Doctor = _context.Doctors.Find(assistant.SelectedDoctorId);
+
+                       IdentityUser user = A.User;
+                    var username= await _userManager.GetUserNameAsync(user);
+                    if (assistant.Username !=username )
+                    {
+                        var setUserNameResult = await _userManager.SetUserNameAsync(user, assistant.Username);
+
+                        if (!setUserNameResult.Succeeded)
+                        {
+                            var userId = await _userManager.GetUserIdAsync(user);
+                            throw new InvalidOperationException($"Unexpected error occurred setting username for user with ID '{userId}'.");
+                        }
+                    }
+
+                    var email = await _userManager.GetEmailAsync(user);
+                    if (assistant.Email != email)
+                    {
+                        var setEmailResult = await _userManager.SetEmailAsync(user, assistant.Email);
+                        
+                        if (!setEmailResult.Succeeded)
+                        {
+                            var userId = await _userManager.GetUserIdAsync(user);
+                            throw new InvalidOperationException($"Unexpected error occurred setting email for user with ID '{userId}'.");
+                        }
+                    }
+
+                    var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+                    if (assistant.Phone != phoneNumber)
+                    {
+                        var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, assistant.Phone);
+                        if (!setPhoneResult.Succeeded)
+                        {
+                            var userId = await _userManager.GetUserIdAsync(user);
+                            throw new InvalidOperationException($"Unexpected error occurred setting phone number for user with ID '{userId}'.");
+                        }
+                    }
+                    A.User = user;
+
+                        _context.Update(A);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -253,14 +302,14 @@ namespace Clinic.Controllers
                 }
                 return RedirectToAction(returnAction);
             }
-                ViewData["Doctors"] = GetDoctors(assistant);
+                ViewData["Doctors"] = GetDoctors(assistant.SelectedDoctorId);
                 return View(assistant);
         }
 
         // GET: Assistants/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(long id=0)
         {
-            if (id == null)
+            if (id ==0)
             {
                 return NotFound();
             }
@@ -278,23 +327,22 @@ namespace Clinic.Controllers
         // POST: Assistants/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            var assistant = await _context.Assistants.FindAsync(id);
+            var assistant = _context.Assistants.Include(a=>a.User).Single(a=>a.Id==id);
+            IdentityUser user = assistant.User;
             _context.Assistants.Remove(assistant);
             await _context.SaveChangesAsync();
-            IdentityUser user= await _userManager.FindByIdAsync(id);
                var result= _userManager.DeleteAsync(user);
-          
             return RedirectToAction(nameof(Search));
         }
 
-        private bool AssistantExists(string id)
+        private bool AssistantExists(long id)
         {
             return _context.Assistants.Any(e => e.Id == id);
         }
 
-        public List<SelectListItem> GetDoctors(Assistant assistant)
+        public List<SelectListItem> GetDoctors(long doctor=0)
         {
             List<SelectListItem> Doctors = new List<SelectListItem>();
           Doctor[] doctors = _context.Doctors.ToArray();
@@ -302,7 +350,7 @@ namespace Clinic.Controllers
             foreach (Doctor d in doctors)
             {
 
-                if (assistant.Doctor != null && assistant.Doctor.Id== d.Id)
+                if (doctor !=0 && doctor== d.Id)
                     Doctors.Add(new SelectListItem { Value = "" + d.Id, Text = d.DisplayName, Selected = true });
                 else
                    Doctors.Add(new SelectListItem { Value = "" + d.Id, Text = d.DisplayName });

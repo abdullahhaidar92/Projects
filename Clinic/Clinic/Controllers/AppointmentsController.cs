@@ -24,7 +24,7 @@ namespace Clinic.Controllers
         public async Task<IActionResult> Index(SearchAppointments search)
         {
             var query = _context.Appointment.Include(a => a.Patient).ToArray();
-            if (search.Patient != null && search.Patient != "all")
+            if (search.Patient !=0)
                 query = query.Where(a => a.Patient.Id == search.Patient).ToArray();
             if (search.DateTime!= DateTime.MinValue)
                 query = query.Where(a => a.DateTime.Date == search.DateTime.Date).ToArray();
@@ -37,8 +37,8 @@ namespace Clinic.Controllers
         public async Task<IActionResult> PatientsAppointments(SearchAppointments search)
         {
             string id = _userManager.GetUserId(User);
-            var query = _context.Appointment.Include(a => a.Doctor).Where(a=>a.Patient.Id==id).ToArray();
-            if (search.Doctor != null && search.Doctor != "all")
+            var query = _context.Appointment.Include(a => a.Doctor).Where(a=>a.Patient.User.Id==id).ToArray();
+            if (search.Doctor !=0)
                 query = query.Where(a => a.Doctor.Id == search.Doctor).ToArray();
             if (search.DateTime != DateTime.MinValue)
                 query = query.Where(a => a.DateTime.Date == search.DateTime.Date).ToArray();
@@ -47,6 +47,19 @@ namespace Clinic.Controllers
             return View(search);
         }
 
+        [Authorize(Policy = "Doctor")]
+        public async Task<IActionResult> DoctorsAppointments(SearchAppointments search)
+        {
+            string id = _userManager.GetUserId(User);
+            var query = _context.Appointment.Include(a => a.Patient).Where(a => a.Doctor.User.Id == id).ToArray();
+            if (search.Patient != 0)
+                query = query.Where(a => a.Patient.Id == search.Patient).ToArray();
+            if (search.DateTime != DateTime.MinValue)
+                query = query.Where(a => a.DateTime.Date == search.DateTime.Date).ToArray();
+            search.FillPatients(_context.Patients.ToArray());
+            search.Appointments = query;
+            return View(search);
+        }
 
 
         [Authorize(Policy ="Assistant")]
@@ -57,12 +70,12 @@ namespace Clinic.Controllers
 
         
         [HttpGet]
-        public  JsonResult Create(string patient, DateTime appdate)
+        public  JsonResult Create(long patient, DateTime appdate)
         {
             Doctor doctor;
             try
             {
-                 doctor = _context.Assistants.Include(a=>a.Doctor).First(a=>a.Id==_userManager.GetUserId(User)).Doctor;
+                 doctor = _context.Assistants.Include(a=>a.Doctor).First(a=>a.User.Id==_userManager.GetUserId(User)).Doctor;
             }
             catch (Exception)
             {
@@ -127,7 +140,7 @@ namespace Clinic.Controllers
             Doctor d;
             try
             {
-                d = _context.Assistants.Include(a => a.Doctor).First(a => a.Id == _userManager.GetUserId(User)).Doctor;
+                d = _context.Assistants.Include(a => a.Doctor).First(a => a.User.Id == _userManager.GetUserId(User)).Doctor;
             }
             catch (Exception)
             {
@@ -204,9 +217,6 @@ namespace Clinic.Controllers
         }
 
 
-
-   
-       
 
         private bool AppointmentExists(long id)
         {

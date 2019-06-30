@@ -12,7 +12,9 @@ namespace Clinic.Models
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
-
+        [Required]
+        [StringLength(100)]
+        public string Username { get; set; }
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
@@ -24,7 +26,19 @@ namespace Clinic.Models
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
         [Required]
-        public InsuranceCompany InsuranceCompany { get; set; }
-   
-}
+        [StringLength(100)]
+        public string Name { get; set; }
+
+        [Required]
+        [Phone]
+        public string Phone { get; set; }
+        [Required]
+        [StringLength(100)]
+        public string Address { get; set; }
+        [StringLength(100)]
+        public string Fax { get; set; }
+        [StringLength(100)]
+        public string Image { get; set; }
+
+    }
 }

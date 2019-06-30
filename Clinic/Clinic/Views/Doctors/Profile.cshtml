@@ -1,7 +1,7 @@
 ﻿@model Clinic.Models.Doctor
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Doctor Profile";
 
 }
 
@@ -24,10 +24,11 @@
                         <img src="~/images/@Model.Image" width="250" height="250" style="border-radius:5px;" />
                     </div>
                     <div class="col-lg-7">
-                        <div>Id: @Model.Doctor_Id</div>
-                        <div>Email: @Model.Email</div>
+                        <div>Id: @Model.Id</div>
+                        <div>Username: @Model.User.UserName</div>
+                        <div>Email: @Model.User.Email</div>
                         <div>Specilaity: @Model.Speciality</div>
-                        <div>Phone: @Model.Phone</div>
+                        <div>Phone: @Model.User.PhoneNumber</div>
                         <div>Mobile: @Model.Mobile</div>
                         <div>Address: @Model.Address</div>
                         <div>Time: @Model.Time</div>

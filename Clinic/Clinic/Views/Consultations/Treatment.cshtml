@@ -1,0 +1,103 @@
+﻿<div class="window-wrapper">
+
+    <div class="window">
+        <div class="header" style="text-align:center">
+            <h1>Treatments</h1>
+        </div>
+        <div class="body">
+            @foreach (var doctor in ViewBag.doctors)
+            {
+                <div class="srch-div" style="width:90%;margin-bottom:3px;" onclick="OpenTreatment(@doctor.Key.Id)">
+                    <h2> + @doctor.Key.DisplayName</h2>
+                </div>
+
+
+                    <div class="modal fade" id="@doctor.Key.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                            <div class="modal-content"  style="background-color:rgba(0,0,0,0.1)">
+                                <div class="modal-header" style="background-color:rgba(250,0,0,0.8)">
+                                    <h5 class="modal-title" id="exampleModalLongTitle" style="font-size:25px">@doctor.Key.DisplayName Treatments</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body" style="padding-bottom:40px;min-height:300px;background-color:rgba(0,0,250,0.2)">
+
+
+                                    @foreach (Consultation c in doctor.Value)
+                                    {
+                                        <div class="srch-div" style="width:90%;margin-bottom:3px;" onclick="OpenConsultation('@c.Id')">
+                                            <h2> + @c.Title</h2>
+                                        </div>
+
+
+
+                                        <div class="modal fade" id="@("C"+c.Id)" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content" style="border-radius:10px;background-color: rgba(0, 0,0, 0.3)">
+                                                    <div class="modal-header" style="background-color: rgba(0,200, 0, 0.9);border-top-left-radius:10px;border-top-right-radius:10px;">
+                                                        <h5 class="modal-title" id="exampleModalLongTitle" style="font-size:25px">@c.Title</h5>
+                                                        <button type="button" class="close" onclick="Close('@c.Id')" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body" style="background-color:rgb(250,250,250)">
+                                                        <h4>Type: @c.Type</h4>
+                                                        <h4>Temperature: @c.Temperature</h4>
+                                                        <h4>Blood Pressure: @c.BloodPressure</h4>
+                                                        <h4>Cost: @c.Cost</h4>
+                                                        <h4>Symptoms:<br /> @c.Symptoms</h4>
+                                                        <h4>Diagnosis: <br /> @c.Diagnosis</h4>
+                                                        <h4>Treatment: <br /> @c.Treatment</h4>
+                                                    </div>
+                                                    <div class="modal-footer " style="background-color: rgba(0,200, 0, 0.9);border-bottom-left-radius:10px;border-bottom-right-radius:10px;">
+                                                        <div style="text-align:center;display:inline-block;width:100%">
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+
+
+
+
+                                    }
+
+
+
+                                </div>
+                                    </div>
+                               
+
+
+
+                                </div>
+                                <div class="modal-footer">
+                                </div>
+                            </div>
+                      
+            }
+
+            </div>
+
+            </div>
+</div>
+
+
+<script type="text/javascript">
+    function OpenTreatment(id) {
+        $("#" + id).modal();
+    }
+    function OpenConsultation(id) {
+        $("#C" + id).modal();
+        }
+        function Close(id) {
+        $("#C"+id).modal('hide');
+    }
+   
+</script>

@@ -11,7 +11,8 @@ namespace Clinic.Models
     public class RegisterPatient
     {
         [Required]
-        public long Patient_Id { get; set; }
+        [Display(Name = "Username")]
+        public string Username { get; set; }
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
@@ -56,7 +57,7 @@ namespace Clinic.Models
            public string Image { get; set; }
         [DataType(DataType.Date)]
         public DateTime Birthdate { get; set; }
-          public string SelectedInsuranceCompanyId { get; set; }
+          public long SelectedInsuranceCompanyId { get; set; }
 
         
    

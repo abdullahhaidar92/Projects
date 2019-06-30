@@ -1,6 +1,11 @@
 ﻿@model Clinic.Models.Admin
 
-
+<style>
+     body,html{
+        width:100%;
+        height:100%;
+    }
+</style>
 
     <div class="window-wrapper">
         <div class="window" style="width:500px;">
@@ -30,11 +35,7 @@
                                 <span asp-validation-for="LastName" class="text-danger"></span>
                             </div>
                           
-                            <div class="form-group">
-                                <label asp-for="Phone" class="control-label"></label>
-                                <input asp-for="Phone" class="form-control" />
-                                <span asp-validation-for="Phone" class="text-danger"></span>
-                            </div>
+                       
                             <div class="form-group">
                                 <label asp-for="Mobile" class="control-label"></label>
                                 <input asp-for="Mobile" class="form-control" />

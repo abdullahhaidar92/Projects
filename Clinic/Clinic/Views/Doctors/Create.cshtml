@@ -19,9 +19,9 @@
                         <div class="column">
                             <h3>Account Information</h3>
                             <div class="form-group">
-                                <label  class="control-label">Doctor Id</label>
-                                <input asp-for="@Model.Doctor_Id" class="form-control" value="@ViewData["dr_id"]"  type="text"/>
-                                <span asp-validation-for="@Model.Doctor_Id" class="text-danger"></span>
+                                <label  asp-for="Username" class="control-label"></label>
+                                <input asp-for="Username" class="form-control" value="abd@doctor"  type="text"/>
+                                <span asp-validation-for="Username" class="text-danger"></span>
                                 <span class="text-danger">@ViewData["message"]</span>
                             </div>
                             <div class="form-group">
@@ -87,7 +87,7 @@
                          <br />
                             <div class="form-group">
                                 <div class="pt-img">
-                                    <img id="blah" src="~/images/avatar.jpg" width="100%" height="100%" style="border-radius:20px;" />
+                                    <img id="blah" src="~/images/doc_logo.png" width="100%" height="100%" style="border-radius:20px;" />
                                 </div>
                                 <br />
                                 <br />

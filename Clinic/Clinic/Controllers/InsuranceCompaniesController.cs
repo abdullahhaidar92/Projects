@@ -31,20 +31,20 @@ namespace Clinic.Controllers
             return View();
         }
 
-
+        [Authorize(Roles="Admin")]
             public async Task<IActionResult> Search(SearchInsurance search)
         {
 
-            var query = _context.InsuranceCompanies.Where(i=>i.Insurance_Id>0).ToArray();
+            var query = _context.InsuranceCompanies.Include(d => d.User).Where(i=>i.Id>0).ToArray();
             if (search.SearchId != 0)
             {
-                search.InsuranceCompanies = query.Where(d => d.Insurance_Id == search.SearchId).ToArray();
+                search.InsuranceCompanies = query.Where(d => d.Id == search.SearchId).ToArray();
                 return View(search);
             }
             if (search.Name != null)
                 query = query.Where(d => d.Name == search.Name).ToArray();
             if (search.Email != null)
-                query = query.Where(d => d.Email == search.Email).ToArray();
+                query = query.Where(d => d.User.Email == search.Email).ToArray();
             if (search.Address != null)
                 query = query.Where(d => d.Address.Contains(search.Address)).ToArray();
             if (search.Order == "desc")
@@ -54,14 +54,12 @@ namespace Clinic.Controllers
             search.InsuranceCompanies = query;
             return View(search);
         }
-        // GET: InsuranceCompanies
-        
 
-        // GET: InsuranceCompanies/Details/5
+        [Authorize(Roles = "Insurance")]
         public async Task<IActionResult> Profile()
         {
             string id = _userManager.GetUserId(User);
-            var insurance = await _context.InsuranceCompanies.FirstOrDefaultAsync(m => m.Id == id);
+            var insurance = await _context.InsuranceCompanies.Include(i=>i.User).FirstOrDefaultAsync(i=> i.User.Id == id);
             if (insurance == null)
             {
                 return NotFound();
@@ -70,28 +68,25 @@ namespace Clinic.Controllers
             return View(insurance);
         }
 
-        // GET: InsuranceCompanies/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
-            long in_id = 1000;
-            try
-            {
-                in_id = _context.InsuranceCompanies.Max(d => d.Insurance_Id) + 1;
-            }
-            catch (Exception)
-            {
-            }
-            ViewData["in_id"] = in_id;
-            return View();
+                   return View();
         }
 
-        // POST: InsuranceCompanies/Create
+     
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(RegisterInsuranceCompany RegisterInsuranceCompany, IFormFile file)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Create(RegisterInsuranceCompany registerInsuranceCompany, IFormFile file)
         {
             if (ModelState.IsValid)
             {
+                if(_context.InsuranceCompanies.Any(i=>i.User.UserName==registerInsuranceCompany.Username))
+                {
+                    ViewData["message"] = "Already Taken";
+                    return View(registerInsuranceCompany);
+                }
 
                 var filePath = Path.GetTempFileName();
 
@@ -103,63 +98,74 @@ namespace Clinic.Controllers
                     file.CopyTo(filestream);
                     filestream.Flush();
                 }
-                var user = new IdentityUser { UserName = RegisterInsuranceCompany.Email, Email = RegisterInsuranceCompany.Email };
-                var result = await _userManager.CreateAsync(user, RegisterInsuranceCompany.Password);
-                IdentityUser X = await _userManager.FindByEmailAsync(RegisterInsuranceCompany.Email);
-                await _userManager.AddClaimAsync(X, new Claim(ClaimTypes.Role, "Insurance"));
-                RegisterInsuranceCompany.InsuranceCompany.Id = user.Id;
-                RegisterInsuranceCompany.InsuranceCompany.Image = image;
-                RegisterInsuranceCompany.InsuranceCompany.Email = RegisterInsuranceCompany.Email;
-                _context.Add(RegisterInsuranceCompany.InsuranceCompany);
+                var user = new IdentityUser
+                {
+                    UserName = registerInsuranceCompany.Username,
+                    Email = registerInsuranceCompany.Email,
+                    PhoneNumber=registerInsuranceCompany.Phone
+                };
+                var result = await _userManager.CreateAsync(user, registerInsuranceCompany.Password);
+                await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Insurance"));
+
+                InsuranceCompany company = new InsuranceCompany
+                {
+                    Name = registerInsuranceCompany.Name,
+                    Address = registerInsuranceCompany.Address,
+                    Fax = registerInsuranceCompany.Fax,
+                    Image = image,
+                    User = user
+                };
+                _context.Add(company);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Search));
             }
             ViewData["error"] = "error";
-            return View(RegisterInsuranceCompany);
+            return View(registerInsuranceCompany);
         }
 
-        // GET: InsuranceCompanies/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        [Authorize(Roles = "Admin,Insurance")]
+        public async Task<IActionResult> Edit(long id)
         {
-        
+            InsuranceCompany insuranceCompany = null;
+
             if (User.IsInRole("Insurance"))
-            {
-                id = _userManager.GetUserId(User);
-              
-            }
+               insuranceCompany=_context.InsuranceCompanies.Include(i=>i.User).Where(i=>i.User.Id==_userManager.GetUserId(User)).Single();
+              else
+             insuranceCompany = _context.InsuranceCompanies.Include(i => i.User).Single(i=>i.Id==id);
 
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var insuranceCompany = await _context.InsuranceCompanies.FindAsync(id);
             if (insuranceCompany == null)
             {
                 return NotFound();
             }
-            return View(insuranceCompany);
+            EditInsuranceCompany model = new EditInsuranceCompany
+            {
+                Id = insuranceCompany.Id,
+                Name =insuranceCompany.Name,
+                Address = insuranceCompany.Address,
+                Fax = insuranceCompany.Fax,
+                Image =insuranceCompany.Image,
+                Username=insuranceCompany.User.UserName,
+                Email=insuranceCompany.User.Email,
+                Phone=insuranceCompany.User.PhoneNumber
+            };
+            return View(model);
         }
 
-        // POST: InsuranceCompanies/Edit/5
-
+      
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Name,Phone,Address,Fax")] InsuranceCompany insuranceCompany,IFormFile file)
+        [Authorize(Roles = "Admin,Insurance")]
+        public async Task<IActionResult> Edit(long id, EditInsuranceCompany model,IFormFile file)
         {
             string returnAction = "Search";
-         
-            if (User.IsInRole("Insurance"))
-            {
-                id = _userManager.GetUserId(User);
-                returnAction = "Profile";
-            }
 
-            if (id != insuranceCompany.Id)
+            if (id != model.Id)
             {
                 return NotFound();
             }
-            insuranceCompany.Image = _context.InsuranceCompanies.Where(i=>i.Id==id).Select(r=>r.Image).Single();
+
+            InsuranceCompany company = _context.InsuranceCompanies.Include(i => i.User).Single(i => i.Id == id);
+          
             if (ModelState.IsValid)
             {
                 try
@@ -170,17 +176,60 @@ namespace Clinic.Controllers
                         var filePath = Path.GetTempFileName();
                         using (FileStream filestream = System.IO.File.Create(_environment.WebRootPath + "\\images\\" + file.FileName))
                         {
-                            insuranceCompany.Image = file.FileName;
+                            model.Image = file.FileName;
                             file.CopyTo(filestream);
                             filestream.Flush();
                         }
                     }
-                    _context.InsuranceCompanies.Update(insuranceCompany);
+
+                    company.Name = model.Name;
+                company.Address = model.Address;
+               company.Fax = model.Fax;
+                company.Image = model.Image;
+
+                    IdentityUser user = company.User;
+                    var username = await _userManager.GetUserNameAsync(user);
+                    if (model.Username != username)
+                    {
+                        var setUserNameResult = await _userManager.SetUserNameAsync(user, model.Username);
+
+                        if (!setUserNameResult.Succeeded)
+                        {
+                            var userId = await _userManager.GetUserIdAsync(user);
+                            throw new InvalidOperationException($"Unexpected error occurred setting username for user with ID '{userId}'.");
+                        }
+                    }
+
+                    var email = await _userManager.GetEmailAsync(user);
+                    if (model.Email != email)
+                    {
+                        var setEmailResult = await _userManager.SetEmailAsync(user, model.Email);
+
+                        if (!setEmailResult.Succeeded)
+                        {
+                            var userId = await _userManager.GetUserIdAsync(user);
+                            throw new InvalidOperationException($"Unexpected error occurred setting email for user with ID '{userId}'.");
+                        }
+                    }
+
+                    var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+                    if (model.Phone != phoneNumber)
+                    {
+                        var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, model.Phone);
+                        if (!setPhoneResult.Succeeded)
+                        {
+                            var userId = await _userManager.GetUserIdAsync(user);
+                            throw new InvalidOperationException($"Unexpected error occurred setting phone number for user with ID '{userId}'.");
+                        }
+                    }
+                    company.User = user;
+
+                    _context.InsuranceCompanies.Update(company);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!InsuranceCompanyExists(insuranceCompany.Id))
+                    if (!InsuranceCompanyExists(company.Id))
                     {
                         return NotFound();
                     }
@@ -191,26 +240,26 @@ namespace Clinic.Controllers
                 }
                 return RedirectToAction(returnAction);
             }
-            return View(insuranceCompany);
+            return View(model);
         }
 
 
         // POST: InsuranceCompanies/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(long id)
         {
-           InsuranceCompany company = await _context.InsuranceCompanies.FindAsync(id);
-            IdentityUser user = await _userManager.FindByIdAsync(id);
-            Patient[] patients = _context.Patients.Where(a => a.InsuranceCompany== company).ToArray();
+            InsuranceCompany company = _context.InsuranceCompanies.Include(i => i.User).Single(i => i.Id == id);
+            IdentityUser user = company.User;
+            Patient[] patients = _context.Patients.Include(p=>p.InsuranceCompany).Where(a => a.InsuranceCompany== company).ToArray();
             if (user != null)
             {
                 Reminder[] reminders = _context.Reminders.Where(r => r.User == user).ToArray();
                 _context.Reminders.RemoveRange(reminders);
             }
-            InsuranceCompany None = _context.InsuranceCompanies.Find("none");
+          
             foreach (Patient p in patients)
-                p.InsuranceCompany = None;
+                p.InsuranceCompany = null;
             _context.Patients.UpdateRange(patients);
             _context.InsuranceCompanies.Remove(company);
 
@@ -223,7 +272,7 @@ namespace Clinic.Controllers
             return RedirectToAction("Search");
         }
 
-        private bool InsuranceCompanyExists(string id)
+        private bool InsuranceCompanyExists(long id)
         {
             return _context.InsuranceCompanies.Any(e => e.Id == id);
         }

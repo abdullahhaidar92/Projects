@@ -10,7 +10,10 @@ namespace Clinic.Models
     public class RegisterDoctor
     {
         [Required]
-        public long Doctor_Id { get; set; }
+        [StringLength(100)]
+        [Display(Name = "Username")]
+        public string Username { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]

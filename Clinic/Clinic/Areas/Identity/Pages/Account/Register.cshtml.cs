@@ -102,8 +102,7 @@ namespace Clinic.Areas.Identity.Pages.Account
                         MiddleName = Input.MiddleName,
                         LastName = Input.LastName,
                         Mobile = Input.Mobile,
-                        Phone = Input.Phone,
-                        Email = Input.Email
+                      
                     };
                 _context.Admins.Add(A);
                 _context.SaveChanges();

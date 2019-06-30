@@ -9,6 +9,11 @@ namespace Clinic.Models
     public class RegisterAssistant
     {
         [Required]
+        [StringLength(100)]
+        [Display(Name = "Username")]
+        public string Username { get; set; }
+
+        [Required]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
@@ -21,10 +26,6 @@ namespace Clinic.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
-      
-        [Required]
-        public long Assistant_Id { get; set; }
-
         [Required]
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
@@ -47,7 +48,7 @@ namespace Clinic.Models
         [Required]
         [StringLength(100)]
         public string Address { get; set; }
-        public string SelectedDoctorId { get; set; }
+        public long SelectedDoctorId { get; set; }
         [StringLength(100)]
         public string Image { get; set; }
 

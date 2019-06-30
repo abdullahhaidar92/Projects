@@ -92,13 +92,14 @@
             <div class="modal-header" style="padding-top:10px;">
                 <h5 class="modal-title" id="exampleModalLongTitle" style="font-size:20px">
                     Reminder<br />
-                    <span id="reminderTitle" style="font-size:15px;">surgery at </span>
+                   
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body" id="reminderContent" style="  text-align:left;">
+
             </div>
             <div class="modal-footer">
                 <form asp-controller="Reminders" asp-action="Edit" method="get">
@@ -194,9 +195,15 @@
     }
 
     function OpenReminder(id) {
-        document.getElementById("reminderContent").innerHTML = document.getElementById("reminderContent" + id).value;
-        document.getElementById("reminderTitle").innerHTML =
-            document.getElementById("reminderTitle" + id).innerHTML + " at " + document.getElementById("reminderDate" + id).value;
+        document.getElementById("reminderContent").innerHTML =
+            " <span  style = 'color:blue' > Title:</span> "
+        + document.getElementById("reminderTitle" + id).innerHTML
+        + "<br>  <span  style = 'color:blue' >Time: </span>"
+        + document.getElementById("reminderDate" + id).value
+            + "<br>  <span  style = 'color:blue' >Content:</span><br>"
+            + document.getElementById("reminderContent" + id).value;
+
+           
         document.getElementById("reminderId1").value = "" + id;
         document.getElementById("reminderId2").value = "" + id;
         $("#ReminderView").modal();

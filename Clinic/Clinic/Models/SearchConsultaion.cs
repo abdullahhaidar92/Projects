@@ -8,8 +8,8 @@ namespace Clinic.Models
 {
     public class SearchConsultaion
     {
-        public string Patient { get; set; }
-        public string Doctor { get; set; }
+        public long Patient { get; set; }
+        public long Doctor { get; set; }
         public string Title { get; set; }
         public string Type { get; set; }
         public string Order { get; set; }
@@ -20,13 +20,13 @@ namespace Clinic.Models
        public void FillPatients(Patient[] patients)
         {
             Patients = new List<SelectListItem>();
-            Patients.Add(new SelectListItem { Value = "all", Text = "All" });
+            Patients.Add(new SelectListItem { Value = "0", Text = "All" });
             foreach(Patient p in patients)
             {
-                if (p.DisplayName == Patient)
-                    Patients.Add(new SelectListItem { Value = p.Id, Text = p.DisplayName ,Selected=true});
+                if (p.Id == Patient)
+                    Patients.Add(new SelectListItem { Value = ""+p.Id, Text = p.DisplayName ,Selected=true});
                 else
-                    Patients.Add(new SelectListItem { Value = p.Id, Text = p.DisplayName});
+                    Patients.Add(new SelectListItem { Value = ""+p.Id, Text = p.DisplayName});
 
             }
 
@@ -35,13 +35,13 @@ namespace Clinic.Models
         public void FillDoctors(Doctor[] doctors)
         {
             Doctors = new List<SelectListItem>();
-            Doctors.Add(new SelectListItem { Value = "all", Text = "All" });
+            Doctors.Add(new SelectListItem { Value = "0", Text = "All" });
             foreach (Doctor p in doctors)
             {
-                if (p.DisplayName == Doctor)
-                    Doctors.Add(new SelectListItem { Value = p.Id, Text = p.DisplayName, Selected = true });
+                if (p.Id == Doctor)
+                    Doctors.Add(new SelectListItem { Value = ""+p.Id, Text = p.DisplayName, Selected = true });
                 else
-                    Doctors.Add(new SelectListItem { Value = p.Id, Text = p.DisplayName });
+                    Doctors.Add(new SelectListItem { Value =""+p.Id, Text = p.DisplayName });
 
             }
 

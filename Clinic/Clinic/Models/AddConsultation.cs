@@ -28,7 +28,7 @@ namespace Clinic.Models
         [StringLength(20)]
         public string Cost { get; set; }
         [Required]
-        public string SelectedPatientId { get; set; }
+        public long SelectedPatientId { get; set; }
         public SelectListItem[]  Patients { get; set; }
         public bool InsuranceConfirmation { get; set; } = false;
         [Required]

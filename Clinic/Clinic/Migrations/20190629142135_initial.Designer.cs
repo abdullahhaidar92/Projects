@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Clinic.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190602192833_Consult")]
-    partial class Consult
+    [Migration("20190629142135_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,6 +21,35 @@ namespace Clinic.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("Clinic.Models.Admin", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(450);
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.Property<string>("MiddleName")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Mobile");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Admins");
+                });
+
             modelBuilder.Entity("Clinic.Models.Appointment", b =>
                 {
                     b.Property<long>("Id")
@@ -29,9 +58,9 @@ namespace Clinic.Migrations
 
                     b.Property<DateTime>("DateTime");
 
-                    b.Property<string>("DoctorId");
+                    b.Property<long?>("DoctorId");
 
-                    b.Property<string>("PatientId");
+                    b.Property<long?>("PatientId");
 
                     b.HasKey("Id");
 
@@ -44,23 +73,21 @@ namespace Clinic.Migrations
 
             modelBuilder.Entity("Clinic.Models.Assistant", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(450);
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Address")
                         .HasMaxLength(100);
 
-                    b.Property<long>("Assistant_Id");
-
                     b.Property<string>("DisplayName")
                         .HasMaxLength(150);
 
-                    b.Property<string>("DoctorId");
+                    b.Property<long?>("DoctorId");
 
-                    b.Property<string>("Email");
-
-                    b.Property<string>("FirstName");
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50);
 
                     b.Property<string>("Gender")
                         .IsRequired()
@@ -77,14 +104,13 @@ namespace Clinic.Migrations
                         .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<string>("Phone");
-
-                    b.Property<string>("Type")
-                        .HasMaxLength(100);
+                    b.Property<string>("UserId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DoctorId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Assistants");
                 });
@@ -108,11 +134,11 @@ namespace Clinic.Migrations
                     b.Property<string>("Diagnosis")
                         .IsRequired();
 
-                    b.Property<string>("DoctorId");
+                    b.Property<long?>("DoctorId");
 
                     b.Property<bool>("InsuranceConfirmation");
 
-                    b.Property<string>("PatientId");
+                    b.Property<long?>("PatientId");
 
                     b.Property<string>("Symptoms")
                         .IsRequired();
@@ -128,6 +154,10 @@ namespace Clinic.Migrations
                     b.Property<string>("Treatment")
                         .IsRequired();
 
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
                     b.HasKey("Id");
 
                     b.HasIndex("DoctorId");
@@ -139,9 +169,9 @@ namespace Clinic.Migrations
 
             modelBuilder.Entity("Clinic.Models.Doctor", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(450);
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("About")
                         .HasMaxLength(1000);
@@ -151,10 +181,6 @@ namespace Clinic.Migrations
 
                     b.Property<string>("DisplayName")
                         .HasMaxLength(150);
-
-                    b.Property<long>("Doctor_Id");
-
-                    b.Property<string>("Email");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -176,15 +202,17 @@ namespace Clinic.Migrations
 
                     b.Property<string>("Mobile");
 
-                    b.Property<string>("Phone");
-
                     b.Property<string>("Speciality")
                         .HasMaxLength(100);
 
                     b.Property<string>("Time")
                         .HasMaxLength(200);
 
+                    b.Property<string>("UserId");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Doctors");
                 });
@@ -195,9 +223,9 @@ namespace Clinic.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("DoctorId");
+                    b.Property<long?>("DoctorId");
 
-                    b.Property<string>("PatientId");
+                    b.Property<long?>("PatientId");
 
                     b.HasKey("Id");
 
@@ -210,15 +238,13 @@ namespace Clinic.Migrations
 
             modelBuilder.Entity("Clinic.Models.InsuranceCompany", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(450);
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasMaxLength(100);
-
-                    b.Property<string>("Email");
 
                     b.Property<string>("Fax")
                         .HasMaxLength(100);
@@ -226,16 +252,15 @@ namespace Clinic.Migrations
                     b.Property<string>("Image")
                         .HasMaxLength(100);
 
-                    b.Property<long>("Insurance_Id");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100);
 
-                    b.Property<string>("Phone")
-                        .IsRequired();
+                    b.Property<string>("UserId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("InsuranceCompanies");
                 });
@@ -271,9 +296,9 @@ namespace Clinic.Migrations
 
             modelBuilder.Entity("Clinic.Models.Patient", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(450);
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Address")
                         .HasMaxLength(100);
@@ -286,9 +311,9 @@ namespace Clinic.Migrations
                     b.Property<string>("DisplayName")
                         .HasMaxLength(150);
 
-                    b.Property<string>("Email");
-
-                    b.Property<string>("FirstName");
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50);
 
                     b.Property<string>("Gender")
                         .IsRequired()
@@ -297,7 +322,7 @@ namespace Clinic.Migrations
                     b.Property<string>("Image")
                         .HasMaxLength(100);
 
-                    b.Property<string>("InsuranceCompanyId");
+                    b.Property<long?>("InsuranceCompanyId");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -309,13 +334,13 @@ namespace Clinic.Migrations
 
                     b.Property<string>("Mobile");
 
-                    b.Property<long>("Patient_Id");
-
-                    b.Property<string>("Phone");
+                    b.Property<string>("UserId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("InsuranceCompanyId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Patients");
                 });
@@ -357,11 +382,11 @@ namespace Clinic.Migrations
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<string>("DoctorId");
+                    b.Property<long?>("DoctorId");
 
-                    b.Property<string>("InsuranceId");
+                    b.Property<long?>("InsuranceId");
 
-                    b.Property<string>("PatientId");
+                    b.Property<long?>("PatientId");
 
                     b.Property<string>("Price")
                         .IsRequired()
@@ -541,6 +566,13 @@ namespace Clinic.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("Clinic.Models.Admin", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
             modelBuilder.Entity("Clinic.Models.Appointment", b =>
                 {
                     b.HasOne("Clinic.Models.Doctor", "Doctor")
@@ -557,6 +589,10 @@ namespace Clinic.Migrations
                     b.HasOne("Clinic.Models.Doctor", "Doctor")
                         .WithMany()
                         .HasForeignKey("DoctorId");
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Clinic.Models.Consultation", b =>
@@ -570,6 +606,13 @@ namespace Clinic.Migrations
                         .HasForeignKey("PatientId");
                 });
 
+            modelBuilder.Entity("Clinic.Models.Doctor", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
             modelBuilder.Entity("Clinic.Models.Doctor_Patient", b =>
                 {
                     b.HasOne("Clinic.Models.Doctor", "Doctor")
@@ -581,11 +624,22 @@ namespace Clinic.Migrations
                         .HasForeignKey("PatientId");
                 });
 
+            modelBuilder.Entity("Clinic.Models.InsuranceCompany", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
             modelBuilder.Entity("Clinic.Models.Patient", b =>
                 {
                     b.HasOne("Clinic.Models.InsuranceCompany", "InsuranceCompany")
                         .WithMany("Patients")
                         .HasForeignKey("InsuranceCompanyId");
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Clinic.Models.Reminder", b =>

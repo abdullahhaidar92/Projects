@@ -16,6 +16,10 @@
           font-family:Calibri;
            padding: 5px 10px;
     }
+    body,html{
+        width:100%;
+        height:100%;
+    }
     .txt{
         color:black;
     }
@@ -99,7 +103,7 @@
                                     <div>Date: <span id="date" class="txt">@item.DateTime</span></div>
                                     <div>Subject: <span id="email" class="txt">@item.Subject</span></div>
                                     <hr />
-                                    <div>Message: <br /><span id="messageContent" class="txt">@item.Content</span></div>
+                                    <div>Content: <br /><span id="messageContent" class="txt">@item.Content</span></div>
                                 </div>
 
                             </div>
@@ -142,7 +146,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body"  id="mContent" style="color:blue;">
+            <div class="modal-body"  id="mContent" style="color:blue;min-height:300px;">
 
             </div>
             <div class="modal-footer">

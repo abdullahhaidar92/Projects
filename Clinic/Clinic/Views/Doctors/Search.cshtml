@@ -89,7 +89,7 @@
                         @foreach (var item in Model.Doctors)
                         {
 
-                            <form asp-action="Details" asp-route-id="@item.Id" onclick="Show(@item.Doctor_Id);">
+                            <form asp-action="Details" asp-route-id="@item.Id" onclick="Show(@item.Id);">
                                 <div class="srch-div" style="width:90%;margin-bottom:3px;">
                                     <table style="width:100%">
                                         <tr>
@@ -101,11 +101,11 @@
 
                                                     <div style="font-size:20px;color:rgb(0,0,250);">@Html.DisplayFor(modelItem => item.DisplayName)</div>
 
-                                                    Doctor Id: @item.Doctor_Id
+                                                    Doctor Id: @item.Id
                                                     <br />
                                                     Speciality :@Html.DisplayFor(modelItem => item.Speciality)
                                                     <br>
-                                                    Phone Number:  @Html.DisplayFor(modelItem => item.Phone)
+                                                    Phone Number:  @Html.DisplayFor(modelItem => item.User.PhoneNumber)
                                                     <br />
                                                     Available periods: @item.Time
                                                 </div>
@@ -114,7 +114,7 @@
                                     </table>
                                 </div>
                             </form>
-                            <div class="modal fade" id="@item.Doctor_Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal fade" id="@item.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -134,10 +134,11 @@
                                                     <img src="~/images/@item.Image" width="250" height="250" style="border-radius:5px;" />
                                                 </div>
                                                 <div class="col-lg-7">
-                                                    <div>Id: @item.Doctor_Id</div>
-                                                    <div>Email: @item.Email</div>
+                                                    <div>Id: @item.Id</div>
+                                                    <div>Username: @item.User.UserName</div>
+                                                    <div>Email: @item.User.Email</div>
                                                     <div>Specilaity: @item.Speciality</div>
-                                                    <div>Phone: @item.Phone</div>
+                                                    <div>Phone: @item.User.PhoneNumber</div>
                                                     <div>Mobile: @item.Mobile</div>
                                                     <div>Address: @item.Address</div>
                                                     <div>Time: @item.Time</div>
@@ -148,25 +149,26 @@
                                                     @if ((string)ViewData["Role"] == "Admin")
                                                     {
                                                         <a asp-controller="Doctors" asp-action="Edit" class="a2" asp-route-id="@item.Id">Edit Profile</a><br />
-                                                        <a href="javascript:void(0)" class="a2" onclick="Remove('@item.Id')" ;">Remove Doctor</a>
+                                                        <a href="javascript:void(0)" class="a2" onclick="Remove('@item.User.Id')" ;">Remove Doctor</a><br />
+                                                        <a href="javascript:void(0)" class="a2" onclick="ChangePassword('@item.User.Id')" ;">Reset Password</a>
                                                     }
 
 
                                                 </div>
                                             </div>
-                                            <div class="modal fade" id="@item.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered"    role="document">
+                                            <div class="modal fade" id="@item.User.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
                                                     <div class="modal-content" style="border-radius:10px;">
                                                         <div class="modal-header" style="background-color: rgba(240, 0, 0, 0.85);border-top-left-radius:10px;border-top-right-radius:10px;">
                                                             <h5 class="modal-title" id="exampleModalLongTitle" style="font-size:25px">Remove Doctor</h5>
-                                                            <button type="button" class="close" onclick="CloseDelete('@item.Id')"  aria-label="Close">
+                                                            <button type="button" class="close" onclick="CloseDelete('@item.User.Id')" aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span>
                                                             </button>
                                                         </div>
                                                         <div class="modal-body">
                                                             <h3> Are you sure you want to delete this doctor?</h3>
                                                             <h4>Name:  @item.DisplayName</h4>
-                                                            <h4>Doctor Id: @item.Doctor_Id</h4>
+                                                            <h4>Doctor Id: @item.Id</h4>
                                                         </div>
                                                         <div class="modal-footer " style="background-color: rgba(255, 0, 0, 0.8);border-bottom-left-radius:10px;border-bottom-right-radius:10px;">
                                                             <div style="text-align:center;display:inline-block;width:100%">
@@ -174,14 +176,53 @@
                                                                     <button class="btn btn-primary">Yes</button>
                                                                     <input type="hidden" name="Id" value="@item.Id" />
                                                                 </form>
-                                                                <button class="btn btn-danger" onclick="CloseDelete('@item.Id');">No</button>
+                                                                <button class="btn btn-danger" onclick="CloseDelete('@item.User.Id');">No</button>
                                                             </div>
-                                                      
+
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-
+                                            <div class="modal fade" id="@("ChangePassword"+item.User.Id)" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <div class="modal-content" style="border-radius:10px;">
+                                                        <div class="modal-header" style="background-color: rgba(0,128,0, 0.9);border-top-left-radius:10px;border-top-right-radius:10px;">
+                                                            <h5 class="modal-title" id="exampleModalLongTitle" style="font-size:25px">Reset Password</h5>
+                                                            <button type="button" class="close" onclick="CloseReset('@item.User.Id')" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <form asp-action="ResetPassword"      method="post">
+                                                            <div class="modal-body">
+                                                                <div class="form-group">
+                                                                    <label>Old Password</label>
+                                                                    <input type="password" name="OldPassword" class="form-control" />
+                                                                    
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label >New Password</label>
+                                                                    <input type="password" name="NewPassword" class="form-control" />
+                                                                  
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label>ConfirmPassword</label>
+                                                                    <input type="password" name="ConfirmPassword" class="form-control" />
+                                                                    
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer " style="background-color: rgba(0,148,0, 0.9);border-bottom-left-radius:10px;border-bottom-right-radius:10px;">
+                                                                <div style="text-align:center;display:inline-block;width:100%">
+                                                                    <input type="hidden" name="id" value="@item.Id" />
+                                                                    <button class="btn btn-primary">Save</button>
+                                                                    <button class="btn btn-danger" onclick="CloseReset('@item.User.Id');">Close</button>
+                                                                </div>
+                                                                  
+                                                                </div>
+                                                        </form>
+                                                    </div>
+                                                    </div>
+                                                </div>
+                                          
                                         </div>
                                         <div class="modal-footer" >
                                         </div>
@@ -210,6 +251,12 @@
         }
     function CloseDelete(id) {
         $("#"+id).modal('hide');
+        }
+    function ChangePassword(id) {   
+          $("#ChangePassword" + id).modal();
+        }
+    function CloseReset(id) {
+              $("#ChangePassword" + id).modal('hide');
     }
 </script>
 

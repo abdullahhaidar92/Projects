@@ -32,25 +32,56 @@
     <link rel="stylesheet" href="~/css/navbar.css" />
     <link rel="stylesheet" href="~/lib/w3.css" />
     <link rel="stylesheet" href="~/css/window.css" />
-    
+
+
+
+
+
+
+    <style>
+      
+
+        .bg {
+            /* The image used */
+            background-image: url("/images/home.jpg");
+            /* Full height */
+            height: 100%;
+            /* Center and scale the image nicely */
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
+             body,html{
+        width:100%;
+        min-height:100%;
+    }
+    </style>
 
 
 
 
 
     <partial name="@bar">
+
+
 </head>
 
-<body >
+<body class="bg" style="height:100%">
+
     
-            <partial name="_CookieConsentPartial" />
-            <main role="main" class="pb-3">
+    <partial name="_CookieConsentPartial" />
+    
+
+        <main role="main" class="pb-3">
                 @RenderBody()
 
-              
+
             </main>
 
-   
+     
+
+
+
 
 
 

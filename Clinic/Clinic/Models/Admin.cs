@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -20,12 +21,9 @@ namespace Clinic.Models
         [Required]
         [StringLength(50)]
         public string LastName { get; set; }
-        [EmailAddress]
-        public string Email { get; set; }
-        [Phone]
-        public string Phone { get; set; }
         [Phone]
         public string Mobile { get; set; }
+        public IdentityUser User { get; set; }
 
 
     }

@@ -14,7 +14,7 @@ namespace Clinic.Models
         [Required]
         public DateTime DateTime { get; set; }
 
-        public string SelectPatientId { get; set; }
+        public long SelectPatientId { get; set; }
 
         public SelectListItem[] Patients { get; set; }
 
@@ -28,7 +28,7 @@ namespace Clinic.Models
             Fill(_context);
         }
 
-        public AddAppointment(string patient ,ApplicationDbContext context)
+        public AddAppointment(long patient ,ApplicationDbContext context)
             {
             Fill(context);
            SelectPatientId =patient;
@@ -40,7 +40,7 @@ namespace Clinic.Models
             Patients = new SelectListItem[patients.Length];
             for (int i = 0; i < patients.Length; i++)
             {
-                Patients[i] = new SelectListItem { Value = patients[i].Id, Text = patients[i].DisplayName };
+                Patients[i] = new SelectListItem { Value = ""+patients[i].Id, Text = patients[i].DisplayName };
             }
         }
     }

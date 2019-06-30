@@ -12,21 +12,8 @@ namespace Clinic.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+         
             
-               if( this.InsuranceCompanies.Find("none")==null)
-            {
-                 InsuranceCompany company = new InsuranceCompany
-                {
-                    Name = "none",
-                    Id = "none",
-                 Insurance_Id =0,
-                 Email ="none",
-                 Phone ="none",
-                 Address ="none"
-                };
-                this.InsuranceCompanies.Add(company);
-                this.SaveChanges();
-            }
            
         }
 

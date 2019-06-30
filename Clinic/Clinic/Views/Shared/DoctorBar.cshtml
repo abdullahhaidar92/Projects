@@ -7,7 +7,7 @@
         <div class="dropdown-content">
             <a class="a1" asp-controller="Patients" asp-action="Create">Add patient</a>
             <a class="a1" asp-controller="Patients" asp-action="Search">Find patient</a>
-          
+
         </div>
     </li>
     <li class="dropdown">
@@ -16,10 +16,12 @@
             <a class="a1" asp-controller="Consultations" asp-action="Create">Add consultation</a>
             <a class="a1" asp-controller="Consultations" asp-action="SearchDoctorsConsultations">Find consultation</a>
         </div>
-    </li> 
+    </li>
     <li class="dropdown">
         <a class="a1" asp-controller="Assistants" asp-action="Profile"> Assistant</a>
-
+    </li>
+    <li class="dropdown">
+        <a class="a1" asp-controller="Appointments" asp-action="DoctorsAppointments"> Appointments</a>
     </li>
     <Partial name="Reminder_Account_Partial.cshtml">
 </ul>

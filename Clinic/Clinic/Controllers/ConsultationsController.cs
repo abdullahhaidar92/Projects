@@ -28,7 +28,7 @@ namespace Clinic.Controllers
             if (User.IsInRole("Doctor"))
             {
                
-                return View(await _context.Consultations.Where(c=>c.Doctor.Id==Id)
+                return View(await _context.Consultations.Where(c=>c.Doctor.User.Id==Id)
                                                             .Include(c => c.Patient).ToListAsync());
             }
           
@@ -38,10 +38,10 @@ namespace Clinic.Controllers
         [Authorize(Policy = "Patient")]
         public async Task<IActionResult> SearchPatientsConsultations(SearchConsultaion search)
         {
-            var query = _context.Consultations.Where(c=>c.Patient.Id == _userManager.GetUserId(User))
+            var query = _context.Consultations.Where(c=>c.Patient.User.Id == _userManager.GetUserId(User))
                                                                            .Include(a => a.Doctor).ToArray();
 
-            if (search.Doctor != null && search.Doctor != "all")
+            if (search.Doctor != 0)
                 query = query.Where(d => d.Doctor.Id == search.Doctor).ToArray();
             if (search.Title != null)
                 query = query.Where(d => d.Title == search.Title).ToArray();
@@ -53,7 +53,7 @@ namespace Clinic.Controllers
                 query = query.OrderBy(d => d.Date).ToArray();
             search.Consultations = query;
 
-            search.FillDoctors(_context.Doctor_Patients.Where(r => r.Patient.Id == _userManager.GetUserId(User))
+            search.FillDoctors(_context.Doctor_Patients.Where(r => r.Patient.User.Id == _userManager.GetUserId(User))
                                                                                             .Select(r => r.Doctor).ToArray());
             return View(search);
         }
@@ -61,10 +61,10 @@ namespace Clinic.Controllers
         [Authorize(Policy = "Doctor")]
         public async Task<IActionResult> SearchDoctorsConsultations(SearchConsultaion search)
         {
-            var query = _context.Consultations.Where(c => c.Doctor.Id == _userManager.GetUserId(User))
+            var query = _context.Consultations.Where(c => c.Doctor.User.Id == _userManager.GetUserId(User))
                                                                             .Include(a => a.Patient).ToArray();
 
-            if (search.Patient != "all")
+            if (search.Patient != 0)
                 query = query.Where(d => d.Patient.Id == search.Patient).ToArray();
             if (search.Title != null)
                 query = query.Where(d => d.Title == search.Title).ToArray();
@@ -76,9 +76,28 @@ namespace Clinic.Controllers
                 query = query.OrderBy(d => d.Date).ToArray();
             search.Consultations = query;
 
-            search.FillPatients(_context.Doctor_Patients.Where(r=>r.Doctor.Id== _userManager.GetUserId(User))
+            search.FillPatients(_context.Doctor_Patients.Where(r=>r.Doctor.User.Id== _userManager.GetUserId(User))
                                                                                             .Select(r=>r.Patient).ToArray());
             return View(search);
+        }
+
+        public IActionResult Treatment()
+        {
+            Consultation[] consultations = _context.Consultations
+                                                                                .Include(c => c.Doctor)
+                                                                                .Where(c => c.Patient.User.Id == _userManager.GetUserId(User))
+                                                                                .ToArray();
+            Dictionary<Doctor, List<Consultation>> doctors=new Dictionary<Doctor, List<Consultation>>();
+            foreach (Consultation c in consultations)
+                if (!doctors.ContainsKey(c.Doctor))
+                    doctors[c.Doctor] = new List<Consultation>() { c };
+                else
+                    doctors[c.Doctor].Add(c);
+
+           
+            ViewBag.consultaions = consultations;
+            ViewBag.doctors = doctors;
+            return View();
         }
 
         [Authorize(Roles = "Patient,Doctor")]
@@ -110,7 +129,7 @@ namespace Clinic.Controllers
             model.Patients = new SelectListItem[Ps.Length];
             for (int i = 0; i <model.Patients.Length; i++)
             {
-               model.Patients[i] = new SelectListItem { Value = Ps[i].Id, Text = Ps[i].DisplayName };
+               model.Patients[i] = new SelectListItem { Value = ""+Ps[i].Id, Text = Ps[i].DisplayName };
             }
            
             return View(model);
@@ -119,7 +138,7 @@ namespace Clinic.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy = "Doctor")]
+        [Authorize(Roles = "Assistant,Doctor")]
         public async Task<IActionResult> Create(AddConsultation addConsultation)
         {
            
@@ -130,7 +149,7 @@ namespace Clinic.Controllers
                 {
                    Patient = _context.Patients.Where(p => p.Id == addConsultation.SelectedPatientId)
                                                                     .Include(p=>p.InsuranceCompany).Single<Patient>(),
-                    Doctor = _context.Doctors.Find(_userManager.GetUserId(User)),
+                    Doctor = _context.Doctors.Single(d=>d.User.Id==_userManager.GetUserId(User)),
                     Title = addConsultation.Title,
                     Type=addConsultation.Type,
                     Date = DateTime.Now,
@@ -164,14 +183,14 @@ namespace Clinic.Controllers
                 _context.Add(report);
 
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(SearchDoctorsConsultations));
             }
             Patient[] Ps = _context.Patients.ToArray();
             SelectListItem[] Patients = new SelectListItem[Ps.Length + 1];
             Patients[0] = new SelectListItem { Value = "", Text = "Select the patient" };
             for (int i = 0; i < Patients.Length - 1; i++)
             {
-                Patients[i + 1] = new SelectListItem { Value = Ps[i].Id, Text = Ps[i].DisplayName };
+                Patients[i + 1] = new SelectListItem { Value = ""+Ps[i].Id, Text = Ps[i].DisplayName };
             }
             ViewData["Patients"] = Patients;
             return View(addConsultation);

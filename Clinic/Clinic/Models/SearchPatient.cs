@@ -18,7 +18,7 @@ namespace Clinic.Models
         public string Order { get; set; }      
         public bool MyPatients { get; set; }
         public Patient[] Patients { get; set; }
-        public string[] EditList { get; set; } = new string[0];
+        public long[] EditList { get; set; } = new long[0];
 
 
     }

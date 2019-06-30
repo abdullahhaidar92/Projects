@@ -1,7 +1,7 @@
 ﻿@model Clinic.Models.Patient
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Profile";
 
 }
 
@@ -17,12 +17,13 @@
                 <div class="row">
                     <div class="col-lg-7">
                         <h2>@Model.DisplayName</h2>
+                        <div>Username: @Model.User.UserName</div>
                         <div>Full Name: @Model.FirstName @Model.MiddleName @Model.LastName</div>
                         <div>Birthdate: @Model.Birthdate</div>
                         <div>Blood Type: @Model.BloodType</div>
-                        <div>Id: @Model.Patient_Id</div>
-                        <div>Email: @Model.Email</div>
-                        <div>Phone: @Model.Phone</div>
+                        <div>Id: @Model.Id</div>
+                        <div>Email: @Model.User.Email</div>
+                        <div>Phone: @Model.User.PhoneNumber</div>
                         <div>Mobile: @Model.Mobile</div>
                         <div>Address: @Model.Address</div>
                         @if (Model.InsuranceCompany != null)

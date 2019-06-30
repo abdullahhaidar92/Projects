@@ -48,45 +48,6 @@ namespace Clinic.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Doctors",
-                columns: table => new
-                {
-                    Id = table.Column<string>(maxLength: 450, nullable: false),
-                    Doctor_Id = table.Column<long>(nullable: false),
-                    FirstName = table.Column<string>(maxLength: 50, nullable: false),
-                    MiddleName = table.Column<string>(maxLength: 50, nullable: false),
-                    LastName = table.Column<string>(maxLength: 50, nullable: false),
-                    Gender = table.Column<string>(maxLength: 10, nullable: false),
-                    DisplayName = table.Column<string>(maxLength: 150, nullable: true),
-                    Phone = table.Column<string>(nullable: true),
-                    Mobile = table.Column<string>(nullable: true),
-                    Time = table.Column<string>(maxLength: 200, nullable: true),
-                    About = table.Column<string>(maxLength: 1000, nullable: true),
-                    Speciality = table.Column<string>(maxLength: 100, nullable: true),
-                    Address = table.Column<string>(maxLength: 100, nullable: true),
-                    Image = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Doctors", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "InsuranceCompanies",
-                columns: table => new
-                {
-                    Id = table.Column<string>(maxLength: 450, nullable: false),
-                    Name = table.Column<string>(maxLength: 100, nullable: false),
-                    Phone = table.Column<string>(nullable: false),
-                    Address = table.Column<string>(maxLength: 100, nullable: false),
-                    Image = table.Column<string>(maxLength: 100, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_InsuranceCompanies", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Messages",
                 columns: table => new
                 {
@@ -122,6 +83,28 @@ namespace Clinic.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Admins",
+                columns: table => new
+                {
+                    Id = table.Column<string>(maxLength: 450, nullable: false),
+                    FirstName = table.Column<string>(maxLength: 50, nullable: false),
+                    MiddleName = table.Column<string>(maxLength: 50, nullable: false),
+                    LastName = table.Column<string>(maxLength: 50, nullable: false),
+                    Mobile = table.Column<string>(nullable: true),
+                    UserId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Admins", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Admins_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -210,6 +193,59 @@ namespace Clinic.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Doctors",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    FirstName = table.Column<string>(maxLength: 50, nullable: false),
+                    MiddleName = table.Column<string>(maxLength: 50, nullable: false),
+                    LastName = table.Column<string>(maxLength: 50, nullable: false),
+                    Gender = table.Column<string>(maxLength: 10, nullable: false),
+                    DisplayName = table.Column<string>(maxLength: 150, nullable: true),
+                    Mobile = table.Column<string>(nullable: true),
+                    Time = table.Column<string>(maxLength: 200, nullable: true),
+                    About = table.Column<string>(maxLength: 1000, nullable: true),
+                    Speciality = table.Column<string>(maxLength: 100, nullable: true),
+                    Address = table.Column<string>(maxLength: 100, nullable: true),
+                    Image = table.Column<string>(nullable: true),
+                    UserId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Doctors", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Doctors_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InsuranceCompanies",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(maxLength: 100, nullable: false),
+                    Address = table.Column<string>(maxLength: 100, nullable: false),
+                    Fax = table.Column<string>(maxLength: 100, nullable: true),
+                    Image = table.Column<string>(maxLength: 100, nullable: true),
+                    UserId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InsuranceCompanies", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_InsuranceCompanies_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Reminders",
                 columns: table => new
                 {
@@ -236,17 +272,17 @@ namespace Clinic.Migrations
                 name: "Assistants",
                 columns: table => new
                 {
-                    Id = table.Column<string>(maxLength: 450, nullable: false),
-                    Assistant_Id = table.Column<long>(nullable: false),
-                    FirstName = table.Column<string>(nullable: true),
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    FirstName = table.Column<string>(maxLength: 50, nullable: false),
                     MiddleName = table.Column<string>(maxLength: 50, nullable: false),
                     LastName = table.Column<string>(maxLength: 50, nullable: false),
                     Gender = table.Column<string>(maxLength: 10, nullable: false),
                     DisplayName = table.Column<string>(maxLength: 150, nullable: true),
-                    Phone = table.Column<string>(nullable: true),
                     Image = table.Column<string>(maxLength: 100, nullable: true),
+                    UserId = table.Column<string>(nullable: true),
                     Address = table.Column<string>(maxLength: 100, nullable: true),
-                    DoctorId = table.Column<string>(nullable: true)
+                    DoctorId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -257,24 +293,32 @@ namespace Clinic.Migrations
                         principalTable: "Doctors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Assistants_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Patients",
                 columns: table => new
                 {
-                    Id = table.Column<string>(maxLength: 450, nullable: false),
-                    Patient_Id = table.Column<long>(nullable: false),
-                    FirstName = table.Column<string>(nullable: true),
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    FirstName = table.Column<string>(maxLength: 50, nullable: false),
                     MiddleName = table.Column<string>(maxLength: 50, nullable: false),
                     LastName = table.Column<string>(maxLength: 50, nullable: false),
                     Gender = table.Column<string>(maxLength: 10, nullable: false),
                     DisplayName = table.Column<string>(maxLength: 150, nullable: true),
-                    Phone = table.Column<string>(nullable: true),
                     Address = table.Column<string>(maxLength: 100, nullable: true),
                     BloodType = table.Column<string>(maxLength: 4, nullable: true),
+                    Birthdate = table.Column<DateTime>(nullable: false),
+                    Mobile = table.Column<string>(nullable: true),
                     Image = table.Column<string>(maxLength: 100, nullable: true),
-                    InsuranceCompanyId = table.Column<string>(nullable: true)
+                    UserId = table.Column<string>(nullable: true),
+                    InsuranceCompanyId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -283,6 +327,12 @@ namespace Clinic.Migrations
                         name: "FK_Patients_InsuranceCompanies_InsuranceCompanyId",
                         column: x => x.InsuranceCompanyId,
                         principalTable: "InsuranceCompanies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Patients_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -294,8 +344,8 @@ namespace Clinic.Migrations
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     DateTime = table.Column<DateTime>(nullable: false),
-                    PatientId = table.Column<string>(nullable: true),
-                    DoctorId = table.Column<string>(nullable: true)
+                    PatientId = table.Column<long>(nullable: true),
+                    DoctorId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -321,6 +371,7 @@ namespace Clinic.Migrations
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Title = table.Column<string>(maxLength: 100, nullable: false),
+                    Type = table.Column<string>(maxLength: 100, nullable: false),
                     Date = table.Column<DateTime>(nullable: false),
                     Temperature = table.Column<string>(maxLength: 20, nullable: false),
                     BloodPressure = table.Column<string>(maxLength: 20, nullable: false),
@@ -329,8 +380,8 @@ namespace Clinic.Migrations
                     Treatment = table.Column<string>(nullable: false),
                     Cost = table.Column<string>(maxLength: 20, nullable: false),
                     InsuranceConfirmation = table.Column<bool>(nullable: false),
-                    PatientId = table.Column<string>(nullable: true),
-                    DoctorId = table.Column<string>(nullable: true)
+                    PatientId = table.Column<long>(nullable: true),
+                    DoctorId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -355,8 +406,8 @@ namespace Clinic.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    DoctorId = table.Column<string>(nullable: true),
-                    PatientId = table.Column<string>(nullable: true)
+                    DoctorId = table.Column<long>(nullable: true),
+                    PatientId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -383,9 +434,9 @@ namespace Clinic.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Date = table.Column<DateTime>(nullable: false),
                     Price = table.Column<string>(maxLength: 20, nullable: false),
-                    PatientId = table.Column<string>(nullable: true),
-                    DoctorId = table.Column<string>(nullable: true),
-                    InsuranceId = table.Column<string>(nullable: true),
+                    PatientId = table.Column<long>(nullable: true),
+                    DoctorId = table.Column<long>(nullable: true),
+                    InsuranceId = table.Column<long>(nullable: true),
                     ConsultationId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
@@ -416,6 +467,11 @@ namespace Clinic.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Admins_UserId",
+                table: "Admins",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Appointment_DoctorId",
@@ -472,6 +528,11 @@ namespace Clinic.Migrations
                 column: "DoctorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Assistants_UserId",
+                table: "Assistants",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Consultations_DoctorId",
                 table: "Consultations",
                 column: "DoctorId");
@@ -492,9 +553,24 @@ namespace Clinic.Migrations
                 column: "PatientId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Doctors_UserId",
+                table: "Doctors",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InsuranceCompanies_UserId",
+                table: "InsuranceCompanies",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Patients_InsuranceCompanyId",
                 table: "Patients",
                 column: "InsuranceCompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Patients_UserId",
+                table: "Patients",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reminders_UserId",
@@ -524,6 +600,9 @@ namespace Clinic.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Admins");
+
             migrationBuilder.DropTable(
                 name: "Appointment");
 
@@ -561,9 +640,6 @@ namespace Clinic.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
                 name: "Consultations");
 
             migrationBuilder.DropTable(
@@ -574,6 +650,9 @@ namespace Clinic.Migrations
 
             migrationBuilder.DropTable(
                 name: "InsuranceCompanies");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }
