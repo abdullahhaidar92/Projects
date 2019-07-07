@@ -14,19 +14,21 @@
                 <a href="/home" class="btn-X">X</a>
             </div>
             <div class="body">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <h1>@ViewData["Error"]</h1>
                 <div class="row">
                     <div class="col-lg-4 ">
                         <div class="column">
                             <h3>Account Information</h3>
                             <div class="form-group">
-                                <label  asp-for="Username" class="control-label"></label>
-                                <input asp-for="Username" class="form-control" value="abd@doctor"  type="text"/>
+                                <label asp-for="Username" class="control-label"></label>
+                                <input asp-for="Username" class="form-control" value="hassan" type="text" />
                                 <span asp-validation-for="Username" class="text-danger"></span>
                                 <span class="text-danger">@ViewData["message"]</span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="@Model.Email"></label>
-                                <input asp-for="@Model.Email" class="form-control" value="ali@web.com" />
+                                <input asp-for="@Model.Email" class="form-control" value="hassan@gmail.com" />
                                 <span asp-validation-for="@Model.Email" class="text-danger"></span>
                             </div>
                             <div class="form-group">
@@ -46,7 +48,7 @@
                             <h3>Personal Information</h3>
                             <div class="form-group">
                                 <label asp-for="@Model.FirstName" class="control-label"></label>
-                                <input asp-for="@Model.FirstName" class="form-control" value="Ali" />
+                                <input asp-for="@Model.FirstName" class="form-control" value="Hassan" />
                                 <span asp-validation-for="@Model.FirstName" class="text-danger"></span>
                             </div>
 
@@ -84,10 +86,10 @@
                     <div class="col-lg-4">
                         <div class="column">
                             <h3>Doctor's Image</h3>
-                         <br />
+                            <br />
                             <div class="form-group">
                                 <div class="pt-img">
-                                    <img id="blah" src="~/images/doc_logo.png" width="100%" height="100%" style="border-radius:20px;" />
+                                    <img id="blah" src="~/images/avatar.jpg" width="100%" height="100%" style="border-radius:20px;" />
                                 </div>
                                 <br />
                                 <br />
@@ -113,8 +115,7 @@
         </form>
     </div>
 </div>
-<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-<h1>@ViewData["Error"]</h1>
+
 
 
 @section Scripts {

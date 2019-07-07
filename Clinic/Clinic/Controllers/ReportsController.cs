@@ -39,6 +39,8 @@ namespace Clinic.Controllers
                 query = query.Where(d => d.Date >= search.DateFrom).ToArray();
             if (search.DateTo != DateTime.MinValue)
                 query = query.Where(d => d.Date <= search.DateTo).ToArray();
+            else
+                search.DateTo = DateTime.Now;
             search.Reports= query;
            search.FillPatients(_context.Patients.Where(p=>p.InsuranceCompany.User.Id==id).ToArray());
             

@@ -54,7 +54,7 @@ namespace Clinic.Controllers
             search.Consultations = query;
 
             search.FillDoctors(_context.Doctor_Patients.Where(r => r.Patient.User.Id == _userManager.GetUserId(User))
-                                                                                            .Select(r => r.Doctor).ToArray());
+                                                                                            .Select(r => r.Doctor).Distinct().ToArray());
             return View(search);
         }
 
@@ -77,10 +77,11 @@ namespace Clinic.Controllers
             search.Consultations = query;
 
             search.FillPatients(_context.Doctor_Patients.Where(r=>r.Doctor.User.Id== _userManager.GetUserId(User))
-                                                                                            .Select(r=>r.Patient).ToArray());
+                                                                                            .Select(r=>r.Patient).Distinct().ToArray());
             return View(search);
         }
 
+        [Authorize(Roles = "Patient")]
         public IActionResult Treatment()
         {
             Consultation[] consultations = _context.Consultations
@@ -100,28 +101,10 @@ namespace Clinic.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Patient,Doctor")]
-        public async Task<IActionResult> Details(long? id)
-        {
-           
 
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var consultation = await _context.Consultations
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (consultation == null)
-            {
-                return NotFound();
-            }
 
-            return View(consultation);
-        }
-
-       
-        [Authorize(Policy="Doctor")]
+        [Authorize(Roles = "Assistant,Doctor")]
         public IActionResult Create()
         {
             AddConsultation model = new AddConsultation();
@@ -200,7 +183,6 @@ namespace Clinic.Controllers
         public async Task<IActionResult> Edit(long? id)
         {
            
-
             if (id == null)
             {
                 return NotFound();
@@ -246,30 +228,12 @@ namespace Clinic.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(SearchDoctorsConsultations));
             }
             return View(consultation);
         }
 
-        [Authorize(Policy = "Doctor")]
-        public async Task<IActionResult> Delete(long? id)
-        {
-           
-
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var consultation = await _context.Consultations
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (consultation == null)
-            {
-                return NotFound();
-            }
-
-            return View(consultation);
-        }
+   
 
         
         [HttpPost, ActionName("Delete")]
@@ -280,6 +244,8 @@ namespace Clinic.Controllers
            
 
             var consultation = await _context.Consultations.FindAsync(id);
+            Report[] reports = _context.Report.Where(c => c.Consultation.Id == id).ToArray();
+            _context.Report.RemoveRange(reports);
             _context.Consultations.Remove(consultation);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

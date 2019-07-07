@@ -25,7 +25,7 @@ namespace Clinic.Controllers
         {
             _environment = environment;
         }
-
+        [Authorize(Roles = "Assistant")]
         public async Task<IActionResult> Index()
         {
             return View();
@@ -57,7 +57,7 @@ namespace Clinic.Controllers
         }
 
 
-      [Authorize(Roles="Assistant")]
+      [Authorize(Roles="Assistant,Doctor,Admin")]
         public async Task<IActionResult> Profile()
         {
             string id = _userManager.GetUserId(User);
@@ -122,22 +122,29 @@ namespace Clinic.Controllers
         [Authorize(Roles = "Admin,Doctor")]
         public async Task<IActionResult> Create(RegisterAssistant registerAssistant, IFormFile file)
         {
-            if (_context.Assistants.Any(d => d.User.UserName== registerAssistant.Username))
+            if (_userManager.Users.Any(u => u.UserName == registerAssistant.Username))
             {
+                ModelState.AddModelError(String.Empty, "User name already taken");
                 ViewData["message"] = "Already Taken";
+                ViewData["Doctors"] = GetDoctors(registerAssistant.SelectedDoctorId).ToArray();
                 return View(registerAssistant);
             }
+
+            string image = "";
             if (ModelState.IsValid)
             {
-                var filePath = Path.GetTempFileName();
-                string image = "";
-                using (FileStream filestream = System.IO.File.Create(_environment.WebRootPath + "\\images\\" + file.FileName))
+                if (file != null)
                 {
-                    image = file.FileName;
-                    file.CopyTo(filestream);
-                    filestream.Flush();
-                  
+                    var filePath = Path.GetTempFileName();
+                    using (FileStream filestream = System.IO.File.Create(_environment.WebRootPath + "\\images\\" + file.FileName))
+                    {
+                        image = file.FileName;
+                        file.CopyTo(filestream);
+                        filestream.Flush();
+
+                    }
                 }
+               
 
                 var user = new IdentityUser
                 { UserName = registerAssistant.Username,
@@ -163,9 +170,9 @@ namespace Clinic.Controllers
 
                 _context.Add(p);
                 await _context.SaveChangesAsync();
-
                 return RedirectToAction(nameof(Search));
             }
+
             Doctor[] IC = _context.Doctors.ToArray();
             SelectListItem[] Doctors = new SelectListItem[IC.Length];
             for (int i = 0; i < IC.Length; i++)
@@ -177,6 +184,7 @@ namespace Clinic.Controllers
         }
 
         // GET: Assistants/Edit/5
+        [Authorize(Roles = "Admin,Assistant")]
         public IActionResult Edit(long id)
         {
             Assistant assistant = null;
@@ -211,10 +219,27 @@ namespace Clinic.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Assistant")]
         public async Task<IActionResult> Edit(long id, EditAssistant assistant, IFormFile file)
         {
             string returnAction = "Search";
-          
+            Assistant A;
+            if (User.IsInRole("Assistant"))
+            {
+                A = _context.Assistants
+                   .Include(a => a.User)
+                   .Include(a => a.Doctor)
+                   .First(a => a.User.Id == _userManager.GetUserId(User));
+                returnAction = "Profile";
+            }
+            else
+            {
+             A = _context.Assistants
+                    .Include(a => a.User)
+                    .Include(a => a.Doctor)
+                    .First(a => a.Id == assistant.Id);
+            }
+
             if (id != assistant.Id)
             {
                 return NotFound();
@@ -223,8 +248,29 @@ namespace Clinic.Controllers
             if (ModelState.IsValid)
             {
                 try
-                {                  
-                        if (file != null)
+                {
+                  
+
+                    IdentityUser user = A.User;
+                    var username = await _userManager.GetUserNameAsync(user);
+                    if (assistant.Username != username)
+                    {
+                        if (_userManager.Users.Any(u => u.UserName == assistant.Username))
+                        {
+                            ModelState.AddModelError(String.Empty, "User name already taken");
+                            ViewData["Doctors"] = GetDoctors(assistant.SelectedDoctorId);
+                            return View(assistant);
+                        }
+                        var setUserNameResult = await _userManager.SetUserNameAsync(user, assistant.Username);
+
+                        if (!setUserNameResult.Succeeded)
+                        {
+                            var userId = await _userManager.GetUserIdAsync(user);
+                            throw new InvalidOperationException($"Unexpected error occurred setting username for user with ID '{userId}'.");
+                        }
+                    }
+
+                    if (file != null)
                         {
                             var filePath = Path.GetTempFileName();
                             using (FileStream filestream = System.IO.File.Create(_environment.WebRootPath + "\\images\\" + file.FileName))
@@ -234,10 +280,7 @@ namespace Clinic.Controllers
                                 filestream.Flush();
                             }
                         }
-                    Assistant A = _context.Assistants
-                        .Include(a => a.User)
-                        .Include(a => a.Doctor)
-                        .First(a => a.Id == assistant.Id);
+                  
 
  
                         A.FirstName = assistant.FirstName;
@@ -249,18 +292,7 @@ namespace Clinic.Controllers
                         A.Image = assistant.Image;
                         A.Doctor = _context.Doctors.Find(assistant.SelectedDoctorId);
 
-                       IdentityUser user = A.User;
-                    var username= await _userManager.GetUserNameAsync(user);
-                    if (assistant.Username !=username )
-                    {
-                        var setUserNameResult = await _userManager.SetUserNameAsync(user, assistant.Username);
-
-                        if (!setUserNameResult.Succeeded)
-                        {
-                            var userId = await _userManager.GetUserIdAsync(user);
-                            throw new InvalidOperationException($"Unexpected error occurred setting username for user with ID '{userId}'.");
-                        }
-                    }
+                    
 
                     var email = await _userManager.GetEmailAsync(user);
                     if (assistant.Email != email)
@@ -306,35 +338,28 @@ namespace Clinic.Controllers
                 return View(assistant);
         }
 
-        // GET: Assistants/Delete/5
-        public async Task<IActionResult> Delete(long id=0)
-        {
-            if (id ==0)
-            {
-                return NotFound();
-            }
 
-            var assistant = await _context.Assistants
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (assistant == null)
-            {
-                return NotFound();
-            }
 
-            return View(assistant);
-        }
 
-        // POST: Assistants/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(long id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(long id)
         {
-            var assistant = _context.Assistants.Include(a=>a.User).Single(a=>a.Id==id);
-            IdentityUser user = assistant.User;
-            _context.Assistants.Remove(assistant);
-            await _context.SaveChangesAsync();
-               var result= _userManager.DeleteAsync(user);
-            return RedirectToAction(nameof(Search));
+            try
+            {
+                var assistant = _context.Assistants.Include(a => a.User).Single(a => a.Id == id);
+                IdentityUser user = assistant.User;
+                _context.Assistants.Remove(assistant);
+                await _context.SaveChangesAsync();
+                var result =await  _userManager.DeleteAsync(user);
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Search");
+            }
+            return RedirectToAction("Search");
+
         }
 
         private bool AssistantExists(long id)

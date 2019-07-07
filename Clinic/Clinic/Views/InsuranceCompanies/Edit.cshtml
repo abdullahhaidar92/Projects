@@ -21,6 +21,7 @@
                 <a  href="/home"  class="btn-X">X</a>
             </div>
             <div class="body">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="row">
 
 
@@ -41,7 +42,7 @@
                                 <input asp-for="Phone" class="form-control" value="@Model.Phone" />
                                 <span asp-validation-for="Phone" class="text-danger"></span>
                             </div>
-                            
+
                         </div>
                     </div>
                     <div class="col-lg-4">
@@ -100,7 +101,7 @@
         </form>
     </div>
 </div>
-<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
 <h1>@ViewData["Error"]</h1>
 
 

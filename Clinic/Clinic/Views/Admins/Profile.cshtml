@@ -7,12 +7,16 @@
 body, html {
             height: 100%;
         }
+.title{
+    color:yellow;
+}
+
 </style>
    
 
 <link rel="stylesheet" href="~/css/window.css" />
 <div class="window-wrapper">
-    <div class="window" style="width:500px;">
+    <div class="window" style="width:700px;">
         <div class="header">
             Profile
             <a href="/home" class="btn-X">X</a>
@@ -20,28 +24,32 @@ body, html {
         <div class="body">
             <br />
             <div class="row">
-                <div class="col-lg-7">
-                    <div>First Name: @Model.FirstName </div>
-                    <div>Middle Name:   @Model.MiddleName</div>
-                    <div>Last Name: @Model.LastName</div>
+
+                <div class="col-lg-6" style="font-size:25px;font-family:Calibri;padding-left:40px;padding-top:10px;">
+                    <div> <span class="title">Username:</span> @Model.User.UserName</div>
+                    <div> <span class="title">Email: </span>@Model.User.Email</div>
+                    <div> <span class="title">First Name:</span> @Model.FirstName </div>
+                    <div> <span class="title">Middle Name: </span>  @Model.MiddleName</div>
+                    <div> <span class="title">Last Name:</span> @Model.LastName</div>
+
+                    <div> <span class="title">Phone:</span> @Model.User.PhoneNumber</div>
+                    <div> <span class="title">Mobile:</span> @Model.Mobile</div>
                 </div>
                 <div class="col-lg-5">
-
+                  <img src="~/images/admin.png" height="300" width="300" />
                 </div>
-                <div class="col-lg-7">
-                    <div>Username: @Model.User.UserName</div>
-                    <div>Email: @Model.User.Email</div>
-                    <div>Phone: @Model.User.PhoneNumber</div>
-                    <div>Mobile: @Model.Mobile</div>
+          
+              
                     <br />
                     <br />
-                </div>
+              
             </div>
         </div>
         <div class="footer">
 
-            
-
+            <form asp-action="Edit" method="get">
+                <input type="submit" value="Edit" class="btn btn-success" />
+            </form>
 
         </div>
 

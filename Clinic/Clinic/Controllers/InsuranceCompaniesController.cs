@@ -80,6 +80,13 @@ namespace Clinic.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(RegisterInsuranceCompany registerInsuranceCompany, IFormFile file)
         {
+            if (_userManager.Users.Any(u => u.UserName == registerInsuranceCompany.Username))
+            {
+                ModelState.AddModelError(String.Empty, "User name already taken");
+                ViewData["message"] = "Already Taken";
+                return View(registerInsuranceCompany);
+            }
+
             if (ModelState.IsValid)
             {
                 if(_context.InsuranceCompanies.Any(i=>i.User.UserName==registerInsuranceCompany.Username))
@@ -88,16 +95,20 @@ namespace Clinic.Controllers
                     return View(registerInsuranceCompany);
                 }
 
-                var filePath = Path.GetTempFileName();
+               
 
                 string image = "";
-
-                using (FileStream filestream = System.IO.File.Create(_environment.WebRootPath + "\\images\\" + file.FileName))
+                if (file != null)
                 {
-                    image = file.FileName;
-                    file.CopyTo(filestream);
-                    filestream.Flush();
+                    var filePath = Path.GetTempFileName();
+                    using (FileStream filestream = System.IO.File.Create(_environment.WebRootPath + "\\images\\" + file.FileName))
+                    {
+                        image = file.FileName;
+                        file.CopyTo(filestream);
+                        filestream.Flush();
+                    }
                 }
+             
                 var user = new IdentityUser
                 {
                     UserName = registerInsuranceCompany.Username,
@@ -158,7 +169,11 @@ namespace Clinic.Controllers
         public async Task<IActionResult> Edit(long id, EditInsuranceCompany model,IFormFile file)
         {
             string returnAction = "Search";
-
+            if (_userManager.Users.Any(u => u.UserName == model.Username))
+            {
+                ModelState.AddModelError(String.Empty, "User name already taken");
+                return View(model);
+            }
             if (id != model.Id)
             {
                 return NotFound();
@@ -170,7 +185,24 @@ namespace Clinic.Controllers
             {
                 try
                 {
-                  
+                    IdentityUser user = company.User;
+                    var username = await _userManager.GetUserNameAsync(user);
+                    if (model.Username != username)
+                    {
+                        if (_userManager.Users.Any(u => u.UserName == model.Username))
+                        {
+                            ModelState.AddModelError(String.Empty, "User name already taken");
+                            return View(model);
+                        }
+                        var setUserNameResult = await _userManager.SetUserNameAsync(user, model.Username);
+
+                        if (!setUserNameResult.Succeeded)
+                        {
+                            var userId = await _userManager.GetUserIdAsync(user);
+                            throw new InvalidOperationException($"Unexpected error occurred setting username for user with ID '{userId}'.");
+                        }
+                    }
+
                     if (file != null)
                     {
                         var filePath = Path.GetTempFileName();
@@ -187,18 +219,7 @@ namespace Clinic.Controllers
                company.Fax = model.Fax;
                 company.Image = model.Image;
 
-                    IdentityUser user = company.User;
-                    var username = await _userManager.GetUserNameAsync(user);
-                    if (model.Username != username)
-                    {
-                        var setUserNameResult = await _userManager.SetUserNameAsync(user, model.Username);
-
-                        if (!setUserNameResult.Succeeded)
-                        {
-                            var userId = await _userManager.GetUserIdAsync(user);
-                            throw new InvalidOperationException($"Unexpected error occurred setting username for user with ID '{userId}'.");
-                        }
-                    }
+                   
 
                     var email = await _userManager.GetEmailAsync(user);
                     if (model.Email != email)
@@ -247,6 +268,7 @@ namespace Clinic.Controllers
         // POST: InsuranceCompanies/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
             InsuranceCompany company = _context.InsuranceCompanies.Include(i => i.User).Single(i => i.Id == id);

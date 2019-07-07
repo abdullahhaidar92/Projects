@@ -15,8 +15,8 @@ namespace Clinic.Models
         public string BloodType { get; set; }
          public DateTime BirthdateFrom { get; set; }
         public DateTime BirthdateTo { get; set; }
-        public string Order { get; set; }      
-        public bool MyPatients { get; set; }
+        public string Order { get; set; }
+        public bool MyPatients { get; set; } = false;
         public Patient[] Patients { get; set; }
         public long[] EditList { get; set; } = new long[0];
 

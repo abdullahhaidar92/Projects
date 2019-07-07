@@ -25,12 +25,13 @@ namespace Clinic.Controllers
             _environment = environment;
         }
 
+        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> Index()
         {
             return View();
         }
 
-  
+        [Authorize(Roles = "Admin,Patient,Assistant")]
         public async Task<IActionResult> Search(SearchDoctor search)
         {
             ViewData["Role"] = GetRole();
@@ -73,7 +74,8 @@ namespace Clinic.Controllers
 
             
         }
-       
+
+        [Authorize(Roles = "Admin,Doctor")]
         public async Task<IActionResult> Profile()
         {
             string id = _userManager.GetUserId(User);
@@ -83,28 +85,32 @@ namespace Clinic.Controllers
             {
                 return NotFound();
             }
-
+            ViewData["Role"] = "Doctor";
             return View(doctor);
         }
 
-  
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
-           
             return View();
         }
 
         
          [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(RegisterDoctor registerDoctor,IFormFile file)
         {
             string image = "avatar.jpg";
-            if (_context.Doctors.Any(d => d.User.UserName == registerDoctor.Username))
+        
+         if( _userManager.Users.Any(u=>u.UserName==registerDoctor.Username))
             {
+                ModelState.AddModelError(String.Empty,"User name already taken");
                 ViewData["message"] = "Already Taken";
                 return View(registerDoctor);
             }
+
+          
             if (ModelState.IsValid)
             {
                 if (file != null)
@@ -125,6 +131,7 @@ namespace Clinic.Controllers
             return View(registerDoctor);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> FinishCreate(RegisterDoctor registerDoctor)
         {
             if (ModelState.IsValid)
@@ -197,16 +204,43 @@ namespace Clinic.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Doctor,Admin")]
         public async Task<IActionResult> Edit(long id, EditDoctor model,IFormFile file)
         {
             string returnAction = "Search";
+       
             if (id != model.Id)
             {
                 return NotFound();
             }
-
+            Doctor doctor = null;
             if (ModelState.IsValid)
             {
+                if (User.IsInRole("Doctor"))
+                {
+                    doctor = _context.Doctors.Include(d => d.User).Where(d => d.User.Id == _userManager.GetUserId(User)).Single();
+                    returnAction = "Profile";
+                }
+                else doctor = _context.Doctors.Include(d => d.User).Single(d => d.Id == model.Id);
+
+                IdentityUser user = doctor.User;
+                var username = await _userManager.GetUserNameAsync(user);
+                if (model.Username != username)
+                {
+                    if (_userManager.Users.Any(u => u.UserName == model.Username))
+                    {
+                        ModelState.AddModelError(String.Empty, "User name already taken");
+                        return View(model);
+                    }
+                    var setUserNameResult = await _userManager.SetUserNameAsync(user, model.Username);
+
+                    if (!setUserNameResult.Succeeded)
+                    {
+                        var userId = await _userManager.GetUserIdAsync(user);
+                        throw new InvalidOperationException($"Unexpected error occurred setting username for user with ID '{userId}'.");
+                    }
+                }
+
                 if (file != null)
                 {
                     var filePath = Path.GetTempFileName();
@@ -217,7 +251,10 @@ namespace Clinic.Controllers
                         filestream.Flush();
                     }
                 }
-                Doctor doctor = _context.Doctors.Include(d => d.User).Single(d => d.Id == model.Id);
+            
+
+              
+
                 try
                 {
                
@@ -233,18 +270,6 @@ namespace Clinic.Controllers
                 doctor.DisplayName = model.DisplayName;
                 doctor.Address = model.Address;
 
-                    IdentityUser user = doctor.User;
-                    var username = await _userManager.GetUserNameAsync(user);
-                    if (model.Username != username)
-                    {
-                        var setUserNameResult = await _userManager.SetEmailAsync(user, model.Username);
-
-                        if (!setUserNameResult.Succeeded)
-                        {
-                            var userId = await _userManager.GetUserIdAsync(user);
-                            throw new InvalidOperationException($"Unexpected error occurred setting username for user with ID '{userId}'.");
-                        }
-                    }
 
                     var email = await _userManager.GetEmailAsync(user);
                     if (model.Email != email)
@@ -293,6 +318,7 @@ namespace Clinic.Controllers
         // POST: Doctors/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
             Doctor doctor = _context.Doctors.Include(d=>d.User).Single(d=>d.Id==id);
@@ -325,7 +351,7 @@ namespace Clinic.Controllers
             return RedirectToAction("Search");
         }
 
-
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ResetPassword(string id, string OldPassword,string NewPassword,string ConfirmPassword)
         {
             

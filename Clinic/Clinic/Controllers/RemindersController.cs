@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Clinic.Data;
 using Clinic.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Clinic.Controllers
 {
@@ -22,57 +23,27 @@ namespace Clinic.Controllers
 
         }
 
-        // GET: Reminders
-        public async Task<IActionResult> Index()
-        {
+  
 
+   
 
-            return View(await _context.Reminders.
-                                  Where(r => r.User.Id == _userManager.GetUserId(User)).ToListAsync());
-
-        }
-
-        // GET: Reminders/Details/5
-        public async Task<IActionResult> Details(long? id)
-        {
-
-
-
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var reminder = await _context.Reminders
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (reminder == null)
-            {
-                return NotFound();
-            }
-
-            return View(reminder);
-        }
-
-        // GET: Reminders/Create
+        [Authorize]
         public IActionResult Create()
-        {
-
-
-
+        { 
             return View();
         }
 
 
         [HttpGet]
-
-        public async Task<JsonResult> Create(string Title, DateTime Time, string Content, int Priority)
+        [Authorize]
+        public async Task<JsonResult> Create(string Title, DateTime ReminderDate, string Content, int Priority)
         {
             try
             {
                 Reminder reminder = new Reminder
                 {
                     Title = Title,
-                    Date = Time,
+                    Date = ReminderDate,
                     Content = Content,
                     Priority = Priority
                 };
@@ -92,11 +63,9 @@ namespace Clinic.Controllers
             
         }
 
-        // GET: Reminders/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(long? id)
         {
-           
-           
 
             if (id == null)
             {
@@ -108,17 +77,26 @@ namespace Clinic.Controllers
             {
                 return NotFound();
             }
-      
-            return View(reminder);
+            EditReminder model = new EditReminder
+            {
+                Id = reminder.Id,
+                Title = reminder.Title,
+                Date = reminder.Date.ToString("yyyy-MM-dd"),
+                Time=reminder.Date.ToString("HH:mm"),
+                Priority=reminder.Priority,
+                Content=reminder.Content  
+            };
+            return View(model);
         }
 
-        // POST: Reminders/Edit/5
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Title,Date,Content,Priority")] Reminder reminder)
+        [Authorize]
+        public async Task<IActionResult> Edit(long id,EditReminder model)
         {
           
-            if (id != reminder.Id)
+            if (id != model.Id)
             {
                
                 return NotFound();
@@ -128,12 +106,17 @@ namespace Clinic.Controllers
             {
                 try
                 {
+                    Reminder reminder = _context.Reminders.Find(id);
+                    reminder.Title = model.Title;
+                    reminder.Date =DateTime.Parse(model.Date+" "+model.Time);
+                    reminder.Content = model.Content;
+                    reminder.Priority = model.Priority;
                     _context.Reminders.Update(reminder);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ReminderExists(reminder.Id))
+                    if (!ReminderExists(model.Id))
                     {
                         
                         return NotFound();
@@ -146,14 +129,15 @@ namespace Clinic.Controllers
                 return RedirectToRoute("Home");
             }
            
-            return View(reminder);
+            return View(model);
         }
 
      
 
-        // POST: Reminders/Delete/5
+       
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
            

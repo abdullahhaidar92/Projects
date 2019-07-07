@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "Edit";
     List<SelectListItem>  Companies= (List<SelectListItem>)ViewData["Companies"];
+  
+
 
 }
 
@@ -15,6 +17,7 @@
                 <a href="/home" class="btn-X">X</a>
             </div>
             <div class="body">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="row">
 
 
@@ -25,7 +28,7 @@
                                 <input asp-for="Username" class="form-control" value="@Model.Username" />
                                 <span asp-validation-for="Username" class="text-danger"></span>
                             </div>
-                         
+
                             <div class="form-group">
                                 <label asp-for="@Model.FirstName" class="control-label"></label>
                                 <input asp-for="@Model.FirstName" class="form-control" value="@Model.FirstName" />
@@ -121,11 +124,11 @@
                                 </div>
                             </div>
                         </div>
-                        </div>
-           
+                    </div>
+
                     <div class="col-lg-4">
                         <div class="column">
-                       
+
                             <br />
                             <div class="form-group">
                                 <div class="pt-img">
@@ -156,7 +159,7 @@
         </form>
     </div>
 </div>
-<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
 <h1>@ViewData["Error"]</h1>
 
 

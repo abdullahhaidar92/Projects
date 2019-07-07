@@ -20,18 +20,18 @@
                             <h3>Other Information</h3>
                             <div class="form-group">
                                 <label asp-for="@Model.DisplayName" class="control-label"></label>
-                                <input asp-for="@Model.DisplayName" class="form-control" value="" />
+                                <input asp-for="@Model.DisplayName" class="form-control" value="samer" />
                                 <span asp-validation-for="@Model.DisplayName" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="@Model.Birthdate" class="control-label"></label>
-                                <input asp-for="@Model.Birthdate" class="form-control" value="@DateTime.Now.Date" />
+                                <input asp-for="@Model.Birthdate" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
                                 <span asp-validation-for="@Model.Birthdate" class="text-danger"></span>
                             </div>
 
                             <div class="form-group">
                                 <label asp-for="@Model.BloodType" class="control-label"></label>
-                                <input asp-for="@Model.BloodType" class="form-control" />
+                                <input asp-for="@Model.BloodType" class="form-control" value="AB+"/>
                                 <span asp-validation-for="@Model.BloodType" class="text-danger"></span>
                             </div>
                             <div class="form-group">

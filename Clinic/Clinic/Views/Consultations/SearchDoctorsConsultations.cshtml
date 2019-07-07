@@ -37,7 +37,7 @@
                 <div class="window">
                     <form asp-action="Search" method="get">
                         <div class="header">
-                            Search Consultaions
+                            Search 
                         </div>
                         <div class="body" style="padding-left:10px;padding-right:10px;">
                             <div class="form-group">
@@ -69,7 +69,7 @@
             <div class="col-lg-9 col-md-9 ">
                 <div class="window" style="width:100%;">
                     <div class="header">
-                        Results
+                        Consultaions
                     </div>
                     <div class="body" style="min-height:470px;">
                         <div style="font-size:15px;padding-bottom:10px;">Click on any search entry to view the details of the consultation</div>
@@ -155,7 +155,11 @@
                                                             </div>
                                                             <div class="modal-footer " style="background-color: rgba(255, 0, 0, 0.8);border-bottom-left-radius:10px;border-bottom-right-radius:10px;">
                                                                 <div style="text-align:center;display:inline-block;width:100%">
-                                                                    <button class="btn btn-primary">Yes</button>
+                                                                    <form asp-action="Delete">
+                                                                        <input type="hidden" value="@item.Id" name="Id" />
+                                                                        <button class="btn btn-primary">Yes</button>
+                                                                    </form>
+                                                                  
                                                                     <button class="btn btn-danger" onclick="CloseDelete('@item.Id');">No</button>
                                                                 </div>
 

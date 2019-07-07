@@ -23,7 +23,12 @@ namespace Clinic.Controllers
         [Authorize(Policy ="Assistant")]
         public async Task<IActionResult> Index(SearchAppointments search)
         {
-            var query = _context.Appointment.Include(a => a.Patient).ToArray();
+            Doctor d = _context.Assistants.Include(a => a.Doctor).Single(a => a.User.Id == _userManager.GetUserId(User)).Doctor;
+            if (d== null)
+            {
+                return NotFound();
+            }
+            var query = _context.Appointment.Include(a => a.Patient).Where(a=>a.Doctor==d).ToArray();
             if (search.Patient !=0)
                 query = query.Where(a => a.Patient.Id == search.Patient).ToArray();
             if (search.DateTime!= DateTime.MinValue)
@@ -62,14 +67,8 @@ namespace Clinic.Controllers
         }
 
 
-        [Authorize(Policy ="Assistant")]
-        public IActionResult Create()
-        {
-            return View(new AddAppointment(_context));
-        }
-
-        
         [HttpGet]
+        [Authorize(Roles = "Assistant")]
         public  JsonResult Create(long patient, DateTime appdate)
         {
             Doctor doctor;
@@ -112,9 +111,9 @@ namespace Clinic.Controllers
         }
 
         [Authorize(Policy = "Assistant")]
-        public async Task<IActionResult> Edit(long? id)
+        public async Task<IActionResult> Edit(long id=0)
         {
-            if (id == null)
+            if (id == 0)
             {
                 return NotFound();
             }
@@ -124,9 +123,10 @@ namespace Clinic.Controllers
             {
                 return NotFound();
             }
-            ViewData["id"] = id;
-            AddAppointment A = new AddAppointment(appointment.Patient.Id, _context);
-            A.DateTime = appointment.DateTime;
+            EditAppointment A = new EditAppointment(appointment.Patient.Id, _context);
+            A.Date = DateTime.Now.Date.ToString("yyyy-MM-dd");
+            A.Time = DateTime.Now.ToString("HH:mm");
+            A.Id = id;
             return View(A);
         }
 
@@ -134,57 +134,61 @@ namespace Clinic.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = "Assistant")]
-        public async Task<IActionResult> Edit(long id,AddAppointment addAppointment)
+        public async Task<IActionResult> Edit(long id,EditAppointment model)
         {
-            Appointment appointment = new Appointment();
-            Doctor d;
-            try
+            if (id != model.Id)
             {
-                d = _context.Assistants.Include(a => a.Doctor).First(a => a.User.Id == _userManager.GetUserId(User)).Doctor;
+                return NotFound();
             }
-            catch (Exception)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-           
-            _context.Appointment.Remove(_context.Appointment.Find(id));
-            _context.SaveChanges();
+
             if (ModelState.IsValid)
             {
-                try
+                Appointment appointment = _context.Appointment.Include(a => a.Doctor).Include(a => a.Patient).Single(a => a.Id == id);
+                if (appointment == null)
                 {
+                    return NotFound();
+                }
 
-                    if (_context.Appointment.Any(a => a.DateTime == addAppointment.DateTime )) 
+                DateTime dateTime = DateTime.Parse(model.Date + " " + model.Time);
+
+
+                if (appointment.DateTime == dateTime)
+                {
+                    appointment.Patient = _context.Patients.Find(model.SelectPatientId);
+                    if (appointment.Patient != null)
                     {
-                        ViewData["Message"] = "This period is reserved for another doctor";
-                        return View(new AddAppointment(addAppointment.SelectPatientId, _context));
+                        _context.Appointment.Update(appointment);
+                        _context.SaveChanges();
                     }
-                    appointment.Doctor = d;
-                    appointment.DateTime = addAppointment.DateTime;
-                    appointment.Patient = _context.Patients.Find(addAppointment.SelectPatientId); 
-                    _context.Appointment.Add(appointment);
+                  
+                    return RedirectToAction("Index");
+                }
+
+                if (_context.Appointment.Any(a => a.DateTime == dateTime && a.Doctor == appointment.Doctor))
+                {
+                    ViewData["Message"] = "This period is reserved for another patient";
+                    
+                }
+                else
+                {
+                    appointment.DateTime = dateTime;
+                    appointment.Patient = _context.Patients.Find(model.SelectPatientId);
+                    _context.Appointment.Update(appointment);
                     await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AppointmentExists(id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-           
+                    return RedirectToAction(nameof(Index));
 
-            AddAppointment A = new AddAppointment(addAppointment.SelectPatientId, _context);
-            A.DateTime = DateTime.Now;
-            ViewData["id"] = id;
-            return View(A);
-        }
+                }
+
+            }
+          
+                    EditAppointment A = new EditAppointment(model.SelectPatientId, _context);
+                    A.Date = DateTime.Now.Date.ToString("yyyy-MM-dd");
+                    A.Time = DateTime.Now.ToString("HH:mm");
+                    A.Id = id;
+                    return View(A);
+                }
+     
+
 
         [Authorize(Policy = "Assistant")]
         public async Task<IActionResult> Delete(long? id)

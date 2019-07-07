@@ -1,9 +1,7 @@
-﻿@model Clinic.Models.AddAppointment
-<!DOCTYPE html>
-@{   
-    var date = Model.DateTime.ToString();
-}
-<html lang="en">
+﻿@model Clinic.Models.EditAppointment
+
+
+
 <head>
 
 
@@ -27,53 +25,52 @@
 </head>
 
 <body>
-    <center>
-
-
+    
         <br />
         <br />
+    <div class="window-wrapper ">
+        <div class="window" style="width:450px">
+            <div class="header">
+                <h3>Edit an appointment</h3>
+            </div>
+            <form asp-action="Edit">
+                <div class="body ">
+                    <h4 class="text-danger">@ViewData["Message"]</h4>
+                    <div class="form-group">
+                        <label class="control-label">Choose the patient</label>
 
-        <h2>Edit an appointment</h2>
-        <h4 class="text-danger">@ViewData["Message"]</h4>
-        <br />
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" name="id" value="@ViewData["id"]" />
-            <div class="container app-container ">
-                <div class="row">
-                    <div class='col-sm-12'>
-
-                        <div class="form-group">
-                            <label class="control-label">Choose the patient</label>
-
-                            <select asp-for="@Model.SelectPatientId" asp-items="@Model.Patients" class="form-control" style="font-size:20px;height:60px;"></select>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label">Choose a time</label>
-                            <div class='input-group date' id='datetimepicker1'>
-                                <input asp-for="@Model.DateTime" value="@date" type='text' class="form-control" style="font-size:20px;height:60px;" />
-                                <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <input type="submit" value="  Save " class="btn btn-primary btn-lg" style="padding:10px 50px;" />
-                        </div>
-
-
+                        <select asp-for="SelectPatientId"  asp-items="@Model.Patients" class="form-control ss"></select>
                     </div>
+                    <div class="form-group">
+                        <label class="control-label">Choose a date</label>
+
+                        <input   asp-for="Date" value="@Model.Date"  type='date' class="form-control ss" />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Choose a time</label>
+                        <input asp-for="Time"  value="@Model.Time" type='time' class="form-control ss" />
+                    </div>
+                </div>
+                          
+                <div class="footer" style="text-align:center;padding-top:20px;">
+                    <div class="form-group">
+                        <input type="hidden" asp-for="Id" />
+                        <input type="submit" value="  Save " class="btn btn-success btn-lg" style="padding:10px 50px;" />
+                    </div>
+                </div>
+</form>
+        </div>
+    </div>
+       
+  
+           
                     <script type="text/javascript">
                                 $(function () {
                                     $('#datetimepicker1').datetimepicker();
                                 });
                     </script>
 
-                </div>
-            </div>
-        </form>
+        
         <script src="./js/prettify-1.0.min.js"></script>
         <script src="./js/base.js"></script>
         <script>
@@ -90,6 +87,4 @@
         </script>
 
 
-    </center>
 </body>
-</html>

@@ -27,14 +27,7 @@ namespace Clinic.Controllers
             return RedirectToRoute(GetRole());
 
         }
-        [Authorize(Policy = "Admin")]
-        public IActionResult Privacy()
-        {
-            var x = "" + UserManager.GetUserId(User);
-            ViewData["Id"] = "loook" + x;
-
-            return View();
-        }
+        
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

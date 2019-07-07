@@ -24,7 +24,7 @@ namespace Clinic.Controllers
         {
             _environment = environment;
         }
-
+        [Authorize(Roles = "Patient")]
         public async Task<IActionResult> Index()
         {
             return View();
@@ -39,11 +39,13 @@ namespace Clinic.Controllers
             {
                 search.EditList = _context.Doctor_Patients.Where(r => r.Doctor.User.Id == id).Select(r => r.Patient.Id).ToArray();
                 if (search.MyPatients)
-                    query = query.Where(p => search.EditList.Contains(p.Id)).ToArray();      
-            }              
-            else 
-              if (User.IsInRole("Admin")|| User.IsInRole("Assistant"))
+                    query = query.Where(p => search.EditList.Contains(p.Id)).ToArray();
+            }
+            else
+              if (User.IsInRole("Admin") || User.IsInRole("Assistant"))
                 search.EditList = _context.Patients.Select(p => p.Id).ToArray();
+            else if (User.IsInRole("Insurance"))
+                query = _context.Patients.Include(p=>p.InsuranceCompany).Where(p => p.InsuranceCompany.User.Id == id).ToArray();
 
 
             if (search.SearchId != 0)
@@ -97,11 +99,13 @@ namespace Clinic.Controllers
         public async Task<IActionResult> Create(RegisterPatient registerPatient, IFormFile file)
         {
             string image = "avatar.jpg";
-            if (_context.Patients.Any(d => d.User.UserName == registerPatient.Username))
+            if (_userManager.Users.Any(u => u.UserName == registerPatient.Username))
             {
+                ModelState.AddModelError(String.Empty, "User name already taken");
                 ViewData["message"] = "Already Taken";
                 return View(registerPatient);
             }
+
             if (ModelState.IsValid)
             {
                     if (file != null)
@@ -161,7 +165,7 @@ namespace Clinic.Controllers
                 };
                 if (User.IsInRole("Doctor"))
                 {
-                    Doctor doctor = _context.Doctors.Find(_userManager.GetUserId(User));
+                    Doctor doctor = _context.Doctors.Single(d=>d.User.Id==_userManager.GetUserId(User));
                     Doctor_Patient Relation = new Doctor_Patient()
                     {
                         Doctor = doctor,
@@ -206,9 +210,15 @@ namespace Clinic.Controllers
             }
 
             ViewData["Companies"] = getCompanies(patient);
+            long company = 0;
+            if (patient.InsuranceCompany != null)
+            {
+                company = patient.InsuranceCompany.Id;
+            }
+
             EditPatient model = new EditPatient
             {
-                Id=patient.Id,
+                Id = patient.Id,
                 FirstName = patient.FirstName,
                 MiddleName = patient.MiddleName,
                 LastName = patient.LastName,
@@ -219,9 +229,10 @@ namespace Clinic.Controllers
                 Birthdate = patient.Birthdate,
                 DisplayName = patient.DisplayName,
                 Address = patient.Address,
-               Username=patient.User.UserName,
-               Email=patient.User.Email,
-               Phone=patient.User.PhoneNumber
+                Username = patient.User.UserName,
+                Email = patient.User.Email,
+                Phone = patient.User.PhoneNumber,
+                SelectedInsuranceCompanyId = company
             };
             return View(model);
         }
@@ -253,8 +264,34 @@ namespace Clinic.Controllers
             else
              patient = _context.Patients.Include(p => p.InsuranceCompany).Include(p => p.User).Single(p => p.Id == model.Id);
 
+            if (patient == null)
+            {
+                return NotFound();
+            }
+
             if (ModelState.IsValid)
             {
+                IdentityUser user = patient.User;
+                var username = await _userManager.GetUserNameAsync(user);
+                if (model.Username != username)
+                {
+                    if (_userManager.Users.Any(u => u.UserName == model.Username))
+                    {
+                        ModelState.AddModelError(String.Empty, "User name already taken");
+                        ViewData["Companies"] = getCompanies(patient);
+                        return View(model);
+                    }
+
+                    var setUserNameResult = await _userManager.SetUserNameAsync(user, model.Username);
+
+                    if (!setUserNameResult.Succeeded)
+                    {
+                        var userId = await _userManager.GetUserIdAsync(user);
+                        throw new InvalidOperationException($"Unexpected error occurred setting username for user with ID '{userId}'.");
+                    }
+                }
+
+
                 try
                 {
                     if (file != null)
@@ -282,18 +319,7 @@ namespace Clinic.Controllers
             patient.Address = model.Address;
              patient.InsuranceCompany = insurance;
 
-                    IdentityUser user = patient.User;
-                    var username = await _userManager.GetUserNameAsync(user);
-                    if (model.Username != username)
-                    {
-                        var setUserNameResult = await _userManager.SetUserNameAsync(user, model.Username);
-
-                        if (!setUserNameResult.Succeeded)
-                        {
-                            var userId = await _userManager.GetUserIdAsync(user);
-                            throw new InvalidOperationException($"Unexpected error occurred setting username for user with ID '{userId}'.");
-                        }
-                    }
+                   
 
                     var email = await _userManager.GetEmailAsync(user);
                     if (model.Email != email)
@@ -387,7 +413,7 @@ namespace Clinic.Controllers
         {
             List<SelectListItem> Companies = new List<SelectListItem>();
             InsuranceCompany[] companies = _context.InsuranceCompanies.ToArray();
-         
+            Companies.Add(new SelectListItem { Value = "0", Text = "None" });
                 foreach (InsuranceCompany c in companies)
                 {
           

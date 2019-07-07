@@ -44,10 +44,14 @@
                             Search Doctors
                         </div>
                         <div class="body" style="padding-left:10px;padding-right:10px;">
-                            <div class="form-group">
-                                <label class="control-label">Id</label>
-                                <input asp-for="SearchId" class="form-control" type="text" value="@X" />
-                            </div>
+                            @if (!((string)ViewData["Role"] == "Patient"))
+                            {
+                                <div class="form-group">
+                                    <label class="control-label">Id</label>
+                                    <input asp-for="SearchId" class="form-control" type="text" value="@X" />
+                                </div>
+                            }
+
                             <div class="form-group">
                                 <label class="control-label">First Name</label>
                                 <input asp-for="FirstName" class="form-control" value="@Model.FirstName" />
@@ -150,7 +154,7 @@
                                                     {
                                                         <a asp-controller="Doctors" asp-action="Edit" class="a2" asp-route-id="@item.Id">Edit Profile</a><br />
                                                         <a href="javascript:void(0)" class="a2" onclick="Remove('@item.User.Id')" ;">Remove Doctor</a><br />
-                                                        <a href="javascript:void(0)" class="a2" onclick="ChangePassword('@item.User.Id')" ;">Reset Password</a>
+                                                       
                                                     }
 
 

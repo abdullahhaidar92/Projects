@@ -14,6 +14,7 @@
                 <a href="/home" class="btn-X">X</a>
             </div>
             <div class="body">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="row">
                     <div class="col-lg-4 ">
                         <div class="column">
@@ -44,7 +45,7 @@
                                 <input asp-for="DisplayName" class="form-control" value="Zahraa Haidar" />
                                 <span asp-validation-for="DisplayName" class="text-danger"></span>
                             </div>
-                          
+
                             <div class="form-group">
                                 <label class="control-label">Doctor</label>
                                 <select asp-for="@Model.SelectedDoctorId" asp-items="@Doctors" class="form-control ss"></select>
@@ -131,7 +132,7 @@
         </form>
     </div>
 </div>
-<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
 <h1>@ViewData["Error"]</h1>
 
 

@@ -81,13 +81,19 @@
                             
                         </div>
                         <div class="footer">
-                            <div style="float:left;padding-left:10px;padding-top:5px;">
-                                
-                                <input asp-for="MyPatients" /> My Patients
+
+                            @if ((string)ViewData["Role"] == "Doctor")
+                            {   
+                                <div style="float:left;padding-left:10px;padding-top:5px;">
+                                 <input asp-for="MyPatients" />My Patients
+                                    </div>
+
+                              }
+
+                               
+
+                                <button type="submit" class="btn btn-success">Search</button>
                             </div>
-                         
-                            <button type="submit" class="btn btn-success">Search</button>
-                        </div>
                     </form>
                 </div>
 

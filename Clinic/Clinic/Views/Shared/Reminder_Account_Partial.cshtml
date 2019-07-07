@@ -10,7 +10,7 @@
     {
         reminders = new Reminder[0];
     }
-    ViewData["model"] = new AddAppointment(_context);
+   // ViewData["model"] = new AddAppointment(_context);
 
 }
 
@@ -32,16 +32,17 @@
                 New Reminder
             </button>
         </div>
-        
+
         @foreach (Reminder r in reminders)
         {
-            <a  href="javascript:void(0)" class="a1" id="@("reminderTitle"+r.Id)" onclick="OpenReminder(@r.Id);"
-                style="border-bottom:1px solid silver">
+            <a href="javascript:void(0)" class="a1" id="@("reminderTitle"+r.Id)" onclick="OpenReminder(@r.Id);"
+               style="border-bottom:1px solid silver">
                 @r.Title
             </a>
-          
+
             <input type="hidden" id="@("reminderContent"+r.Id)" value="@r.Content" />
-            <input type="hidden" id="@("reminderDate"+r.Id)" value="@r.Date" />
+            <input type="hidden" id="@("reminderDate"+r.Id)" value="@r.Date.ToString("yyyy-MM-dd")" />
+            <input type="hidden" id="@("reminderTime"+r.Id)" value="@r.Date.ToString("HH:mm tt")" />
         }
     </div>
 </li>
@@ -98,7 +99,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body" id="reminderContent" style="  text-align:left;">
+            <div class="modal-body" id="reminderContent" style="  text-align:left;min-height:280px;">
 
             </div>
             <div class="modal-footer">
@@ -133,12 +134,16 @@
                     <input id="CreateTitle" class="form-control" />
                 </div>
                 <div class="form-group">
-                    <label class="control-label">Date and time</label>
-                    <input type="datetime" id="CreateDate" class="form-control" value="@DateTime.Now.ToString()" />
+                    <label class="control-label">Date</label>
+                    <input type="date" id="CreateDate" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Time</label>
+                    <input type="time" id="CreateTime" class="form-control" value="@DateTime.Now.ToString("HH:mm")" />
                 </div>
                 <div class="form-group">
                     <label class="control-label">Priority</label>
-                    <input id="CreatePriority" class="form-control" type="number"/>
+                    <input id="CreatePriority" class="form-control" type="number" />
                 </div>
                 <div class="form-group">
                     <label class="control-label">Content</label><br />
@@ -164,7 +169,7 @@
     function addReminder() {
         document.getElementById("response1").innerHTML = "";
         var X = document.getElementById("CreateTitle").value;
-        var Y = document.getElementById("CreateDate").value;
+        var Y = document.getElementById("CreateDate").value+" "+ document.getElementById("CreateTime").value;
         var U = document.getElementById("CreatePriority").value;
         var V = document.getElementById("CreateContent").value;
         //alert(X);
@@ -173,7 +178,7 @@
         $.ajax({
             type: "GET",
             url: '/Reminders/Create',
-            data: { "Title": X, "Date": Y, "Priority": U, "Content": V },
+            data: { "Title": X, "ReminderDate": Y, "Priority": U, "Content": V },
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             beforeSend: function () {
@@ -185,7 +190,7 @@
                 document.getElementById("response1").innerHTML = response.result;
             },
             complete: function () {
-               document.getElementById("response1").innerHTML = response.result;;
+              // document.getElementById("response1").innerHTML = response.result;;
             },
             failure: function (jqXHR, textStatus, errorThrown) {
                 document.getElementById("response1").innerHTML = "Failed";
@@ -198,9 +203,11 @@
         document.getElementById("reminderContent").innerHTML =
             " <span  style = 'color:blue' > Title:</span> "
         + document.getElementById("reminderTitle" + id).innerHTML
-        + "<br>  <span  style = 'color:blue' >Time: </span>"
+        + "<br>  <span  style = 'color:blue' >Date: </span>"
         + document.getElementById("reminderDate" + id).value
-            + "<br>  <span  style = 'color:blue' >Content:</span><br>"
+            + "<br>  <span  style = 'color:blue' >Time: </span>"
+        + document.getElementById("reminderTime" + id).value
+            + "<br><hr>  <span  style = 'color:blue' >Content:</span><br>"
             + document.getElementById("reminderContent" + id).value;
 
            

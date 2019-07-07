@@ -8,27 +8,35 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Clinic.Models
 {
-    public class AddAppointment
+    public class EditAppointment
     {
 
         [Required]
-        public DateTime DateTime { get; set; }
+        public long Id { get; set; }
+
+        [Required]
+        [DataType(DataType.Date)]
+        public string Date { get; set; }
+
+        [Required]
+        [DataType(DataType.Time)]
+        public string Time { get; set; }
 
         public long SelectPatientId { get; set; }
 
         public SelectListItem[] Patients { get; set; }
 
-        public AddAppointment()
+        public EditAppointment()
         {
 
         }
 
-        public AddAppointment(ApplicationDbContext _context)
+        public EditAppointment(ApplicationDbContext _context)
         {
             Fill(_context);
         }
 
-        public AddAppointment(long patient ,ApplicationDbContext context)
+        public EditAppointment(long patient ,ApplicationDbContext context)
             {
             Fill(context);
            SelectPatientId =patient;

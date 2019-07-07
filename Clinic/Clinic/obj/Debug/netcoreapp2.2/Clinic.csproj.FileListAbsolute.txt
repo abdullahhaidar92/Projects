@@ -482,9 +482,7 @@ C:\Users\hp\Desktop\Semester6Projects\Clinic\Clinic\obj\Debug\netcoreapp2.2\Razo
 C:\Users\hp\Desktop\Semester6Projects\Clinic\Clinic\obj\Debug\netcoreapp2.2\Razor\Views\Shared\DoctorBar.g.cshtml.cs
 C:\Users\hp\Desktop\Semester6Projects\Clinic\Clinic\obj\Debug\netcoreapp2.2\Razor\Views\Shared\Error.g.cshtml.cs
 C:\Users\hp\Desktop\Semester6Projects\Clinic\Clinic\obj\Debug\netcoreapp2.2\Razor\Views\Shared\InsuranceBar.g.cshtml.cs
-C:\Users\hp\Desktop\Semester6Projects\Clinic\Clinic\obj\Debug\netcoreapp2.2\Razor\Views\Shared\LayoutDate.g.cshtml.cs
 C:\Users\hp\Desktop\Semester6Projects\Clinic\Clinic\obj\Debug\netcoreapp2.2\Razor\Views\Shared\LayoutLogin.g.cshtml.cs
-C:\Users\hp\Desktop\Semester6Projects\Clinic\Clinic\obj\Debug\netcoreapp2.2\Razor\Views\Shared\LayoutUser.g.cshtml.cs
 C:\Users\hp\Desktop\Semester6Projects\Clinic\Clinic\obj\Debug\netcoreapp2.2\Razor\Views\Shared\PatientBar.g.cshtml.cs
 C:\Users\hp\Desktop\Semester6Projects\Clinic\Clinic\obj\Debug\netcoreapp2.2\Razor\Views\Shared\Reminder_Account_Partial.g.cshtml.cs
 C:\Users\hp\Desktop\Semester6Projects\Clinic\Clinic\obj\Debug\netcoreapp2.2\Razor\Views\Shared\_CookieConsentPartial.g.cshtml.cs
@@ -514,6 +512,6 @@ C:\Users\hp\Desktop\Semester6Projects\Clinic\Clinic\obj\Debug\netcoreapp2.2\Razo
 C:\Users\hp\Desktop\Semester6Projects\Clinic\Clinic\obj\Debug\netcoreapp2.2\Razor\Views\Admins\AdminExsist.g.cshtml.cs
 C:\Users\hp\Desktop\Semester6Projects\Clinic\Clinic\obj\Debug\netcoreapp2.2\Razor\Views\Admins\Profile.g.cshtml.cs
 C:\Users\hp\Desktop\Semester6Projects\Clinic\Clinic\obj\Debug\netcoreapp2.2\Razor\Views\Shared\GuestBar.g.cshtml.cs
-C:\Users\hp\Desktop\Semester6Projects\Clinic\Clinic\obj\Debug\netcoreapp2.2\Clinic.csprojAssemblyReference.cache
 C:\Users\hp\Desktop\Semester6Projects\Clinic\Clinic\obj\Debug\netcoreapp2.2\Razor\Views\Appointments\DoctorsAppointments.g.cshtml.cs
 C:\Users\hp\Desktop\Semester6Projects\Clinic\Clinic\obj\Debug\netcoreapp2.2\Razor\Views\Consultations\Treatment.g.cshtml.cs
+C:\Users\hp\Desktop\Semester6Projects\Clinic\Clinic\obj\Debug\netcoreapp2.2\Clinic.csprojAssemblyReference.cache
