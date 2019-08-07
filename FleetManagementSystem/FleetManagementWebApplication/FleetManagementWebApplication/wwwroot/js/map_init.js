@@ -358,20 +358,26 @@ function getDeliveryTimeLeft(vehicleID) {
             const deliveries = displayedVehicles[vehicleID].deliveries;
             const currentLatitude = displayedVehicles[vehicleID].latitude;
             const currentLongitude = displayedVehicles[vehicleID].longitude;
-
+            //alert(currentLatitude);
+            //alert(currentLongitude);
             let requestURL = `https://route.api.here.com/routing/7.2/calculateroute.json?app_id=ORWs1MBbnXAyzlgdPGpw&app_code=ftEQwIdOxSdxiRv6pd1Rvw&waypoint0=geo!${currentLatitude},${currentLongitude}&`;
-
+            //alert(deliveries[delivery].startLatitude);
+            //alert(deliveries[delivery].startLongitude);
+            //alert(deliveries[delivery].endLatitude);
+            //alert(deliveries[delivery].endLongitude);
             let waypointCounter = 1;
             for (delivery in deliveries) {
                 requestURL += `waypoint${waypointCounter}=geo!${deliveries[delivery].startLatitude},${deliveries[delivery].startLongitude}&`;
                 requestURL += `waypoint${waypointCounter + 1}=geo!${deliveries[delivery].endLatitude},${deliveries[delivery].endLongitude}&`;
                 waypointCounter += 2;
             }
-
+            
             requestURL += `mode=fastest;car;traffic:enabled`;
-
+           // alert(requestURL);
             const client = new HttpClient();
+           // alert("3");
             client.get(requestURL, function (response) {
+                
                 const responseJSON = JSON.parse(response);
                 const trafficTime = responseJSON.response.route[0].summary.trafficTime;
 
@@ -463,7 +469,7 @@ function setStart(coord) {
             startCity = data.address.city;
         else
             startCity = data.address.state;
-        alert(startCity + " \n " + coord.lat + "," + coord.lng);
+        alert(startCity + " \n" + "Latitude :" + coord.lat + "\n" +"Longitude  :" +coord.lng);
     });
     jsonPromise1.fail(function (reason) {
         alert("Error");
@@ -500,7 +506,7 @@ function setEnd(coord) {
             endCity=data.address.city;
         else
             endCity = data.address.state;
-        alert(endCity + " \n " + coord.lat + "," + coord.lng);
+        alert(endCity + " \n" + "Latitude :" + coord.lat + "\n" + "Longitude  :" + coord.lng);
     });
     jsonPromise1.fail(function (reason) {
         alert("Failed1");
@@ -538,14 +544,14 @@ async function findOptimalDriverForNewDelivery(startLatitude, startLongitude) {
             "waypoint1": { "latitude": startLatitude, "longitude": startLongitude }
         }
       
-
+        //alert("2");
         const deliveryTimeLeft = await getDeliveryTimeLeft(driver);
-      
+        
         const finishTillStartTime = await getRouteTime(finishTillStartRoute);
       
         driversResponseTime[driver].responseTime = deliveryTimeLeft + finishTillStartTime;
     }
-    
+         //alert("2");
     console.log("---------------------- GOT OUT OF LOOP ---------------------------")
     let shortestTime = Infinity;
     let optimalDriver = null;
@@ -620,9 +626,9 @@ async function addDelivery() {
         let optDriver = null;
         let vehicleID = null;
     if (vehicleChoice == 'auto') {
-        
+           //alert("1");
         optDriver = await findOptimalDriverForNewDelivery(startLatitude, startLongitude);
-        
+   
             vehicleID = optDriver.driverID;
         } else {
             optDriver = displayedVehicles[vehicleChoice];
@@ -659,7 +665,8 @@ async function addDelivery() {
             "waypoint1": { "latitude": endLatitude, "longitude": endLongitude }
         }
         addRouteToMap(null, route);
-    
+   
+
 }
 
 async function addDeliveryToDB(ajaxPostRequestJSON, vehicleID, startLatitude, startLongitude, endLatitude, endLongitude, deliveryQuantity) {
@@ -737,7 +744,8 @@ async function cancelDelivery(vehicleID, deliveryID) {
         vehicleID: `${vehicleID}`,
         deliveryID: `${deliveryID}`
     }
-
+    
+    removeRouteFromMap(vehicleID);
     $.ajax({
         type: "POST",
         url: "/Map/CancelDelivery",
@@ -1093,7 +1101,7 @@ async function refetchAndRefresh() {
                             "name": `${v.CurrentDriverName}`,
                             "avatar": "/images/"+v.CurrentDriverImage,
                             "phone": `${v.CurrentDriverPhonenumber}`,
-                            "email": "In DB but not attributed to Driver table",
+                            "email": `${v.CurrentDriverEmail}`,
                             "birthdate": `${v.CurrentDriverBirthdate}`
                         },
                         vDelList

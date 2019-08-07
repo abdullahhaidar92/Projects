@@ -309,6 +309,7 @@ namespace FleetManagementWebApplication.Controllers
                 json += "\"CurrentDriverId\": \"" + v.CurrentDriver.Id + "\",";
                 json += "\"CurrentDriverName\": \"" + v.CurrentDriver.Name + "\",";
                 json += "\"CurrentDriverPhonenumber\": \"" + v.CurrentDriver.Phonenumber + "\",";
+                json += "\"CurrentDriverEmail\": \"" + v.CurrentDriver.Username + "\",";
                 json += "\"CurrentDriverBirthdate\": \"" + v.CurrentDriver.Birthdate + "\",";
                 json += "\"CurrentDriverImage\": \"" + v.CurrentDriver.Image+ "\",";
 

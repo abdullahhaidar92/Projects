@@ -54,7 +54,14 @@ namespace FleetManagementWebApplication.Controllers
         {
             try
             {
-                Manager manager = _context.Managers.First(m => m.Email == Email && m.Password == Password);
+                bool log= _context.Managers.Any(m => m.Email == Email && m.Password == Password);
+                if (!log)
+                {
+                    ViewData["Error"] = "Unable to connect";
+                    return View();
+                }
+                   
+                Manager manager = _context.Managers.Single(m => m.Email == Email && m.Password == Password);
                 Company company = _context.Companies.First(c => c.Manager.Id == manager.Id);
                 HttpContext.Session.SetInt32("LoggedIn", 1);
                 HttpContext.Session.SetInt32("Id", (int)manager.Id);
@@ -66,7 +73,7 @@ namespace FleetManagementWebApplication.Controllers
             }
             catch (Exception)
             {
-                ViewData["Error"] = "Invalid Login";
+                ViewData["Error"] = "Unable to connect";
             }
 
             return View("/Views/Home/LogIn.cshtml");

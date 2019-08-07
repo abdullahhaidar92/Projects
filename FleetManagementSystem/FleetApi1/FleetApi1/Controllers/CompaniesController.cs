@@ -18,7 +18,7 @@ namespace FleetApi1.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class CompaniesController : ControllerBase
+    public class CompaniesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
@@ -29,9 +29,10 @@ namespace FleetApi1.Controllers
 
         // GET: api/Clients
         [HttpPost]
-        public async Task<ActionResult<IEnumerable<string>>> Names()
+        public JsonResult Names()
         {
-            return await _context.Companies.Select(c => c.Name).ToListAsync();
+           string[] companies= _context.Companies.Select(c => c.Name).ToArray();
+            return Json(new { companies });
             
         }
 

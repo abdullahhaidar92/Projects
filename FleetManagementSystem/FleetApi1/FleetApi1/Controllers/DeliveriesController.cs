@@ -9,12 +9,15 @@ using FleetApi1.Models;
 using System.Net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+ using System.IO;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace FleetApi1.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class DeliveriesController : ControllerBase
+    public class DeliveriesController : Controller
     {
         private readonly ApplicationDbContext _context;
         
@@ -202,6 +205,17 @@ namespace FleetApi1.Controllers
                                                                                         && d.Answered == true
                                                                                         && d.Started == true
                                                                                         && d.Finished == true).ToListAsync();
+        }
+
+        [HttpPost]
+        public   JsonResult ClientActiveDelivery(Login L)
+        {
+
+            long Id= _context.Deliveries.Where(d => d.Client.Username == L.username
+                                                                                        && d.Client.Password == L.password
+                                                                                        && d.Answered == true
+                                                                                        && d.Started == false).First().Id;
+            return Json(new {  Id });
         }
 
         [HttpPost]
