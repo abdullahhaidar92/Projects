@@ -1,4 +1,4 @@
-package sample;
+package editor;
 
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -8,11 +8,16 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import java.io.IOException;
+
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
+import com.devdaily.system.SystemCommandExecutor;
 
 public class Top extends VBox {
 
@@ -52,6 +57,7 @@ public class Top extends VBox {
 
         New.setOnAction(t -> {
             cfield.clear();
+            vbfield.clear();
             fileName = null;
         });
 
@@ -90,19 +96,37 @@ public class Top extends VBox {
         });
 
         Convert.setOnAction(t -> {
-            String text = "Not Failed \n Hello ";
+            List<String> commands = new ArrayList<String>();
+            commands.add("/bin/sh");
+            commands.add("-c");
+            commands.add("~/Desktop/Code/calc ");
 
-            // Code to convert
-
-            if (text.substring(0, 7).contains("Failed ")) {
-                vbfield.error(text);
-            } else {
-                vbfield.success(text);
+            SystemCommandExecutor commandExecutor = new SystemCommandExecutor(commands);
+            boolean result = false;
+            try {
+                result = commandExecutor.executeCommand(cfield.getText());
+            } catch (IOException | InterruptedException e) {
+                vbfield.error("Internal error occurred.\nTry rerunning the program.");
             }
 
+            if (result) {
+                vbfield.success(commandExecutor.getStandardOutputFromCommand().toString());
+                cfield.clearErrorList();
+            } else {
+                final List<Integer> errorLines = new ArrayList<>();
+                final String errorBuffer = commandExecutor.getStandardErrorFromCommand().toString();
+                vbfield.error(errorBuffer);
+                for (String line : errorBuffer.split("\n")) {
+                    if (line.indexOf("line ") == 0)
+                        errorLines.add(Integer.valueOf(line.split(" ")[1])-1);
+                }
+                cfield.showErrors(errorLines);
+            }
         });
+
         Clear.setOnAction(t -> {
             vbfield.clear();
+            cfield.clearErrorList();
         });
 
         Copy.setOnAction(t -> {

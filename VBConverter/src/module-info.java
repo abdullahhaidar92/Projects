@@ -3,6 +3,6 @@ module VBConverter {
     requires javafx.controls;
     requires richtextfx.fat;
 
-    opens sample;
+    opens editor;
 
 }
