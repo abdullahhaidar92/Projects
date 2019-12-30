@@ -114,8 +114,16 @@ Statement : DataType Delim Variables ';' {    printf("Dim ");
                                    if(pop(&variablesStack))
                                        yyerror("Too many arguments");
                                   }
+|Expression ';'   { printf("Here"); }
 ;
 
+Expression: Expression '+' Term  { printf(" + %s",$<stringValue>3); }
+|Term { printf("%s",$<stringValue>1); }
+;
+
+Term: '(' Expression ')'
+|Id     { $<stringValue>$=$<stringValue>1 ;}
+;
 
 Variables : Id List { push(&variablesStack,$<stringValue>1); }
 | Id '=' Value List { push(&variablesWithValuesStack,$<stringValue>1);

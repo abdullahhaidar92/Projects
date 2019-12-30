@@ -37,8 +37,9 @@ scanf {return(Scan);}
 {Id} {yylval.stringValue = strdup(yytext);return(Id);}
 & return('&');
 [=] return('='); 
-[,] return (',');
-; return (';');
+[,] return(',');
+; return(';');
+[+] return('+');
 [ \t]+ return(Space);
 \n return('\n'); 
 . {fprintf(stderr,"unrecognized token \n");return yytext[0];}
