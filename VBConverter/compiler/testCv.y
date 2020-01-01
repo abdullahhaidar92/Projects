@@ -12,77 +12,83 @@ char* variable;
 char* value;
 int flag; 
 char *text;
-char *newText;
+char *newText,*buff;
 %}
+%name parse
 %union
 {
     int intValue;
     float floatValue;
-    char *stringValue;
+   char* stringValue;
 }
 %token Integer Char Single Double Id  Space
 %token IntegerValue CharacterValue SingleValue DoubleValue
 %token Print Scan Text Address
+%token If Else
 %%
 start: line   {printf("valid\n");return(0);}
 ;
 
-line : Blank  Statement  line
+line : Blank  Statement  line  {printf("%s\n",$<stringValue>2);};
 |Blank  
 ;
 
-Statement : DataType Delim Variables ';' {    printf("Dim ");
-                                                flag=0;
-                                             variable=pop(&variablesStack);
-                                             if(variable){
+Statement : MatchedStatement 
+|UnMatchedStatement
+;
+
+NonAlternativeStatement :DataType Delim Variables ';' { 
+                                              $<stringValue>$=strdup("Dim "); 
+                                              flag=0;
+                                              variable=pop(&variablesStack);
+                                              if(variable){
                                                 flag=1;
-                                                printf("%s ",variable);
+                                                strcat($<stringValue>$,strdup(variable));
                                                 variable=pop(&variablesStack);
                                                 while(variable){ 
-                                                printf(", %s ",variable);
+                                                sprintf($<stringValue>$,"%s , %s",strdup($<stringValue>$),strdup(variable));
                                                 variable=pop(&variablesStack);  
                                                 }
-                                                printf("As %s ",$<stringValue>1);
+                                               strcat($<stringValue>$," As ");
+                                               strcat($<stringValue>$,strdup($<stringValue>1));
                                              }
                                              variable=pop(&variablesWithValuesStack);
                                              value=pop(&variablesValuesStack);
-                                             if(variable!=NULL){
-                                                if(flag) 
-                                                    printf(",");
-                                                printf(" %s As %s = %s ",variable,$<stringValue>1,value);
+                                             while(variable){
+                                                if(flag)
+                                                     strcat($<stringValue>$,", ");
+                                                sprintf($<stringValue>$,"%s%s As %s = %s ",strdup($<stringValue>$),
+                                                strdup(variable),strdup($<stringValue>1),strdup(value));
                                                 variable=pop(&variablesWithValuesStack);
                                                 value=pop(&variablesValuesStack);
-                                                while(variable)
-                                                { printf(", %s As %s = %s ",variable,$<stringValue>1,value);
-                                                  variable=pop(&variablesWithValuesStack);
-                                                  value=pop(&variablesValuesStack); 
-                                                }
+                                                flag=1;
                                              }
-                                             printf("\n");
+                                              strcat($<stringValue>$,"\n");
                                         }
-                                        
-|Print '(' Text Arguments ')' ';' { printf("Console.Write(");
+|Print '(' Text Arguments ')' ';' { 
+                                    $<stringValue>$=strdup("Console.Write(");
                                     text=$<stringValue>3;
                                     counter=0;
                                     for(i=0;i<strlen(text);i++)
                                         if(text[i]=='\\' && text[i+1]=='n'){
-                                            printf("\"& vbcrlf &\"");
+                                            strcat($<stringValue>$,"\"& vbcrlf &\"");
                                             i++;
                                         }
                                             
                                         else if(text[i]=='%' && (text[i+1]=='d' || text[i+1]=='c' || text[i+1]=='f' 
                                                                  || (text[i+1]=='l' && text[i+2]=='f' && (i=i+1) )))
-                                        {  printf("{%d}",counter);
+                                        {  
+                                           sprintf($<stringValue>$, "%s{%d}",strdup($<stringValue>$),counter);
                                            counter++;
                                            i+=1;
                                         }
                                         else
-                                            printf("%c",text[i]);
+                                            strncat($<stringValue>$, text+i, 1);
                                    
                                     while(counter > 0){
                                        variable=pop(&variablesStack);
                                        if(variable)
-                                           printf(",%s",variable);
+                                           sprintf($<stringValue>$, "%s,%s",strdup($<stringValue>$),strdup(variable));
                                        else
                                            yyerror("Not enough arguments");
                                        counter--;
@@ -90,10 +96,10 @@ Statement : DataType Delim Variables ';' {    printf("Dim ");
                                    if(pop(&variablesStack))
                                        yyerror("Too many arguments");
                                    
-                                    printf(") \n");
+                                     strcat($<stringValue>$,") ");
                                   }
-
-|Scan '(' Text Addresses ')' ';' {  text=$<stringValue>3;
+|Scan '(' Text Addresses ')' ';' {  $<stringValue>$=strdup("");
+                                    text=$<stringValue>3;
                                     for(i=1;i<strlen(text)-1;i++)
                                         if(text[i]==' ')
                                             continue;
@@ -101,8 +107,10 @@ Statement : DataType Delim Variables ';' {    printf("Dim ");
                                                                  || (text[i+1]=='l' && text[i+2]=='f' && (i=i+1) )))
                                         { 
                                           variable=pop(&variablesStack);
-                                          if(variable)
-                                             printf("%s = Console.ReadLine()\n",variable);
+                                          if(variable){
+                                          strcat($<stringValue>$,strdup(variable));
+                                             strcat($<stringValue>$,strdup(" = Console.ReadLine()\n"));
+                                          }
                                           else
                                            yyerror("Not enough arguments");
                                            i+=1;
@@ -114,16 +122,117 @@ Statement : DataType Delim Variables ';' {    printf("Dim ");
                                    if(pop(&variablesStack))
                                        yyerror("Too many arguments");
                                   }
-|Expression ';'   { printf("Here"); }
+|ArithmaticExpression ';'   
+|LogicExpression ';'   
 ;
 
-Expression: Expression '+' Term  { printf(" + %s",$<stringValue>3); }
-|Term { printf("%s",$<stringValue>1); }
+
+MatchedStatement : 	If '(' LogicExpression ')'  MatchedStatement Else MatchedStatement {
+                                $<stringValue>$=strdup("If ");
+                                strcat($<stringValue>$,strdup($<stringValue>3));
+                                strcat($<stringValue>$,strdup(" Then\n"));
+                                strcat($<stringValue>$,strdup($<stringValue>5));
+                                strcat($<stringValue>$,strdup(" \nElse\n"));
+                                strcat($<stringValue>$,strdup($<stringValue>7));
+                                strcat($<stringValue>$,strdup("\nEnd If"));
+                                }
+|NonAlternativeStatement
 ;
 
-Term: '(' Expression ')'
-|Id     { $<stringValue>$=$<stringValue>1 ;}
+UnMatchedStatement 	: If '(' LogicExpression ')' Statement { 
+                               $<stringValue>$=strdup("If ");
+                                strcat($<stringValue>$,strdup($<stringValue>3));
+                                strcat($<stringValue>$,strdup(" Then\n"));
+                                strcat($<stringValue>$,strdup($<stringValue>5));
+                                strcat($<stringValue>$,strdup("\nEnd If"));
+                                }
+|If '(' LogicExpression ')' MatchedStatement Else UnMatchedStatement   {
+                                $<stringValue>$=strdup("If ");
+                                strcat($<stringValue>$,strdup($<stringValue>3));
+                                strcat($<stringValue>$,strdup(" Then\n"));
+                                strcat($<stringValue>$,strdup($<stringValue>5));
+                                strcat($<stringValue>$,strdup("\nElse\n"));
+                                strcat($<stringValue>$,strdup($<stringValue>7));
+                                strcat($<stringValue>$,strdup("\nEnd If"));
+                                }
 ;
+
+ArithmaticExpression: ArithmaticExpression '+' Term  { $<stringValue>$=$<stringValue>1;
+                                   strcat($<stringValue>$," + ");
+                                   strcat($<stringValue>$,$<stringValue>3);
+                                  }
+|ArithmaticExpression '-' Term             { $<stringValue>$=$<stringValue>1;
+                                   strcat($<stringValue>$," - ");
+                                   strcat($<stringValue>$,$<stringValue>3);
+                                  }
+|Term 
+;
+
+Term: Term '*' Factor      { $<stringValue>$=$<stringValue>1;
+                             strcat($<stringValue>$," * ");
+                             strcat($<stringValue>$,$<stringValue>3);
+                            }
+|Term '/' Factor           { $<stringValue>$=$<stringValue>1;
+                             strcat($<stringValue>$," / ");
+                             strcat($<stringValue>$,$<stringValue>3);
+                            }
+|Term '%' Factor           { $<stringValue>$=$<stringValue>1;
+                             strcat($<stringValue>$," Mod ");
+                             strcat($<stringValue>$,$<stringValue>3);
+                            }
+|Factor 
+;
+
+Factor: '(' ArithmaticExpression ')'  { $<stringValue>$=strdup("( ");
+                              strcat($<stringValue>$,$<stringValue>2);
+                              strcat($<stringValue>$," )");
+                             }
+|Id
+|'-' Id   { $<stringValue>$=strdup("-");
+            strcat($<stringValue>$,$<stringValue>2);
+           }
+|Value
+;
+
+LogicExpression: LogicExpression '|' '|' LogicTerm  { $<stringValue>$=$<stringValue>1;
+                                                   strcat($<stringValue>$," Or ");
+                                                   strcat($<stringValue>$,$<stringValue>4);
+                                                  }
+|LogicTerm 
+;
+
+LogicTerm: LogicTerm '&' '&' LogicFactor   { $<stringValue>$=$<stringValue>1;
+                                          strcat($<stringValue>$," And ");
+                                          strcat($<stringValue>$,$<stringValue>4);
+                                         }
+|LogicFactor 
+;
+
+LogicFactor :'!' LogicFactor   { $<stringValue>$=strdup("Not ");
+                               strcat($<stringValue>$,$<stringValue>2);
+                             }
+|NotFactor
+;
+
+NotFactor: '(' LogicExpression ')'  { $<stringValue>$=strdup("( ");
+                                        strcat($<stringValue>$,$<stringValue>2);
+                                        strcat($<stringValue>$," )");
+                                       }
+|Comparator
+;
+
+Comparator: ArithmaticExpression Operation ArithmaticExpression { $<stringValue>$=$<stringValue>1;
+                                                                    strcat($<stringValue>$,$<stringValue>2);
+                                                                    strcat($<stringValue>$,$<stringValue>3);
+                                                                   }
+;
+
+Operation: '=' '=' {$<stringValue>$= " = " ;}
+| '>'  {$<stringValue>$= " > " ;}
+| '<'  {$<stringValue>$= " < " ;}
+| '<' '=' {$<stringValue>$= " <= " ;}
+| '>' '=' {$<stringValue>$= " >= " ;} 
+; 
 
 Variables : Id List { push(&variablesStack,$<stringValue>1); }
 | Id '=' Value List { push(&variablesWithValuesStack,$<stringValue>1);
