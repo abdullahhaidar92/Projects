@@ -18,7 +18,7 @@ typedef union
 {
     int intValue;
     float floatValue;
-   char* stringValue;
+   string stringValue;
 } yy_parse_stype;
 #define YY_parse_STYPE yy_parse_stype
 #ifndef YY_USE_CLASS
@@ -197,7 +197,7 @@ typedef
 #define	Single	260
 #define	Double	261
 #define	Id	262
-#define	NewLine	263
+#define	Space	263
 #define	IntegerValue	264
 #define	CharacterValue	265
 #define	SingleValue	266
@@ -208,8 +208,6 @@ typedef
 #define	Address	271
 #define	If	272
 #define	Else	273
-#define	While	274
-#define	For	275
 
 
 #line 169 "/usr/share/bison++/bison.h"
@@ -263,7 +261,7 @@ static const int Char;
 static const int Single;
 static const int Double;
 static const int Id;
-static const int NewLine;
+static const int Space;
 static const int IntegerValue;
 static const int CharacterValue;
 static const int SingleValue;
@@ -274,8 +272,6 @@ static const int Text;
 static const int Address;
 static const int If;
 static const int Else;
-static const int While;
-static const int For;
 
 
 #line 212 "/usr/share/bison++/bison.h"
@@ -289,7 +285,7 @@ static const int For;
 	,Single=260
 	,Double=261
 	,Id=262
-	,NewLine=263
+	,Space=263
 	,IntegerValue=264
 	,CharacterValue=265
 	,SingleValue=266
@@ -300,8 +296,6 @@ static const int For;
 	,Address=271
 	,If=272
 	,Else=273
-	,While=274
-	,For=275
 
 
 #line 215 "/usr/share/bison++/bison.h"

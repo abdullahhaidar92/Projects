@@ -21,23 +21,63 @@ char *newText,*buff;
     float floatValue;
    char* stringValue;
 }
-%token Integer Char Single Double Id  Space
+%token Integer Char Single Double Id NewLine 
 %token IntegerValue CharacterValue SingleValue DoubleValue
 %token Print Scan Text Address
 %token If Else
+%token While For
 %%
-start: line   {printf("valid\n");return(0);}
+start: Code  {printf("valid\n");return(0);}
 ;
 
-line : Blank  Statement  line  {printf("%s\n",$<stringValue>2);};
-|Blank  
+Code: Lines  {printf("%s",$<stringValue>1);}
+|'{'  Lines '}'  {printf("%s",$<stringValue>2);}
 ;
 
-Statement : MatchedStatement 
+Lines : Blank Statement  Lines  {$<stringValue>$=strdup($<stringValue>2);
+                                  strcat($<stringValue>$,strdup("\n"));
+                                 strcat($<stringValue>$,strdup($<stringValue>3))};
+|WhileLoop  {$<stringValue>$=strdup($<stringValue>1); }
+|ForLoop  {$<stringValue>$=strdup($<stringValue>1);  }
+|Blank  {$<stringValue>$=strdup(" ");  }
+;
+Statement:Statement1
+;
+Statement1 : MatchedStatement 
 |UnMatchedStatement
 ;
 
-NonAlternativeStatement :DataType Delim Variables ';' { 
+MatchedStatement : 	If '(' LogicExpression ')' Blank MatchedStatement Blank Else Blank MatchedStatement {
+                                $<stringValue>$=strdup("If ");
+                                strcat($<stringValue>$,strdup($<stringValue>3));
+                                strcat($<stringValue>$,strdup(" Then\n    "));
+                                strcat($<stringValue>$,strdup($<stringValue>6));
+                                strcat($<stringValue>$,strdup(" \nElse\n    "));
+                                strcat($<stringValue>$,strdup($<stringValue>10));
+                                strcat($<stringValue>$,strdup("\nEnd If"));
+                                }
+|NonAlternativeStatement
+;
+
+UnMatchedStatement 	: If '(' LogicExpression ')' Blank Statement1 { 
+                               $<stringValue>$=strdup("If ");
+                                strcat($<stringValue>$,strdup($<stringValue>3));
+                                strcat($<stringValue>$,strdup(" Then\n    "));
+                                strcat($<stringValue>$,strdup($<stringValue>6));
+                                strcat($<stringValue>$,strdup("\nEnd If"));
+                                }
+|If '(' LogicExpression ')' Blank MatchedStatement Blank Else Blank UnMatchedStatement   {
+                                $<stringValue>$=strdup("If ");
+                                strcat($<stringValue>$,strdup($<stringValue>3));
+                                strcat($<stringValue>$,strdup(" Then\n    "));
+                                strcat($<stringValue>$,strdup($<stringValue>6));
+                                strcat($<stringValue>$,strdup("\nElse    "));
+                                strcat($<stringValue>$,strdup($<stringValue>10));
+                                strcat($<stringValue>$,strdup("\nEnd If"));
+                                }
+;
+
+NonAlternativeStatement :DataType Variables ';' { 
                                               $<stringValue>$=strdup("Dim "); 
                                               flag=0;
                                               variable=pop(&variablesStack);
@@ -63,7 +103,6 @@ NonAlternativeStatement :DataType Delim Variables ';' {
                                                 value=pop(&variablesValuesStack);
                                                 flag=1;
                                              }
-                                              strcat($<stringValue>$,"\n");
                                         }
 |Print '(' Text Arguments ')' ';' { 
                                     $<stringValue>$=strdup("Console.Write(");
@@ -71,7 +110,7 @@ NonAlternativeStatement :DataType Delim Variables ';' {
                                     counter=0;
                                     for(i=0;i<strlen(text);i++)
                                         if(text[i]=='\\' && text[i+1]=='n'){
-                                            strcat($<stringValue>$,"\"& vbcrlf &\"");
+                                            strcat($<stringValue>$,strdup("\"& vbcrlf &\""));
                                             i++;
                                         }
                                             
@@ -83,7 +122,7 @@ NonAlternativeStatement :DataType Delim Variables ';' {
                                            i+=1;
                                         }
                                         else
-                                            strncat($<stringValue>$, text+i, 1);
+                                            strncat($<stringValue>$,strdup(text+i), 1);
                                    
                                     while(counter > 0){
                                        variable=pop(&variablesStack);
@@ -96,9 +135,11 @@ NonAlternativeStatement :DataType Delim Variables ';' {
                                    if(pop(&variablesStack))
                                        yyerror("Too many arguments");
                                    
-                                     strcat($<stringValue>$,") ");
+                                     strcat($<stringValue>$,strdup(") "));
+                                     strcat($<stringValue>$,strdup(" "));
+                                     
                                   }
-|Scan '(' Text Addresses ')' ';' {  $<stringValue>$=strdup("");
+|Scan  '(' Text Addresses ')' ';' {  $<stringValue>$=strdup("");
                                     text=$<stringValue>3;
                                     for(i=1;i<strlen(text)-1;i++)
                                         if(text[i]==' ')
@@ -122,39 +163,8 @@ NonAlternativeStatement :DataType Delim Variables ';' {
                                    if(pop(&variablesStack))
                                        yyerror("Too many arguments");
                                   }
-|ArithmaticExpression ';'   
-|LogicExpression ';'   
-;
-
-
-MatchedStatement : 	If '(' LogicExpression ')'  MatchedStatement Else MatchedStatement {
-                                $<stringValue>$=strdup("If ");
-                                strcat($<stringValue>$,strdup($<stringValue>3));
-                                strcat($<stringValue>$,strdup(" Then\n"));
-                                strcat($<stringValue>$,strdup($<stringValue>5));
-                                strcat($<stringValue>$,strdup(" \nElse\n"));
-                                strcat($<stringValue>$,strdup($<stringValue>7));
-                                strcat($<stringValue>$,strdup("\nEnd If"));
-                                }
-|NonAlternativeStatement
-;
-
-UnMatchedStatement 	: If '(' LogicExpression ')' Statement { 
-                               $<stringValue>$=strdup("If ");
-                                strcat($<stringValue>$,strdup($<stringValue>3));
-                                strcat($<stringValue>$,strdup(" Then\n"));
-                                strcat($<stringValue>$,strdup($<stringValue>5));
-                                strcat($<stringValue>$,strdup("\nEnd If"));
-                                }
-|If '(' LogicExpression ')' MatchedStatement Else UnMatchedStatement   {
-                                $<stringValue>$=strdup("If ");
-                                strcat($<stringValue>$,strdup($<stringValue>3));
-                                strcat($<stringValue>$,strdup(" Then\n"));
-                                strcat($<stringValue>$,strdup($<stringValue>5));
-                                strcat($<stringValue>$,strdup("\nElse\n"));
-                                strcat($<stringValue>$,strdup($<stringValue>7));
-                                strcat($<stringValue>$,strdup("\nEnd If"));
-                                }
+|ArithmaticExpression ';'     
+|Assignment ';'
 ;
 
 ArithmaticExpression: ArithmaticExpression '+' Term  { $<stringValue>$=$<stringValue>1;
@@ -234,6 +244,47 @@ Operation: '=' '=' {$<stringValue>$= " = " ;}
 | '>' '=' {$<stringValue>$= " >= " ;} 
 ; 
 
+Assignment: Id '=' ArithmaticExpression  { $<stringValue>$=strdup($<stringValue>1);
+                                              strcat($<stringValue>$,strdup(" = "));
+                                              strcat($<stringValue>$,strdup($<stringValue>3));
+                                  }
+;
+
+WhileLoop: While '(' LogicExpression ')' WhileStatement {  $<stringValue>$=strdup("while ");
+                                                           strcat($<stringValue>$,strdup($<stringValue>3));
+                                                           strcat($<stringValue>$,strdup("\n\t"));
+                                                           strcat($<stringValue>$,strdup($<stringValue>5));
+                                                           strcat($<stringValue>$,strdup("\nEnd While"));}
+;
+WhileStatement: WhileLoop
+|NonAlternativeStatement
+|'{'  Lines '}'  {$<stringValue>$=strdup($<stringValue>2);}
+;
+
+ForLoop: For '(' Id '=' Value ';' Id '<' '=' Value ';' Id '+' '=' Value ')' ForStatement 
+                                                        {  if(strcmp($<stringValue>3,$<stringValue>7)!=0
+                                                            || strcmp($<stringValue>7,$<stringValue>12)!=0 )
+                                                            yyerror(" Index of for loop must be the same ");
+                                                           $<stringValue>$=strdup("For  ");
+                                                           strcat($<stringValue>$,strdup($<stringValue>3));
+                                                           strcat($<stringValue>$,strdup(" = "));
+                                                           strcat($<stringValue>$,strdup($<stringValue>5));
+                                                           strcat($<stringValue>$,strdup(" To "));
+                                                           strcat($<stringValue>$,strdup($<stringValue>10));
+                                                           strcat($<stringValue>$,strdup(" step "));
+                                                           strcat($<stringValue>$,strdup($<stringValue>15));
+                                                           strcat($<stringValue>$,strdup("\n\t"));
+                                                           strcat($<stringValue>$,strdup($<stringValue>17));
+                                                           strcat($<stringValue>$,strdup("\nNext "));
+                                                           strcat($<stringValue>$,strdup($<stringValue>3));}                                                           
+;
+ForStatement: ForLoop
+|NonAlternativeStatement
+|'{'  Lines '}'  {$<stringValue>$=strdup($<stringValue>2);}
+;
+
+
+
 Variables : Id List { push(&variablesStack,$<stringValue>1); }
 | Id '=' Value List { push(&variablesWithValuesStack,$<stringValue>1);
                       push(&variablesValuesStack,$<stringValue>3); }
@@ -260,14 +311,7 @@ Arguments : ',' Id Arguments  { push(&variablesStack,$<stringValue>2); }
 Addresses : ',' '&' Id Addresses  { push(&variablesStack,$<stringValue>3); }
 |                     
 ;
-
-Delim: Space Delim 
-|'\n' Delim  {lineNb++;}
-|Space
-|'\n' {lineNb++;}
-;
-
-Blank: Delim
+Blank: NewLine Blank {lineNb++;}
 |
 ;
 %%
