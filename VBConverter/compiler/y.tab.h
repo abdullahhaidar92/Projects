@@ -207,9 +207,15 @@ typedef
 #define	Text	270
 #define	Address	271
 #define	If	272
-#define	Else	273
-#define	While	274
-#define	For	275
+#define	ELSE	273
+#define	EQ	274
+#define	LE	275
+#define	GE	276
+#define	AND	277
+#define	OR	278
+#define	ADD	279
+#define	While	280
+#define	For	281
 
 
 #line 169 "/usr/share/bison++/bison.h"
@@ -273,7 +279,13 @@ static const int Scan;
 static const int Text;
 static const int Address;
 static const int If;
-static const int Else;
+static const int ELSE;
+static const int EQ;
+static const int LE;
+static const int GE;
+static const int AND;
+static const int OR;
+static const int ADD;
 static const int While;
 static const int For;
 
@@ -299,9 +311,15 @@ static const int For;
 	,Text=270
 	,Address=271
 	,If=272
-	,Else=273
-	,While=274
-	,For=275
+	,ELSE=273
+	,EQ=274
+	,LE=275
+	,GE=276
+	,AND=277
+	,OR=278
+	,ADD=279
+	,While=280
+	,For=281
 
 
 #line 215 "/usr/share/bison++/bison.h"

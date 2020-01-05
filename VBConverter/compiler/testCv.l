@@ -25,7 +25,7 @@ char[ \t]+ {yylval.stringValue="Char";return (Char);}
 float[ \t]+ {yylval.stringValue="Single";return(Single);}
 double[ \t]+ {yylval.stringValue="Double";return(Double);}
 if {return(If);} 
-else[ \t]+ {return(Else);} 
+else[ \t]+ {return(ELSE);} 
 while {return(While);}
 for {return(For);}
 {Text} {yylval.stringValue = strdup(yytext);return(Text);}
@@ -36,6 +36,12 @@ scanf {return(Scan);}
 {SingleValue} {yylval.stringValue=strdup(yytext);return(SingleValue);}
 {DoubleValue} {yylval.stringValue=strdup(yytext);return(DoubleValue);}
 {Id} {yylval.stringValue = strdup(yytext);return(Id);}
+[=][=] {return(EQ);}
+[<][=] {return(LE);}
+[>][=] {return(GE);}
+[&][&] {return(AND);}
+[|][|] {return(OR);}
+[+][=] {return(ADD);}
 [+\-*/=,;&()%><|!}{] return(yytext[0]);
 [ \t]+ ;
 [\n] return(NewLine);

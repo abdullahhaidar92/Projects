@@ -24,60 +24,31 @@ char *newText,*buff;
 %token Integer Char Single Double Id NewLine 
 %token IntegerValue CharacterValue SingleValue DoubleValue
 %token Print Scan Text Address
-%token If Else
+%token If ELSE EQ LE GE AND OR ADD
 %token While For
 %%
-start: Code  {printf("valid\n");return(0);}
+start: Code  {printf("valid\n");
+              printf("%s\n",$<stringValue>1);return(0);}
 ;
 
-Code: Lines  {printf("%s",$<stringValue>1);}
-|'{'  Lines '}'  {printf("%s",$<stringValue>2);}
-;
-
-Lines : Blank Statement  Lines  {$<stringValue>$=strdup($<stringValue>2);
+Code : Line  Code  {$<stringValue>$=strdup($<stringValue>1);
                                   strcat($<stringValue>$,strdup("\n"));
-                                 strcat($<stringValue>$,strdup($<stringValue>3))};
-|WhileLoop  {$<stringValue>$=strdup($<stringValue>1); }
-|ForLoop  {$<stringValue>$=strdup($<stringValue>1);  }
-|Blank  {$<stringValue>$=strdup(" ");  }
-;
-Statement:Statement1
-;
-Statement1 : MatchedStatement 
-|UnMatchedStatement
+                                 strcat($<stringValue>$,strdup($<stringValue>2))};
+|  {$<stringValue>$=strdup(" ");  }
 ;
 
-MatchedStatement : 	If '(' LogicExpression ')' Blank MatchedStatement Blank Else Blank MatchedStatement {
-                                $<stringValue>$=strdup("If ");
-                                strcat($<stringValue>$,strdup($<stringValue>3));
-                                strcat($<stringValue>$,strdup(" Then\n    "));
-                                strcat($<stringValue>$,strdup($<stringValue>6));
-                                strcat($<stringValue>$,strdup(" \nElse\n    "));
-                                strcat($<stringValue>$,strdup($<stringValue>10));
-                                strcat($<stringValue>$,strdup("\nEnd If"));
-                                }
-|NonAlternativeStatement
+Line:Statement 
+|OpenIfStatement
 ;
 
-UnMatchedStatement 	: If '(' LogicExpression ')' Blank Statement1 { 
-                               $<stringValue>$=strdup("If ");
-                                strcat($<stringValue>$,strdup($<stringValue>3));
-                                strcat($<stringValue>$,strdup(" Then\n    "));
-                                strcat($<stringValue>$,strdup($<stringValue>6));
-                                strcat($<stringValue>$,strdup("\nEnd If"));
-                                }
-|If '(' LogicExpression ')' Blank MatchedStatement Blank Else Blank UnMatchedStatement   {
-                                $<stringValue>$=strdup("If ");
-                                strcat($<stringValue>$,strdup($<stringValue>3));
-                                strcat($<stringValue>$,strdup(" Then\n    "));
-                                strcat($<stringValue>$,strdup($<stringValue>6));
-                                strcat($<stringValue>$,strdup("\nElse    "));
-                                strcat($<stringValue>$,strdup($<stringValue>10));
-                                strcat($<stringValue>$,strdup("\nEnd If"));
-                                }
+Statement : SimpleStatement {$<stringValue>$=strdup($<stringValue>1);}
+| WhileLoop  {$<stringValue>$=strdup($<stringValue>1); }
+| ForLoop  {$<stringValue>$=strdup($<stringValue>1);  }
+| ClosedIfStatement  {$<stringValue>$=strdup($<stringValue>1); }
+| '{' Code '}'  {$<stringValue>$=strdup($<stringValue>2); }
 ;
 
-NonAlternativeStatement :DataType Variables ';' { 
+SimpleStatement: DataType Variables  End { 
                                               $<stringValue>$=strdup("Dim "); 
                                               flag=0;
                                               variable=pop(&variablesStack);
@@ -104,7 +75,7 @@ NonAlternativeStatement :DataType Variables ';' {
                                                 flag=1;
                                              }
                                         }
-|Print '(' Text Arguments ')' ';' { 
+| Print LP Text Arguments RP End { 
                                     $<stringValue>$=strdup("Console.Write(");
                                     text=$<stringValue>3;
                                     counter=0;
@@ -137,9 +108,9 @@ NonAlternativeStatement :DataType Variables ';' {
                                    
                                      strcat($<stringValue>$,strdup(") "));
                                      strcat($<stringValue>$,strdup(" "));
-                                     
+                                    // printf(".");
                                   }
-|Scan  '(' Text Addresses ')' ';' {  $<stringValue>$=strdup("");
+| Scan  LP Text Addresses RP  End  {  $<stringValue>$=strdup("");
                                     text=$<stringValue>3;
                                     for(i=1;i<strlen(text)-1;i++)
                                         if(text[i]==' ')
@@ -150,7 +121,7 @@ NonAlternativeStatement :DataType Variables ';' {
                                           variable=pop(&variablesStack);
                                           if(variable){
                                           strcat($<stringValue>$,strdup(variable));
-                                             strcat($<stringValue>$,strdup(" = Console.ReadLine()\n"));
+                                             strcat($<stringValue>$,strdup(" = Console.ReadLine()\t"));
                                           }
                                           else
                                            yyerror("Not enough arguments");
@@ -163,8 +134,37 @@ NonAlternativeStatement :DataType Variables ';' {
                                    if(pop(&variablesStack))
                                        yyerror("Too many arguments");
                                   }
-|ArithmaticExpression ';'     
-|Assignment ';'
+| ArithmaticExpression  End {$<stringValue>$=strdup($<stringValue>1); }  
+| Assignment  End {$<stringValue>$=strdup($<stringValue>1); }
+;
+
+ClosedIfStatement :If LP LogicExpression RP Statement Else Statement {
+                                $<stringValue>$=strdup("If ");
+                                strcat($<stringValue>$,strdup($<stringValue>3));
+                                strcat($<stringValue>$,strdup(" Then\n    "));
+                                strcat($<stringValue>$,strdup($<stringValue>5));
+                                strcat($<stringValue>$,strdup(" \nElse\n    "));
+                                strcat($<stringValue>$,strdup($<stringValue>7));
+                                strcat($<stringValue>$,strdup("\nEnd If"));
+                                }
+;
+
+OpenIfStatement 	: If LP LogicExpression RP  Line { 
+                               $<stringValue>$=strdup("If ");
+                                strcat($<stringValue>$,strdup($<stringValue>3));
+                                strcat($<stringValue>$,strdup(" Then\n    "));
+                                strcat($<stringValue>$,strdup($<stringValue>5));
+                                strcat($<stringValue>$,strdup("\nEnd If"));
+                                }
+| If LP LogicExpression RP Statement Else OpenIfStatement   {
+                                $<stringValue>$=strdup("If ");
+                                strcat($<stringValue>$,strdup($<stringValue>3));
+                                strcat($<stringValue>$,strdup(" Then\n    "));
+                                strcat($<stringValue>$,strdup($<stringValue>6));
+                                strcat($<stringValue>$,strdup("\nElse    "));
+                                strcat($<stringValue>$,strdup($<stringValue>10));
+                                strcat($<stringValue>$,strdup("\nEnd If"));
+                                }
 ;
 
 ArithmaticExpression: ArithmaticExpression '+' Term  { $<stringValue>$=$<stringValue>1;
@@ -197,23 +197,23 @@ Factor: '(' ArithmaticExpression ')'  { $<stringValue>$=strdup("( ");
                               strcat($<stringValue>$,$<stringValue>2);
                               strcat($<stringValue>$," )");
                              }
-|Id
+|Id {$<stringValue>$=strdup($<stringValue>1); }
 |'-' Id   { $<stringValue>$=strdup("-");
             strcat($<stringValue>$,$<stringValue>2);
            }
-|Value
+|Value {$<stringValue>$=strdup($<stringValue>1); }
 ;
 
-LogicExpression: LogicExpression '|' '|' LogicTerm  { $<stringValue>$=$<stringValue>1;
+LogicExpression: LogicExpression OR LogicTerm  { $<stringValue>$=$<stringValue>1;
                                                    strcat($<stringValue>$," Or ");
-                                                   strcat($<stringValue>$,$<stringValue>4);
+                                                   strcat($<stringValue>$,$<stringValue>3);
                                                   }
 |LogicTerm 
 ;
 
-LogicTerm: LogicTerm '&' '&' LogicFactor   { $<stringValue>$=$<stringValue>1;
+LogicTerm: LogicTerm AND LogicFactor   { $<stringValue>$=$<stringValue>1;
                                           strcat($<stringValue>$," And ");
-                                          strcat($<stringValue>$,$<stringValue>4);
+                                          strcat($<stringValue>$,$<stringValue>3);
                                          }
 |LogicFactor 
 ;
@@ -237,11 +237,11 @@ Comparator: ArithmaticExpression Operation ArithmaticExpression { $<stringValue>
                                                                    }
 ;
 
-Operation: '=' '=' {$<stringValue>$= " = " ;}
+Operation: EQ {$<stringValue>$= " = " ;}
 | '>'  {$<stringValue>$= " > " ;}
 | '<'  {$<stringValue>$= " < " ;}
-| '<' '=' {$<stringValue>$= " <= " ;}
-| '>' '=' {$<stringValue>$= " >= " ;} 
+| LE {$<stringValue>$= " <= " ;}
+| GE {$<stringValue>$= " >= " ;} 
 ; 
 
 Assignment: Id '=' ArithmaticExpression  { $<stringValue>$=strdup($<stringValue>1);
@@ -257,30 +257,32 @@ WhileLoop: While '(' LogicExpression ')' WhileStatement {  $<stringValue>$=strdu
                                                            strcat($<stringValue>$,strdup("\nEnd While"));}
 ;
 WhileStatement: WhileLoop
-|NonAlternativeStatement
-|'{'  Lines '}'  {$<stringValue>$=strdup($<stringValue>2);}
+|SimpleStatement {$<stringValue>$=strdup($<stringValue>1);}
+|ForLoop {$<stringValue>$=strdup($<stringValue>1);}
+|'{'  Code '}'  {$<stringValue>$=strdup($<stringValue>2);}
 ;
 
-ForLoop: For '(' Id '=' Value ';' Id '<' '=' Value ';' Id '+' '=' Value ')' ForStatement 
+ForLoop: For LP Id '=' Value ';' Id LE Value ';' Id ADD Value RP ForStatement 
                                                         {  if(strcmp($<stringValue>3,$<stringValue>7)!=0
-                                                            || strcmp($<stringValue>7,$<stringValue>12)!=0 )
+                                                            || strcmp($<stringValue>7,$<stringValue>11)!=0 )
                                                             yyerror(" Index of for loop must be the same ");
                                                            $<stringValue>$=strdup("For  ");
                                                            strcat($<stringValue>$,strdup($<stringValue>3));
                                                            strcat($<stringValue>$,strdup(" = "));
                                                            strcat($<stringValue>$,strdup($<stringValue>5));
                                                            strcat($<stringValue>$,strdup(" To "));
-                                                           strcat($<stringValue>$,strdup($<stringValue>10));
+                                                           strcat($<stringValue>$,strdup($<stringValue>9));
                                                            strcat($<stringValue>$,strdup(" step "));
-                                                           strcat($<stringValue>$,strdup($<stringValue>15));
+                                                           strcat($<stringValue>$,strdup($<stringValue>13));
                                                            strcat($<stringValue>$,strdup("\n\t"));
-                                                           strcat($<stringValue>$,strdup($<stringValue>17));
+                                                           strcat($<stringValue>$,strdup($<stringValue>15));
                                                            strcat($<stringValue>$,strdup("\nNext "));
                                                            strcat($<stringValue>$,strdup($<stringValue>3));}                                                           
 ;
 ForStatement: ForLoop
-|NonAlternativeStatement
-|'{'  Lines '}'  {$<stringValue>$=strdup($<stringValue>2);}
+|SimpleStatement {$<stringValue>$=strdup($<stringValue>1);}
+|WhileLoop {$<stringValue>$=strdup($<stringValue>1);}
+|'{'  Code '}'  {$<stringValue>$=strdup($<stringValue>2);}
 ;
 
 
@@ -311,8 +313,18 @@ Arguments : ',' Id Arguments  { push(&variablesStack,$<stringValue>2); }
 Addresses : ',' '&' Id Addresses  { push(&variablesStack,$<stringValue>3); }
 |                     
 ;
-Blank: NewLine Blank {lineNb++;}
-|
+
+End: ';' NewLine {lineNb++;}
+|';'
+;
+RP: ')' NewLine {lineNb++;}
+| ')'
+;
+LP: '('
+;
+
+Else: ELSE NewLine {lineNb++;}
+| ELSE
 ;
 %%
 int yyerror(char* s){fprintf(stderr,"line %d :%s\n",lineNb,s);}
