@@ -5,6 +5,7 @@
 int lineNb=1,i,counter;
 int yyerror();
 int yylex();
+int indent=0;
 node_t * variablesStack = NULL;      
 node_t * variablesWithValuesStack = NULL;  
 node_t * variablesValuesStack = NULL;  
@@ -142,28 +143,66 @@ ClosedIfStatement :If LP LogicExpression RP Statement Else Statement {
                                 $<stringValue>$=strdup("If ");
                                 strcat($<stringValue>$,strdup($<stringValue>3));
                                 strcat($<stringValue>$,strdup(" Then\n    "));
-                                strcat($<stringValue>$,strdup($<stringValue>5));
-                                strcat($<stringValue>$,strdup(" \nElse\n    "));
-                                strcat($<stringValue>$,strdup($<stringValue>7));
+                                    strcat($<stringValue>$,strdup("\t"));
+                               buff=strdup($<stringValue>5);
+                                for(i=0;i<strlen(buff);i++)
+                                    if(buff[i]=='\n')
+                                        strcat($<stringValue>$,strdup("\n\t"));
+                                    else
+                                         strncat($<stringValue>$,buff+i,1);
+                                strcat($<stringValue>$,strdup("\n"));
+                                strcat($<stringValue>$,strdup("Else\n    "));
+                                  strcat($<stringValue>$,strdup("\t"));
+                                buff=strdup($<stringValue>7);
+                                for(i=0;i<strlen(buff);i++)
+                                     if(buff[i]=='\n')
+                                         strcat($<stringValue>$,strdup("\n\t"));
+                                    else
+                                         strncat($<stringValue>$,buff+i,1);
+                                strcat($<stringValue>$,strdup("\n"));
                                 strcat($<stringValue>$,strdup("\nEnd If"));
+                                 printf(".");
                                 }
 ;
 
-OpenIfStatement 	: If LP LogicExpression RP  Line { 
-                               $<stringValue>$=strdup("If ");
-                                strcat($<stringValue>$,strdup($<stringValue>3));
-                                strcat($<stringValue>$,strdup(" Then\n    "));
-                                strcat($<stringValue>$,strdup($<stringValue>5));
-                                strcat($<stringValue>$,strdup("\nEnd If"));
-                                }
-| If LP LogicExpression RP Statement Else OpenIfStatement   {
+OpenIfStatement 	:If LP LogicExpression RP Statement Else OpenIfStatement   {
                                 $<stringValue>$=strdup("If ");
                                 strcat($<stringValue>$,strdup($<stringValue>3));
                                 strcat($<stringValue>$,strdup(" Then\n    "));
-                                strcat($<stringValue>$,strdup($<stringValue>6));
-                                strcat($<stringValue>$,strdup("\nElse    "));
-                                strcat($<stringValue>$,strdup($<stringValue>10));
+                                    strcat($<stringValue>$,strdup("\t"));
+                               buff=strdup($<stringValue>6);
+                                for(i=0;i<strlen(buff);i++)
+                                    if(buff[i]=='\n')
+                                        strcat($<stringValue>$,strdup("\n\t"));
+                                    else
+                                         strncat($<stringValue>$,buff+i,1);
+                                strcat($<stringValue>$,strdup("\n"));
+                                strcat($<stringValue>$,strdup("Else\n    "));
+                                  strcat($<stringValue>$,strdup("\t"));
+                                buff=strdup($<stringValue>10);
+                                for(i=0;i<strlen(buff);i++)
+                                     if(buff[i]=='\n')
+                                         strcat($<stringValue>$,strdup("\n\t"));
+                                    else
+                                         strncat($<stringValue>$,buff+i,1);
+                                strcat($<stringValue>$,strdup("\n"));
                                 strcat($<stringValue>$,strdup("\nEnd If"));
+                                 printf(".");
+                                }
+| If LP LogicExpression RP  Line { 
+                               $<stringValue>$=strdup("If ");
+                                strcat($<stringValue>$,strdup($<stringValue>3));
+                                strcat($<stringValue>$,strdup(" Then\n    "));
+                                strcat($<stringValue>$,strdup("\t"));
+                                buff=strdup($<stringValue>5);
+                                for(i=0;i<strlen(buff);i++)
+                                    if(buff[i]=='\n')
+                                        strcat($<stringValue>$,strdup("\n\t"));
+                                    else
+                                         strncat($<stringValue>$,buff+i,1);
+                                strcat($<stringValue>$,strdup("\n"));
+                                strcat($<stringValue>$,strdup("\nEnd If"));
+                                printf(".");
                                 }
 ;
 
@@ -323,8 +362,7 @@ RP: ')' NewLine {lineNb++;}
 LP: '('
 ;
 
-Else: ELSE NewLine {lineNb++;}
-| ELSE
+Else:ELSE{lineNb+=$<intValue>1;}
 ;
 %%
 int yyerror(char* s){fprintf(stderr,"line %d :%s\n",lineNb,s);}

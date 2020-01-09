@@ -25,7 +25,7 @@ char[ \t]+ {yylval.stringValue="Char";return (Char);}
 float[ \t]+ {yylval.stringValue="Single";return(Single);}
 double[ \t]+ {yylval.stringValue="Double";return(Double);}
 if {return(If);} 
-else[ \t]+ {return(ELSE);} 
+else[ \t\n] {if(yytext[0]=='\n')yylval.intValue=1;else yylval.intValue=0;return(ELSE);} 
 while {return(While);}
 for {return(For);}
 {Text} {yylval.stringValue = strdup(yytext);return(Text);}
