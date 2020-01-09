@@ -56,12 +56,11 @@ public class Top extends VBox {
         help.getItems().add(About);
 
         New.setOnAction(t -> {
-            cfield.clear();
-            vbfield.clear();
-            fileName = null;
+           clean();
         });
 
         Open.setOnAction(t -> {
+            clean();
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Open Resource File");
             try {
@@ -99,12 +98,12 @@ public class Top extends VBox {
             List<String> commands = new ArrayList<String>();
             commands.add("/bin/sh");
             commands.add("-c");
-            commands.add("~/Desktop/Code/calc ");
+            commands.add("~/Desktop/Code/gitProject/Projects/VBConverter/compiler/target.exe");
 
             SystemCommandExecutor commandExecutor = new SystemCommandExecutor(commands);
             boolean result = false;
             try {
-                result = commandExecutor.executeCommand(cfield.getText());
+                result = commandExecutor.executeCommand(cfield.getText().stripTrailing());
             } catch (IOException | InterruptedException e) {
                 vbfield.error("Internal error occurred.\nTry rerunning the program.");
             }
@@ -156,4 +155,11 @@ public class Top extends VBox {
         return fileChooser.showSaveDialog(Main.primaryStage).getAbsoluteFile().getAbsolutePath();
 
     }
+    private final void clean(){
+        cfield.clear();
+        cfield.clearErrorList();
+        vbfield.clear();
+        fileName=null;
+    }
+
 }

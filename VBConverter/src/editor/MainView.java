@@ -9,8 +9,8 @@ import javafx.scene.layout.HBox;
 
 public class MainView extends BorderPane {
 
-    private static final CField cfield=new CField();
-    private static final VBField vbfield=new VBField();
+    private  final CField cfield=new CField();
+    private  final VBField vbfield=new VBField();
 
     public MainView(){
 

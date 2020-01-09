@@ -217,10 +217,10 @@
       <screen x="67" y="27" width="1299" height="741" />
     </state>
     <state x="311" y="58" width="847" height="677" key="#Project_Structure/67.27.1299.741@67.27.1299.741" timestamp="1576607364344" />
-    <state x="524" y="100" width="374" height="592" key="#com.intellij.ide.util.MemberChooser" timestamp="1576796043807">
+    <state x="524" y="100" width="374" height="592" key="#com.intellij.ide.util.MemberChooser" timestamp="1578578453724">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
-    <state x="524" y="100" width="374" height="592" key="#com.intellij.ide.util.MemberChooser/67.27.1299.741@67.27.1299.741" timestamp="1576796043807" />
+    <state x="524" y="100" width="374" height="592" key="#com.intellij.ide.util.MemberChooser/67.27.1299.741@67.27.1299.741" timestamp="1578578453724" />
     <state x="567" y="110" width="324" height="572" key="#com.intellij.openapi.roots.ui.configuration.libraryEditor.LibraryEditorDialog" timestamp="1576607231262">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
@@ -233,22 +233,22 @@
       <screen x="67" y="27" width="1299" height="741" />
     </state>
     <state x="517" y="154" width="735" height="484" key="FileChooserDialogImpl/67.27.1299.741@67.27.1299.741" timestamp="1576883389202" />
-    <state width="1253" height="2" key="GridCell.Tab.0.bottom" timestamp="1576886610572">
+    <state width="1253" height="2" key="GridCell.Tab.0.bottom" timestamp="1578584995748">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
-    <state width="1253" height="2" key="GridCell.Tab.0.bottom/67.27.1299.741@67.27.1299.741" timestamp="1576886610572" />
-    <state width="1253" height="2" key="GridCell.Tab.0.center" timestamp="1576886610571">
+    <state width="1253" height="2" key="GridCell.Tab.0.bottom/67.27.1299.741@67.27.1299.741" timestamp="1578584995748" />
+    <state width="1253" height="2" key="GridCell.Tab.0.center" timestamp="1578584995748">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
-    <state width="1253" height="2" key="GridCell.Tab.0.center/67.27.1299.741@67.27.1299.741" timestamp="1576886610571" />
-    <state width="1253" height="2" key="GridCell.Tab.0.left" timestamp="1576886610571">
+    <state width="1253" height="2" key="GridCell.Tab.0.center/67.27.1299.741@67.27.1299.741" timestamp="1578584995748" />
+    <state width="1253" height="2" key="GridCell.Tab.0.left" timestamp="1578584995747">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
-    <state width="1253" height="2" key="GridCell.Tab.0.left/67.27.1299.741@67.27.1299.741" timestamp="1576886610571" />
-    <state width="1253" height="2" key="GridCell.Tab.0.right" timestamp="1576886610571">
+    <state width="1253" height="2" key="GridCell.Tab.0.left/67.27.1299.741@67.27.1299.741" timestamp="1578584995747" />
+    <state width="1253" height="2" key="GridCell.Tab.0.right" timestamp="1578584995748">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
-    <state width="1253" height="2" key="GridCell.Tab.0.right/67.27.1299.741@67.27.1299.741" timestamp="1576886610571" />
+    <state width="1253" height="2" key="GridCell.Tab.0.right/67.27.1299.741@67.27.1299.741" timestamp="1578584995748" />
     <state width="1253" height="2" key="GridCell.Tab.1.bottom" timestamp="1576883406656">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
@@ -265,10 +265,10 @@
       <screen x="67" y="27" width="1299" height="741" />
     </state>
     <state width="1253" height="2" key="GridCell.Tab.1.right/67.27.1299.741@67.27.1299.741" timestamp="1576883406655" />
-    <state x="372" y="224" key="com.intellij.ide.util.TipDialog" timestamp="1576883503769">
+    <state x="372" y="224" key="com.intellij.ide.util.TipDialog" timestamp="1578577546451">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
-    <state x="372" y="224" key="com.intellij.ide.util.TipDialog/67.27.1299.741@67.27.1299.741" timestamp="1576883503769" />
+    <state x="372" y="224" key="com.intellij.ide.util.TipDialog/67.27.1299.741@67.27.1299.741" timestamp="1578577546451" />
     <state x="380" y="175" key="run.anything.popup" timestamp="1576789826885">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
@@ -284,6 +284,43 @@
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/module-info.java</url>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/editor/CField.java</url>
+          <line>21</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/editor/CField.java</url>
+          <line>38</line>
+          <properties class="editor.CField" method="showErrors">
+            <option name="EMULATED" value="true" />
+          </properties>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/editor/CField.java</url>
+          <line>23</line>
+          <properties class="editor.CField" method="clear">
+            <option name="EMULATED" value="true" />
+          </properties>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/editor/CField.java</url>
+          <line>34</line>
+          <properties class="editor.CField" method="clearErrorList">
+            <option name="EMULATED" value="true" />
+          </properties>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/editor/CodeField.java</url>
+          <line>47</line>
+          <properties class="editor.CodeField" method="&lt;init&gt;">
+            <option name="EMULATED" value="true" />
+          </properties>
+          <option name="timeStamp" value="12" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
