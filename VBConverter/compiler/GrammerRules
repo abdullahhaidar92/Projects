@@ -1,0 +1,232 @@
+%{
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h> 
+#include "linkedlist.h"
+#include "strings.h"
+int lineNb=1,i,counter;
+int yyerror();
+int yylex();
+int indent=0;
+node_t * variablesStack = NULL;      
+node_t * variablesWithValuesStack = NULL;  
+node_t * variablesValuesStack = NULL;  
+char* variable; 
+char* value;
+int flag,N=0; 
+char *text;
+char *newText,*buff;
+%}
+%name parse
+%union
+{
+    int intValue;
+    float floatValue;
+   char* stringValue;
+}
+%token Integer Char Single Double Id  
+%token IntegerValue CharacterValue SingleValue DoubleValue
+%token Print Scan Text Address
+%token If Else EQ LE GE AND OR ADD SUB INC DEC
+%token While For
+%%
+start: Code  
+;
+
+Code : Line  Code  
+| 
+;
+
+Line:Statement {$<stringValue>$=strdup($<stringValue>1);}
+|OpenIfStatement {$<stringValue>$=strdup($<stringValue>1);}
+;
+
+Statement : SimpleStatement 
+| WhileLoop  
+| ForLoop  
+| ClosedIfStatement  
+| '{' Code '}'   
+
+SimpleStatement: DataType Variables  ';' { 
+                                              $<stringValue>$=strdup("Dim "); 
+                                              flag=0;
+                                              variable=pop(&variablesStack);
+                                              if(variable){
+                                                flag=1;
+                                                $<stringValue>$=concat($<stringValue>$,strdup(variable));
+                                                variable=pop(&variablesStack);
+                                                while(variable){ 
+                                                     $<stringValue>$=concat($<stringValue>$,strdup(" , "));
+                                                    $<stringValue>$=concat($<stringValue>$,strdup(variable));
+                                                //sprintf($<stringValue>$,"%s , %s",strdup($<stringValue>$),strdup(variable));
+                                                variable=pop(&variablesStack);  
+                                                }
+                                                $<stringValue>$=concat($<stringValue>$," As ");
+                                                $<stringValue>$=concat($<stringValue>$,strdup($<stringValue>1));
+                                             }
+                                             variable=pop(&variablesWithValuesStack);
+                                             value=pop(&variablesValuesStack);
+                                             while(variable){
+                                                if(flag)
+                                                     $<stringValue>$=concat($<stringValue>$,strdup(", "));
+                                                 $<stringValue>$=concat($<stringValue>$,strdup(variable));
+                                                  $<stringValue>$=concat($<stringValue>$,strdup(" As "));
+                                                  $<stringValue>$=concat($<stringValue>$,strdup($<stringValue>1));
+                                                  $<stringValue>$=concat($<stringValue>$,strdup(" = "));
+                                                  $<stringValue>$=concat($<stringValue>$,strdup(strdup(value)));
+                                                 
+                                                // sprintf($<stringValue>$,"%s%s As %s = %s ",strdup($<stringValue>$),
+                                                // strdup(variable),strdup($<stringValue>1),strdup(value));
+                                                variable=pop(&variablesWithValuesStack);
+                                                value=pop(&variablesValuesStack);
+                                                flag=1;
+                                             }
+                                        }
+| Print LP Text Arguments RP ';'  { 
+                                    $<stringValue>$=strdup("Console.Write(");
+                                    text=strdup($<stringValue>3);
+                                    counter=0;
+                                    N=strlen(text);
+                                    for(i=0;i<N-1;i++)
+                                        if(text[i]=='\\' && text[i+1]=='n'){
+                                           $<stringValue>$=appendNewLine(strdup($<stringValue>$));
+                                            i++;
+                                        }
+                                            
+                                        else if(text[i]=='%' && (text[i+1]=='d' || text[i+1]=='c' || text[i+1]=='f' 
+                                                                 || (text[i+1]=='l' && text[i+2]=='f' && (i=i+1) )))
+                                        {  
+                                            $<stringValue>$=concat($<stringValue>$,strdup("{"));
+                                            $<stringValue>$=concat($<stringValue>$,int_to_string(strdup(" "),3,counter));
+                                            $<stringValue>$=concat($<stringValue>$,strdup("}"));
+                                          // sprintf($<stringValue>$, "%s{%d}",strdup($<stringValue>$),counter);
+                                           counter++;
+                                           i+=1;
+                                        }
+                                        else
+                                            $<stringValue>$=append($<stringValue>$,text[i]);
+                                        
+                                     $<stringValue>$=append($<stringValue>$,'"');
+                                    while(counter > 0){
+                                       variable=pop(&variablesStack);
+                                       if(variable)
+                                       {
+                                           $<stringValue>$=concat($<stringValue>$,strdup(" , "));
+                                           $<stringValue>$=concat($<stringValue>$,strdup(variable));
+                                       }
+                                           // sprintf($<stringValue>$, "%s,%s",strdup($<stringValue>$),strdup(variable));
+                                       else
+                                           yyerror("Not enough arguments");
+                                       counter--;
+                                   }
+                                   if(pop(&variablesStack))
+                                       yyerror("Too many arguments");
+                                   
+                                    $<stringValue>$=concat($<stringValue>$,strdup(") "));
+                                    
+                                    // printf(".");
+                                  }
+| Scan  LP Text Addresses RP  ';'  
+| ArithmaticExpression  ';'  
+| Assignment  ';'  
+;
+
+ClosedIfStatement :If LP LogicExpression RP Statement Else Statement 
+;
+
+OpenIfStatement 	:If LP LogicExpression RP Statement Else OpenIfStatement   
+| If LP LogicExpression RP  Line
+;
+
+ArithmaticExpression: ArithmaticExpression '+' Term  
+|ArithmaticExpression '-' Term   
+|Term 
+;
+
+Term: Term '*' Factor     
+|Term '/' Factor           
+|Term '%' Factor           
+|Factor 
+;
+
+Factor: '(' ArithmaticExpression ')' 
+|Id 
+|'-' Id   
+|Value 
+;
+
+LogicExpression: LogicExpression OR LogicTerm  
+|LogicTerm 
+;
+
+LogicTerm: LogicTerm AND LogicFactor   
+|LogicFactor 
+;
+
+LogicFactor :'!' LogicFactor  
+|NotFactor 
+;
+
+NotFactor: '(' LogicExpression ')' 
+|Comparator  
+;
+
+Comparator: ArithmaticExpression Operation ArithmaticExpression 
+;
+
+Operation: EQ 
+| '>' 
+| '<' 
+| LE   
+| GE    
+; 
+
+Assignment: Id '=' ArithmaticExpression  
+;
+
+WhileLoop: While '(' LogicExpression ')' Statement 
+;
+
+ForLoop: For LP Id '=' Value ';' Id LE Value ';' Id ADD Value RP Statement 
+                                                                                                               
+;
+
+
+Variables : Id List 
+| Id '=' Value List
+
+List: ',' Variables
+|
+;
+
+DataType:Integer 
+|Char 
+|Single  
+|Double 
+;
+Value: CharacterValue 
+| NumberValue
+| '-' NumberValue 
+;
+
+NumberValue: IntegerValue 
+| SingleValue 
+| DoubleValue 
+;
+
+Arguments : ',' Id Arguments  
+|                     
+;
+
+Addresses : ',' '&' Id Addresses  
+|                     
+;
+
+RP: ')'
+;
+LP: '('
+;
+
+%%
+int yyerror(char* s){fprintf(stderr,"line %d :%s\n",lineNb,s);}
+int main(void){ yyparse();}

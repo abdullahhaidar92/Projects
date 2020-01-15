@@ -1,6 +1,7 @@
 package editor;
 
 import javafx.application.Platform;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -15,13 +16,14 @@ import org.reactfx.Subscription;
 
 import java.time.Duration;
 import java.util.Collection;
+import java.util.function.IntFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CodeField extends VBox {
 
-    protected  Label nameLabel = new Label("New");
-    protected  CodeArea codeArea = new CodeArea();
+    private  Label nameLabel = new Label("New");
+    private  CodeArea codeArea = new CodeArea();
     private AnchorPane header = new AnchorPane();
     private double minWidth=650;
     private double minHeight=600;
@@ -83,6 +85,12 @@ public class CodeField extends VBox {
 
     }
 
+    protected void setParagraphGraphicFactory(IntFunction<Node> graphicFactory){
+        codeArea.setParagraphGraphicFactory(graphicFactory);
+    }
+    protected   IntFunction<Node> getLineNumberFactory(){
+        return LineNumberFactory.get(codeArea);
+    }
     protected StyleSpans<Collection<String>> computeHighlighting(String text) {
         StyleSpansBuilder<Collection<String>> spansBuilder
                 = new StyleSpansBuilder<>();
@@ -93,7 +101,7 @@ public class CodeField extends VBox {
      * TODO Remove this in the future
      * A silly method to improve the look of the CodeArea
      */
-    private final void expandWithEmptyLines() {
+    protected final void expandWithEmptyLines() {
         if (codeArea.getText().chars().filter(ch -> ch == '\n').count() < 38)
             codeArea.appendText("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     }

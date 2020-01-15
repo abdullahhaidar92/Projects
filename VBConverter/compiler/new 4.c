@@ -26,7 +26,7 @@ char[ \t]+ {yylval.stringValue="Char";return (Char);}
 float[ \t]+ {yylval.stringValue="Single";return(Single);}
 double[ \t]+ {yylval.stringValue="Double";return(Double);}
 if {return(If);} 
-else[ \t\n] {if(yytext[0]=='\n')yylval.intValue=1;else yylval.intValue=0;return(ELSE);} 
+else[ \t\n] {if(yytext[0]=='\n')yylval.intValue=1;else yylval.intValue=0;return(Else);} 
 while {return(While);}
 for {return(For);}
 {Text} {yylval.stringValue = strdup(yytext);return(Text);}
@@ -45,7 +45,7 @@ scanf {return(Scan);}
 [+][=] {return(ADD);}
 [+\-*/=,;&()%><|!}{] return(yytext[0]);
 [ \t]+ ;
-[\n] {lnb++;return(NEWLINE);}
+[\n] {lnb++;}
 . {fprintf(stderr,"line %d :unrecognized token \n",lnb);return yytext[0];}
 
 %%

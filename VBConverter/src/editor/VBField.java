@@ -19,17 +19,9 @@ public class VBField extends CodeField {
     public VBField() {
         setName("Output");
         setHeaderStyle("header2");
-        IntFunction<Node> numberFactory = LineNumberFactory.get(codeArea);
-        IntFunction<Node> graphicFactory = line -> {
-            HBox hbox = new HBox();
-            Label label=new Label();
-            label.setMinHeight(20);
-            label.setText(" ");
-            hbox.getChildren().add(label);
-            return hbox;
-        };
-
-        codeArea.setParagraphGraphicFactory(graphicFactory);
+       setParagraphGraphicFactory(line -> {
+           return new Label(" ");
+       });
     }
 
     public final void success(String text) {
@@ -42,7 +34,7 @@ public class VBField extends CodeField {
     @Override
     protected StyleSpans<Collection<String>> computeHighlighting(String text) {
         Pattern pattern=Pattern.compile(
-                "(?<KEYWORD>" + "\\b(" + "End|Character|continue|Double|Else|Sngle|For|If|Integer|Dim|Next|As|to|And|Or|Not" + ")\\b" + ")"
+                "(?<KEYWORD>" + "\\b(" + "End|Character|While|To|Step|continue|Double|Else|Sngle|For|If|Then|Integer|Dim|Next|As|And|Or|Not" + ")\\b" + ")"
                         + "|(?<PAREN>" + "\\(|\\)" + ")"
                         + "|(?<BRACE>" + "\\{|\\}" + ")"
                         + "|(?<BRACKET>" + "\\[|\\]" + ")"

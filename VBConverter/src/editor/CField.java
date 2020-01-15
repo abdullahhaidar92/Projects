@@ -5,7 +5,6 @@ import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
-import org.fxmisc.richtext.LineNumberFactory;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 
@@ -23,13 +22,13 @@ public class CField extends CodeField {
     @Override
     public  void clear() {
         super.clear();
-        clearErrorList();
         setName("New");
+        clearErrorList();
     }
 
     public void open(String fileName, String text) {
-        setText(text);
         setName(fileName);
+        setText(text);
     }
 
     public void clearErrorList() {
@@ -37,7 +36,7 @@ public class CField extends CodeField {
     }
 
     public void showErrors(List<Integer> errors) {
-        IntFunction<Node> numberFactory = LineNumberFactory.get(codeArea);
+        IntFunction<Node> numberFactory = getLineNumberFactory();
         IntFunction<Node> arrowFactory = new IntFunction<>() {
             final List<Integer> shownLines = errors;
 
@@ -58,14 +57,14 @@ public class CField extends CodeField {
             return hbox;
         };
 
-        codeArea.setParagraphGraphicFactory(graphicFactory);
+        setParagraphGraphicFactory(graphicFactory);
 
     }
 
     @Override
     protected StyleSpans<Collection<String>> computeHighlighting(String text) {
         Pattern pattern=Pattern.compile(
-                "(?<KEYWORD>" + "\\b(" + "break|char|continue|double|else|float|for|if|int|long|return|void" + ")\\b" + ")"
+                "(?<KEYWORD>" + "\\b(" + "break|char|while|continue|double|else|float|for|if|int|long|return|void" + ")\\b" + ")"
                         + "|(?<PAREN>" + "\\(|\\)" + ")"
                         + "|(?<BRACE>" + "\\{|\\}" + ")"
                         + "|(?<BRACKET>" + "\\[|\\]" + ")"

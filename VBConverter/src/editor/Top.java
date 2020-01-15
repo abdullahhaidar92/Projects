@@ -147,6 +147,7 @@ public class Top extends VBox {
 
     public final void save(String fileName, String text) throws IOException {
         Files.writeString(Paths.get(fileName), text, StandardCharsets.US_ASCII);
+        cfield.setName(Paths.get(fileName).getFileName().toString());
     }
 
     private String saveAs() {

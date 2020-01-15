@@ -22,10 +22,10 @@ char *newText,*buff;
     float floatValue;
    char* stringValue;
 }
-%token Integer Char Single Double Id NewLine 
+%token Integer Char Single Double Id  
 %token IntegerValue CharacterValue SingleValue DoubleValue
 %token Print Scan Text Address
-%token If ELSE EQ LE GE AND OR ADD
+%token If Else EQ LE GE AND OR ADD
 %token While For
 %%
 start: Code  {printf("valid\n");
@@ -46,10 +46,10 @@ Statement : SimpleStatement {$<stringValue>$=strdup($<stringValue>1);}
 | WhileLoop  {$<stringValue>$=strdup($<stringValue>1); }
 | ForLoop  {$<stringValue>$=strdup($<stringValue>1);  }
 | ClosedIfStatement  {$<stringValue>$=strdup($<stringValue>1); }
-| '{' Code '}'  {$<stringValue>$=strdup($<stringValue>2); }
+| '{' Code '}'   {$<stringValue>$=strdup($<stringValue>2); }
 ;
 
-SimpleStatement: DataType Variables  End { 
+SimpleStatement: DataType Variables  ';' { 
                                               $<stringValue>$=strdup("Dim "); 
                                               flag=0;
                                               variable=pop(&variablesStack);
@@ -76,7 +76,7 @@ SimpleStatement: DataType Variables  End {
                                                 flag=1;
                                              }
                                         }
-| Print LP Text Arguments RP End { 
+| Print LP Text Arguments RP ';'  { 
                                     $<stringValue>$=strdup("Console.Write(");
                                     text=$<stringValue>3;
                                     counter=0;
@@ -111,7 +111,7 @@ SimpleStatement: DataType Variables  End {
                                      strcat($<stringValue>$,strdup(" "));
                                     // printf(".");
                                   }
-| Scan  LP Text Addresses RP  End  {  $<stringValue>$=strdup("");
+| Scan  LP Text Addresses RP  ';'   {  $<stringValue>$=strdup("");
                                     text=$<stringValue>3;
                                     for(i=1;i<strlen(text)-1;i++)
                                         if(text[i]==' ')
@@ -135,8 +135,8 @@ SimpleStatement: DataType Variables  End {
                                    if(pop(&variablesStack))
                                        yyerror("Too many arguments");
                                   }
-| ArithmaticExpression  End {$<stringValue>$=strdup($<stringValue>1); }  
-| Assignment  End {$<stringValue>$=strdup($<stringValue>1); }
+| ArithmaticExpression  ';'  {$<stringValue>$=strdup($<stringValue>1); }  
+| Assignment  ';'  {$<stringValue>$=strdup($<stringValue>1); }
 ;
 
 ClosedIfStatement :If LP LogicExpression RP Statement Else Statement {
@@ -289,19 +289,14 @@ Assignment: Id '=' ArithmaticExpression  { $<stringValue>$=strdup($<stringValue>
                                   }
 ;
 
-WhileLoop: While '(' LogicExpression ')' WhileStatement {  $<stringValue>$=strdup("while ");
+WhileLoop: While '(' LogicExpression ')' Statement {  $<stringValue>$=strdup("While ");
                                                            strcat($<stringValue>$,strdup($<stringValue>3));
                                                            strcat($<stringValue>$,strdup("\n\t"));
                                                            strcat($<stringValue>$,strdup($<stringValue>5));
                                                            strcat($<stringValue>$,strdup("\nEnd While"));}
 ;
-WhileStatement: WhileLoop
-|SimpleStatement {$<stringValue>$=strdup($<stringValue>1);}
-|ForLoop {$<stringValue>$=strdup($<stringValue>1);}
-|'{'  Code '}'  {$<stringValue>$=strdup($<stringValue>2);}
-;
 
-ForLoop: For LP Id '=' Value ';' Id LE Value ';' Id ADD Value RP ForStatement 
+ForLoop: For LP Id '=' Value ';' Id LE Value ';' Id ADD Value RP Statement 
                                                         {  if(strcmp($<stringValue>3,$<stringValue>7)!=0
                                                             || strcmp($<stringValue>7,$<stringValue>11)!=0 )
                                                             yyerror(" Index of for loop must be the same ");
@@ -314,16 +309,15 @@ ForLoop: For LP Id '=' Value ';' Id LE Value ';' Id ADD Value RP ForStatement
                                                            strcat($<stringValue>$,strdup(" step "));
                                                            strcat($<stringValue>$,strdup($<stringValue>13));
                                                            strcat($<stringValue>$,strdup("\n\t"));
-                                                           strcat($<stringValue>$,strdup($<stringValue>15));
+                                                           buff=strdup($<stringValue>15);
+                                                           for(i=0;i<strlen(buff);i++)
+                                                           if(buff[i]=='\n')
+                                                           strcat($<stringValue>$,strdup("\n\t"));
+                                                           else
+                                                           strncat($<stringValue>$,buff+i,1);
                                                            strcat($<stringValue>$,strdup("\nNext "));
                                                            strcat($<stringValue>$,strdup($<stringValue>3));}                                                           
 ;
-ForStatement: ForLoop
-|SimpleStatement {$<stringValue>$=strdup($<stringValue>1);}
-|WhileLoop {$<stringValue>$=strdup($<stringValue>1);}
-|'{'  Code '}'  {$<stringValue>$=strdup($<stringValue>2);}
-;
-
 
 
 Variables : Id List { push(&variablesStack,$<stringValue>1); }
@@ -339,11 +333,16 @@ DataType:Integer
 |Single
 |Double
 ;
+Value: CharacterValue {$<stringValue>$=$<stringValue>1;}
+| NumberValue {$<stringValue>$=$<stringValue>1;}
+| '-' NumberValue { $<stringValue>$=strdup("-");
+                    strcat($<stringValue>$,$<stringValue>2);}
+;
 
-Value: IntegerValue 
-| CharacterValue 
+NumberValue: IntegerValue 
 | SingleValue 
-| DoubleValue ;
+| DoubleValue 
+;
 
 Arguments : ',' Id Arguments  { push(&variablesStack,$<stringValue>2); }
 |                     
@@ -353,17 +352,11 @@ Addresses : ',' '&' Id Addresses  { push(&variablesStack,$<stringValue>3); }
 |                     
 ;
 
-End: ';' NewLine {lineNb++;}
-|';'
-;
-RP: ')' NewLine {lineNb++;}
-| ')'
+RP: ')'
 ;
 LP: '('
 ;
 
-Else:ELSE{lineNb+=$<intValue>1;}
-;
 %%
 int yyerror(char* s){fprintf(stderr,"line %d :%s\n",lineNb,s);}
 int main(void){ yyparse();}

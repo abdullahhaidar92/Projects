@@ -13,12 +13,10 @@
 
  #line 8 "/usr/share/bison++/bison.h"
 
-#line 19 "testCv.y"
+#line 22 "converter.y"
 typedef union
 {
-    int intValue;
-    float floatValue;
-   char* stringValue;
+   char* strVal;
 } yy_parse_stype;
 #define YY_parse_STYPE yy_parse_stype
 #ifndef YY_USE_CLASS
@@ -197,25 +195,27 @@ typedef
 #define	Single	260
 #define	Double	261
 #define	Id	262
-#define	NewLine	263
-#define	IntegerValue	264
-#define	CharacterValue	265
-#define	SingleValue	266
-#define	DoubleValue	267
-#define	Print	268
-#define	Scan	269
-#define	Text	270
-#define	Address	271
-#define	If	272
-#define	ELSE	273
-#define	EQ	274
-#define	LE	275
-#define	GE	276
-#define	AND	277
-#define	OR	278
-#define	ADD	279
-#define	While	280
-#define	For	281
+#define	IntegerValue	263
+#define	CharacterValue	264
+#define	SingleValue	265
+#define	DoubleValue	266
+#define	Print	267
+#define	Scan	268
+#define	Text	269
+#define	Address	270
+#define	If	271
+#define	Else	272
+#define	EQ	273
+#define	LE	274
+#define	GE	275
+#define	AND	276
+#define	OR	277
+#define	ADD	278
+#define	SUB	279
+#define	INC	280
+#define	DEC	281
+#define	While	282
+#define	For	283
 
 
 #line 169 "/usr/share/bison++/bison.h"
@@ -269,7 +269,6 @@ static const int Char;
 static const int Single;
 static const int Double;
 static const int Id;
-static const int NewLine;
 static const int IntegerValue;
 static const int CharacterValue;
 static const int SingleValue;
@@ -279,13 +278,16 @@ static const int Scan;
 static const int Text;
 static const int Address;
 static const int If;
-static const int ELSE;
+static const int Else;
 static const int EQ;
 static const int LE;
 static const int GE;
 static const int AND;
 static const int OR;
 static const int ADD;
+static const int SUB;
+static const int INC;
+static const int DEC;
 static const int While;
 static const int For;
 
@@ -301,25 +303,27 @@ static const int For;
 	,Single=260
 	,Double=261
 	,Id=262
-	,NewLine=263
-	,IntegerValue=264
-	,CharacterValue=265
-	,SingleValue=266
-	,DoubleValue=267
-	,Print=268
-	,Scan=269
-	,Text=270
-	,Address=271
-	,If=272
-	,ELSE=273
-	,EQ=274
-	,LE=275
-	,GE=276
-	,AND=277
-	,OR=278
-	,ADD=279
-	,While=280
-	,For=281
+	,IntegerValue=263
+	,CharacterValue=264
+	,SingleValue=265
+	,DoubleValue=266
+	,Print=267
+	,Scan=268
+	,Text=269
+	,Address=270
+	,If=271
+	,Else=272
+	,EQ=273
+	,LE=274
+	,GE=275
+	,AND=276
+	,OR=277
+	,ADD=278
+	,SUB=279
+	,INC=280
+	,DEC=281
+	,While=282
+	,For=283
 
 
 #line 215 "/usr/share/bison++/bison.h"
