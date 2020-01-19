@@ -20,8 +20,12 @@ DoubleValue [0-9]+(\.[0-9]{1,16})?
 Id [a-zA-Z][a-zA-Z0-9]*
 Text \"[a-zA-Z0-9%\\n+-=}{)( ]*\"
 Delim [ \t\n]+
+BlockComment  "/*"([^*]|\*+[^*/])*\*+"/"  
+LineComment "//".*\n
 %%
 
+{BlockComment}  ;
+{LineComment}  ;
 int{Delim} {yylval.strVal="Integer";return(INTEGER);}
 char{Delim} {yylval.strVal="Char";return (CHAR);}
 float{Delim} {yylval.strVal="Single";return(SINGLE);}
@@ -52,6 +56,7 @@ scanf {return(SCAN);}
 [+\-*/=,;&()%><|!}{] return(yytext[0]);
 [ \t]+ ;
 [\n] {lnb++;}
+				 
 . {fprintf(stderr,"line %d :unrecognized token \n",lnb);return yytext[0];}
 
 %%

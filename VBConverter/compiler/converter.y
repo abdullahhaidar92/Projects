@@ -36,6 +36,15 @@ char* indent(char* buff){
             res=append(res,buff[i]);
     return res;
 }
+char* indent2(char* buff){
+    char* res="";
+    for(i=0;i<strlen(buff);i++)
+        if(buff[i]=='\n')
+            res=concat(res,"\n\t\t");
+            else
+            res=append(res,buff[i]);
+    return res;
+}
 %}
 %name parse
 %union
@@ -49,8 +58,8 @@ char* indent(char* buff){
 %token IF ELSE EQ LE GE AND OR ADD SUB MUL DIV INC DEC
 %token WHILE FOR
 %%
-start: code  {printf("valid\n");
-              printf("%s",$<strVal>1);return(0);}
+start: code  {printf("Module VBModule\n\tSub Main()\n");
+              printf("\t\t%s\n\tEnd Sub\nEnd Module\n",indent2($<strVal>1));return(0);}
 ;
 
 code : line code  { $<strVal>$=concat(concat($<strVal>1," \n"),$<strVal>2)};
