@@ -202,20 +202,21 @@ typedef
 #define	Print	267
 #define	Scan	268
 #define	Text	269
-#define	Address	270
-#define	If	271
-#define	Else	272
-#define	EQ	273
-#define	LE	274
-#define	GE	275
-#define	AND	276
-#define	OR	277
-#define	ADD	278
-#define	SUB	279
-#define	INC	280
-#define	DEC	281
-#define	While	282
-#define	For	283
+#define	If	270
+#define	Else	271
+#define	EQ	272
+#define	LE	273
+#define	GE	274
+#define	AND	275
+#define	OR	276
+#define	ADD	277
+#define	SUB	278
+#define	MUL	279
+#define	DIV	280
+#define	INC	281
+#define	DEC	282
+#define	While	283
+#define	For	284
 
 
 #line 169 "/usr/share/bison++/bison.h"
@@ -276,7 +277,6 @@ static const int DoubleValue;
 static const int Print;
 static const int Scan;
 static const int Text;
-static const int Address;
 static const int If;
 static const int Else;
 static const int EQ;
@@ -286,6 +286,8 @@ static const int AND;
 static const int OR;
 static const int ADD;
 static const int SUB;
+static const int MUL;
+static const int DIV;
 static const int INC;
 static const int DEC;
 static const int While;
@@ -310,20 +312,21 @@ static const int For;
 	,Print=267
 	,Scan=268
 	,Text=269
-	,Address=270
-	,If=271
-	,Else=272
-	,EQ=273
-	,LE=274
-	,GE=275
-	,AND=276
-	,OR=277
-	,ADD=278
-	,SUB=279
-	,INC=280
-	,DEC=281
-	,While=282
-	,For=283
+	,If=270
+	,Else=271
+	,EQ=272
+	,LE=273
+	,GE=274
+	,AND=275
+	,OR=276
+	,ADD=277
+	,SUB=278
+	,MUL=279
+	,DIV=280
+	,INC=281
+	,DEC=282
+	,While=283
+	,For=284
 
 
 #line 215 "/usr/share/bison++/bison.h"

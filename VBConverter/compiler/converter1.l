@@ -38,20 +38,18 @@ scanf {return(Scan);}
 {SingleValue} {yylval.strVal=strdup(yytext);return(SingleValue);}
 {DoubleValue} {yylval.strVal=strdup(yytext);return(DoubleValue);}
 {Id} {yylval.strVal = strdup(yytext);return(Id);}
-"==" {return(EQ);}
-"<=" {return(LE);}
-">=" {return(GE);}
-"&&" {return(AND);}
-"||" {return(OR);}
-"+=" {return(ADD);}
-"-=" {return(SUB);}
-"*=" {return(MUL);}
-"/=" {return(DIV);}
-"++" {return(INC);}
-"--" {return(DEC);}
+[=][=] {return(EQ);}
+[<][=] {return(LE);}
+[>][=] {return(GE);}
+[&][&] {return(AND);}
+[|][|] {return(OR);}
+[+][=] {return(ADD);}
+[-][=] {return(SUB);}
+[+][+] {return(INC);}
+[-][-] {return(DEC);}
 [+\-*/=,;&()%><|!}{] return(yytext[0]);
 [ \t]+ ;
-[\n] {lnb++;}
+[\n] {return('\n');}
 . {fprintf(stderr,"line %d :unrecognized token \n",lnb);return yytext[0];}
 
 %%
