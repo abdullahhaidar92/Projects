@@ -1,5 +1,2 @@
-int x=9;
-x+=y+8;
-x-=y+8;
-x*=y+8;
-x/=y+8;
+for(i=6;i<2;i++)
+	printf("X");

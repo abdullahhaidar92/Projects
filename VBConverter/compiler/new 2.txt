@@ -1,3 +1,44 @@
+boundExpr : ID LE arithmaticExpression ';' {$<expression>$=strdup($<strVal>3);$<forId>$=strdup($<strVal>2);}
+| ID GE arithmaticExpression ';'  {$<expression>$=strdup($<strVal>3);$<forId>$=strdup($<strVal>2);}
+| ID '<' arithmaticExpression ';' {if(isNumeric($<strVal>3,&n))
+                                            $<expression>$=stringValue(strdup(" "),16,n-1);
+                                        else
+                                            $<expression>$=concat($<strVal>3," - 1");
+                                  $<forId>$=strdup($<strVal>2);}
+| ID '>' arithmaticExpression ';' {if(isNumeric($<strVal>3,&n))
+                                            $<expression>$=stringValue(strdup(" "),16,n-1);
+                                        else
+                                            $<expression>$=concat($<strVal>3," - 1");
+                                  $<forId>$=strdup($<strVal>2);}
+
+;
+stepExpr : ID ADD arithmaticExpression ')' {$<expression>$=strdup($<strVal>3);$<forId>$=strdup($<strVal>2);}
+|ID SUB  arithmaticExpression ')' {if(isNumeric($<strVal>3,&n))
+                                            $<expression>$=stringValue(strdup(" "),16,-n);
+                                        else
+                                            $<expression>$=concat(concat("- ( ",$<strVal>3)," )");
+                                  $<forId>$=strdup($<strVal>2);}
+|ID INC  ')' {  $<expression>$=strdup("1");$<forId>$=strdup($<strVal>2);} 
+|ID DEC  ')' {  $<expression>$=strdup("-1");$<forId>$=strdup($<strVal>2);}
+;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 %{
 #include <stdio.h>
 #include <string.h>

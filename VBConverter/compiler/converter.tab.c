@@ -1,7 +1,7 @@
 #define YY_parse_h_included
 /*#define YY_USE_CLASS 
 */
-/*  A Bison++ parser, made from testCv.y  */
+/*  A Bison++ parser, made from converter.y  */
 
  /* with Bison++ version bison++ Version 1.21.9-1, adapted from GNU bison by coetmeur@icdc.fr
 Maintained by Magnus Ekdahl <magnus@debian.org>
@@ -98,11 +98,13 @@ Maintained by Magnus Ekdahl <magnus@debian.org>
 #define YYBISON 1  
 
  #line 88 "/usr/share/bison++/bison.cc"
-#line 1 "testCv.y"
+#line 1 "converter.y"
 
 #include <stdio.h>
-#include "linkedlist.h"
 #include <string.h>
+#include <stdlib.h> 
+#include "linkedlist.h"
+#include "strings.h"
 int lineNb=1,i,counter;
 int yyerror();
 int yylex();
@@ -111,16 +113,25 @@ node_t * variablesWithValuesStack = NULL;
 node_t * variablesValuesStack = NULL;  
 char* variable; 
 char* value;
-int flag; 
+int flag,N=0,n; 
+char* str;
 char *text;
 char *newText,*buff;
+char * indent(char* buff){
+    char* res="";
+    for(i=0;i<strlen(buff);i++)
+        if(buff[i]=='\n')
+            res=concat(res,"\n\t");
+            else
+            res=append(res,buff[i]);
+    return res;
+}
 
-#line 18 "testCv.y"
+#line 30 "converter.y"
 typedef union
 {
-    int intValue;
-    float floatValue;
-   string stringValue;
+   char* strVal;
+   char* strVals[2];
 } yy_parse_stype;
 #define YY_parse_STYPE yy_parse_stype
 #ifndef YY_USE_CLASS
@@ -321,22 +332,33 @@ typedef
 /* TOKEN C */
 
  #line 263 "/usr/share/bison++/bison.cc"
-#define	Integer	258
-#define	Char	259
-#define	Single	260
-#define	Double	261
-#define	Id	262
-#define	Space	263
-#define	IntegerValue	264
-#define	CharacterValue	265
-#define	SingleValue	266
-#define	DoubleValue	267
-#define	Print	268
-#define	Scan	269
-#define	Text	270
-#define	Address	271
-#define	If	272
-#define	Else	273
+#define	INTEGER	258
+#define	CHAR	259
+#define	SINGLE	260
+#define	DOUBLE	261
+#define	ID	262
+#define	INTEGERVALUE	263
+#define	CHARVALUE	264
+#define	SINGLEVALUE	265
+#define	DOUBLEVALUE	266
+#define	PRINT	267
+#define	SCAN	268
+#define	TEXT	269
+#define	IF	270
+#define	ELSE	271
+#define	EQ	272
+#define	LE	273
+#define	GE	274
+#define	AND	275
+#define	OR	276
+#define	ADD	277
+#define	SUB	278
+#define	MUL	279
+#define	DIV	280
+#define	INC	281
+#define	DEC	282
+#define	WHILE	283
+#define	FOR	284
 
 
 #line 263 "/usr/share/bison++/bison.cc"
@@ -386,22 +408,33 @@ public:
 /* static const int token ... */
 
  #line 307 "/usr/share/bison++/bison.cc"
-static const int Integer;
-static const int Char;
-static const int Single;
-static const int Double;
-static const int Id;
-static const int Space;
-static const int IntegerValue;
-static const int CharacterValue;
-static const int SingleValue;
-static const int DoubleValue;
-static const int Print;
-static const int Scan;
-static const int Text;
-static const int Address;
-static const int If;
-static const int Else;
+static const int INTEGER;
+static const int CHAR;
+static const int SINGLE;
+static const int DOUBLE;
+static const int ID;
+static const int INTEGERVALUE;
+static const int CHARVALUE;
+static const int SINGLEVALUE;
+static const int DOUBLEVALUE;
+static const int PRINT;
+static const int SCAN;
+static const int TEXT;
+static const int IF;
+static const int ELSE;
+static const int EQ;
+static const int LE;
+static const int GE;
+static const int AND;
+static const int OR;
+static const int ADD;
+static const int SUB;
+static const int MUL;
+static const int DIV;
+static const int INC;
+static const int DEC;
+static const int WHILE;
+static const int FOR;
 
 
 #line 307 "/usr/share/bison++/bison.cc"
@@ -410,22 +443,33 @@ static const int Else;
 enum YY_parse_ENUM_TOKEN { YY_parse_NULL_TOKEN=0
 
  #line 310 "/usr/share/bison++/bison.cc"
-	,Integer=258
-	,Char=259
-	,Single=260
-	,Double=261
-	,Id=262
-	,Space=263
-	,IntegerValue=264
-	,CharacterValue=265
-	,SingleValue=266
-	,DoubleValue=267
-	,Print=268
-	,Scan=269
-	,Text=270
-	,Address=271
-	,If=272
-	,Else=273
+	,INTEGER=258
+	,CHAR=259
+	,SINGLE=260
+	,DOUBLE=261
+	,ID=262
+	,INTEGERVALUE=263
+	,CHARVALUE=264
+	,SINGLEVALUE=265
+	,DOUBLEVALUE=266
+	,PRINT=267
+	,SCAN=268
+	,TEXT=269
+	,IF=270
+	,ELSE=271
+	,EQ=272
+	,LE=273
+	,GE=274
+	,AND=275
+	,OR=276
+	,ADD=277
+	,SUB=278
+	,MUL=279
+	,DIV=280
+	,INC=281
+	,DEC=282
+	,WHILE=283
+	,FOR=284
 
 
 #line 310 "/usr/share/bison++/bison.cc"
@@ -462,22 +506,33 @@ public:
 #if YY_parse_USE_CONST_TOKEN != 0
 
  #line 341 "/usr/share/bison++/bison.cc"
-const int YY_parse_CLASS::Integer=258;
-const int YY_parse_CLASS::Char=259;
-const int YY_parse_CLASS::Single=260;
-const int YY_parse_CLASS::Double=261;
-const int YY_parse_CLASS::Id=262;
-const int YY_parse_CLASS::Space=263;
-const int YY_parse_CLASS::IntegerValue=264;
-const int YY_parse_CLASS::CharacterValue=265;
-const int YY_parse_CLASS::SingleValue=266;
-const int YY_parse_CLASS::DoubleValue=267;
-const int YY_parse_CLASS::Print=268;
-const int YY_parse_CLASS::Scan=269;
-const int YY_parse_CLASS::Text=270;
-const int YY_parse_CLASS::Address=271;
-const int YY_parse_CLASS::If=272;
-const int YY_parse_CLASS::Else=273;
+const int YY_parse_CLASS::INTEGER=258;
+const int YY_parse_CLASS::CHAR=259;
+const int YY_parse_CLASS::SINGLE=260;
+const int YY_parse_CLASS::DOUBLE=261;
+const int YY_parse_CLASS::ID=262;
+const int YY_parse_CLASS::INTEGERVALUE=263;
+const int YY_parse_CLASS::CHARVALUE=264;
+const int YY_parse_CLASS::SINGLEVALUE=265;
+const int YY_parse_CLASS::DOUBLEVALUE=266;
+const int YY_parse_CLASS::PRINT=267;
+const int YY_parse_CLASS::SCAN=268;
+const int YY_parse_CLASS::TEXT=269;
+const int YY_parse_CLASS::IF=270;
+const int YY_parse_CLASS::ELSE=271;
+const int YY_parse_CLASS::EQ=272;
+const int YY_parse_CLASS::LE=273;
+const int YY_parse_CLASS::GE=274;
+const int YY_parse_CLASS::AND=275;
+const int YY_parse_CLASS::OR=276;
+const int YY_parse_CLASS::ADD=277;
+const int YY_parse_CLASS::SUB=278;
+const int YY_parse_CLASS::MUL=279;
+const int YY_parse_CLASS::DIV=280;
+const int YY_parse_CLASS::INC=281;
+const int YY_parse_CLASS::DEC=282;
+const int YY_parse_CLASS::WHILE=283;
+const int YY_parse_CLASS::FOR=284;
 
 
 #line 341 "/usr/share/bison++/bison.cc"
@@ -496,26 +551,26 @@ YY_parse_CONSTRUCTOR_CODE;
  #line 352 "/usr/share/bison++/bison.cc"
 
 
-#define	YYFINAL		110
+#define	YYFINAL		147
 #define	YYFLAG		-32768
-#define	YYNTBASE	35
+#define	YYNTBASE	46
 
-#define YYTRANSLATE(x) ((unsigned)(x) <= 273 ? yytranslate[x] : 58)
+#define YYTRANSLATE(x) ((unsigned)(x) <= 284 ? yytranslate[x] : 78)
 
 static const char yytranslate[] = {     0,
-     2,     2,     2,     2,     2,     2,     2,     2,     2,    34,
-     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-     2,     2,    29,     2,     2,     2,    26,    28,     2,    20,
-    21,    24,    22,    33,    23,     2,    25,     2,     2,     2,
-     2,     2,     2,     2,     2,     2,     2,     2,    19,    32,
-    30,    31,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+     2,     2,    40,     2,     2,     2,    39,    45,     2,    15,
+    16,    37,    35,    44,    36,     2,    38,     2,     2,     2,
+     2,     2,     2,     2,     2,     2,     2,     2,    34,    42,
+    43,    41,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-     2,     2,     2,    27,     2,     2,     2,     2,     2,     2,
+     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+     2,     2,    32,     2,    33,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -529,161 +584,198 @@ static const char yytranslate[] = {     0,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     1,     2,     3,     4,     5,
-     6,     7,     8,     9,    10,    11,    12,    13,    14,    15,
-    16,    17,    18
+     6,     7,     8,     9,    10,    11,    12,    13,    14,    17,
+    18,    19,    20,    21,    22,    23,    24,    25,    26,    27,
+    28,    29,    30,    31
 };
 
 #if YY_parse_DEBUG != 0
 static const short yyprhs[] = {     0,
-     0,     2,     6,     8,    10,    12,    17,    24,    31,    34,
-    37,    45,    47,    53,    61,    65,    69,    71,    75,    79,
-    83,    85,    89,    91,    94,    96,   101,   103,   108,   110,
-   113,   115,   119,   121,   125,   128,   130,   132,   135,   138,
-   141,   146,   149,   150,   152,   154,   156,   158,   160,   162,
-   164,   166,   170,   171,   176,   177,   180,   183,   185,   187,
-   189
+     0,     2,     5,     6,     8,    10,    12,    14,    16,    18,
+    22,    24,    26,    28,    32,    39,    46,    49,    52,    60,
+    68,    74,    78,    82,    84,    88,    92,    96,    98,   102,
+   104,   107,   109,   113,   115,   119,   121,   124,   126,   130,
+   132,   136,   138,   140,   142,   144,   146,   150,   152,   154,
+   156,   158,   160,   166,   169,   172,   175,   181,   187,   190,
+   195,   198,   199,   201,   203,   205,   207,   209,   211,   214,
+   216,   218,   220,   224,   225,   230
 };
 
-static const short yyrhs[] = {    36,
-     0,    57,    37,    36,     0,    57,     0,    39,     0,    40,
-     0,    52,    56,    50,    19,     0,    13,    20,    15,    54,
-    21,    19,     0,    14,    20,    15,    55,    21,    19,     0,
-    41,    19,     0,    44,    19,     0,    17,    20,    44,    21,
-    39,    18,    39,     0,    38,     0,    17,    20,    44,    21,
-    37,     0,    17,    20,    44,    21,    39,    18,    40,     0,
-    41,    22,    42,     0,    41,    23,    42,     0,    42,     0,
-    42,    24,    43,     0,    42,    25,    43,     0,    42,    26,
-    43,     0,    43,     0,    20,    41,    21,     0,     7,     0,
-    23,     7,     0,    53,     0,    44,    27,    27,    45,     0,
-    45,     0,    45,    28,    28,    46,     0,    46,     0,    29,
-    46,     0,    47,     0,    20,    44,    21,     0,    48,     0,
-    41,    49,    41,     0,    30,    30,     0,    31,     0,    32,
-     0,    32,    30,     0,    31,    30,     0,     7,    51,     0,
-     7,    30,    53,    51,     0,    33,    50,     0,     0,     3,
-     0,     4,     0,     5,     0,     6,     0,     9,     0,    10,
-     0,    11,     0,    12,     0,    33,     7,    54,     0,     0,
-    33,    28,     7,    55,     0,     0,     8,    56,     0,    34,
-    56,     0,     8,     0,    34,     0,    56,     0,     0
+static const short yyrhs[] = {    47,
+     0,    48,    47,     0,     0,    49,     0,    50,     0,    51,
+     0,    65,     0,    66,     0,    52,     0,    32,    47,    33,
+     0,    53,     0,    70,     0,    67,     0,    73,    71,    34,
+     0,    12,    15,    14,    76,    16,    34,     0,    13,    15,
+    14,    77,    16,    34,     0,    54,    34,     0,    63,    34,
+     0,    17,    15,    57,    16,    49,    18,    49,     0,    17,
+    15,    57,    16,    49,    18,    53,     0,    17,    15,    57,
+    16,    48,     0,    54,    35,    55,     0,    54,    36,    55,
+     0,    55,     0,    55,    37,    56,     0,    55,    38,    56,
+     0,    55,    39,    56,     0,    56,     0,    15,    54,    16,
+     0,     7,     0,    36,     7,     0,    74,     0,    57,    23,
+    58,     0,    58,     0,    58,    22,    59,     0,    59,     0,
+    40,    59,     0,    60,     0,    15,    57,    16,     0,    61,
+     0,    54,    62,    54,     0,    19,     0,    41,     0,    42,
+     0,    20,     0,    21,     0,     7,    64,    54,     0,    43,
+     0,    24,     0,    25,     0,    26,     0,    27,     0,    30,
+    15,    57,    16,    49,     0,    68,    49,     0,    68,    50,
+     0,    31,    69,     0,    15,     7,    43,    54,    34,     0,
+    30,    15,    57,    16,    50,     0,     7,    72,     0,     7,
+    43,    74,    72,     0,    44,    71,     0,     0,     3,     0,
+     4,     0,     5,     0,     6,     0,     9,     0,    75,     0,
+    36,    75,     0,     8,     0,    10,     0,    11,     0,    44,
+     7,    76,     0,     0,    44,    45,     7,    77,     0,     0
 };
 
 #endif
 
 #if (YY_parse_DEBUG != 0) || defined(YY_parse_ERROR_VERBOSE) 
 static const short yyrline[] = { 0,
-    29,    32,    33,    36,    37,    40,    73,   106,   127,   128,
-   132,   133,   134,   135,   137,   141,   145,   148,   152,   156,
-   160,   163,   167,   168,   171,   174,   178,   181,   185,   188,
-   191,   194,   198,   201,   207,   208,   209,   210,   211,   214,
-   215,   218,   219,   222,   223,   224,   225,   228,   229,   230,
-   231,   233,   234,   237,   238,   241,   242,   243,   244,   247,
-   248
+    41,    45,    46,    49,    50,    53,    54,    55,    56,    57,
+    60,    61,    62,    65,    96,   137,   161,   162,   165,   185,
+   203,   216,   220,   223,   226,   229,   232,   235,   238,   241,
+   242,   243,   246,   249,   252,   255,   258,   259,   262,   265,
+   268,   273,   274,   275,   276,   277,   280,   284,   285,   286,
+   287,   288,   293,   304,   306,   311,   314,   318,   329,   330,
+   333,   334,   337,   338,   339,   340,   342,   343,   344,   348,
+   349,   350,   353,   354,   357,   358
 };
 
-static const char * const yytname[] = {   "$","error","$illegal.","Integer",
-"Char","Single","Double","Id","Space","IntegerValue","CharacterValue","SingleValue",
-"DoubleValue","Print","Scan","Text","Address","If","Else","';'","'('","')'",
-"'+'","'-'","'*'","'/'","'%'","'|'","'&'","'!'","'='","'>'","'<'","','","'\\n'",
-"start","line","Statement","NonAlternativeStatement","MatchedStatement","UnMatchedStatement",
-"ArithmaticExpression","Term","Factor","LogicExpression","LogicTerm","LogicFactor",
-"NotFactor","Comparator","Operation","Variables","List","DataType","Value","Arguments",
-"Addresses","Delim","Blank",""
+static const char * const yytname[] = {   "$","error","$illegal.","INTEGER",
+"CHAR","SINGLE","DOUBLE","ID","INTEGERVALUE","CHARVALUE","SINGLEVALUE","DOUBLEVALUE",
+"PRINT","SCAN","TEXT","'('","')'","IF","ELSE","EQ","LE","GE","AND","OR","ADD",
+"SUB","MUL","DIV","INC","DEC","WHILE","FOR","'{'","'}'","';'","'+'","'-'","'*'",
+"'/'","'%'","'!'","'>'","'<'","'='","','","'&'","start","code","line","stmt",
+"openStmt","simpleStmt","ifStmt","openIfStmt","arithmaticExpression","term",
+"factor","logicExpression","logicTerm","logicFactor","notFactor","comparator",
+"comparisonOperator","assignment","assignementOperation","whileLoop","forLoop",
+"openForLoop","forExpr","initExpr","openWhileLoop","variables","list","type",
+"value","numberValue","args","addresses",""
 };
 #endif
 
 static const short yyr1[] = {     0,
-    35,    36,    36,    37,    37,    38,    38,    38,    38,    38,
-    39,    39,    40,    40,    41,    41,    41,    42,    42,    42,
-    42,    43,    43,    43,    43,    44,    44,    45,    45,    46,
-    46,    47,    47,    48,    49,    49,    49,    49,    49,    50,
-    50,    51,    51,    52,    52,    52,    52,    53,    53,    53,
-    53,    54,    54,    55,    55,    56,    56,    56,    56,    57,
-    57
+    46,    47,    47,    48,    48,    49,    49,    49,    49,    49,
+    50,    50,    50,    51,    51,    51,    51,    51,    52,    53,
+    53,    54,    54,    54,    55,    55,    55,    55,    56,    56,
+    56,    56,    57,    57,    58,    58,    59,    59,    60,    60,
+    61,    62,    62,    62,    62,    62,    63,    64,    64,    64,
+    64,    64,    65,    66,    67,    68,    69,    70,    71,    71,
+    72,    72,    73,    73,    73,    73,    74,    74,    74,    75,
+    75,    75,    76,    76,    77,    77
 };
 
 static const short yyr2[] = {     0,
-     1,     3,     1,     1,     1,     4,     6,     6,     2,     2,
-     7,     1,     5,     7,     3,     3,     1,     3,     3,     3,
-     1,     3,     1,     2,     1,     4,     1,     4,     1,     2,
-     1,     3,     1,     3,     2,     1,     1,     2,     2,     2,
-     4,     2,     0,     1,     1,     1,     1,     1,     1,     1,
-     1,     3,     0,     4,     0,     2,     2,     1,     1,     1,
-     0
+     1,     2,     0,     1,     1,     1,     1,     1,     1,     3,
+     1,     1,     1,     3,     6,     6,     2,     2,     7,     7,
+     5,     3,     3,     1,     3,     3,     3,     1,     3,     1,
+     2,     1,     3,     1,     3,     1,     2,     1,     3,     1,
+     3,     1,     1,     1,     1,     1,     3,     1,     1,     1,
+     1,     1,     5,     2,     2,     2,     5,     5,     2,     4,
+     2,     0,     1,     1,     1,     1,     1,     1,     2,     1,
+     1,     1,     3,     0,     4,     0
 };
 
-static const short yydefact[] = {    61,
-    58,    59,     1,    60,     3,    56,    57,    44,    45,    46,
-    47,    23,    48,    49,    50,    51,     0,     0,     0,     0,
-     0,     0,    61,    12,     4,     5,     0,    17,    21,     0,
-    27,    29,    31,    33,     0,    25,     0,     0,     0,     0,
-     0,    24,     0,    30,     2,     9,     0,     0,     0,    36,
-    37,     0,     0,     0,     0,    10,     0,     0,     0,    53,
-    55,     0,    22,    32,     0,    15,    16,    35,    39,    38,
-    34,    18,    19,    20,     0,     0,    43,     0,     0,     0,
-     0,     0,     0,     0,    26,    28,     0,     0,    40,     6,
-    53,     0,     0,     0,    13,     4,    43,    42,    52,     7,
-    55,     8,     0,    41,    54,    11,    14,     0,     0,     0
+static const short yydefact[] = {     3,
+    63,    64,    65,    66,    30,    70,    67,    71,    72,     0,
+     0,     0,     0,     0,     0,     3,     0,     1,     3,     4,
+     5,     6,     9,    11,     0,    24,    28,     0,     7,     8,
+    13,     0,    12,     0,    32,    68,    49,    50,    51,    52,
+    48,     0,     0,     0,    30,     0,     0,     0,     0,    56,
+     0,    31,    69,     2,    17,     0,     0,     0,     0,     0,
+    18,    54,    55,    62,     0,    47,    74,    76,    29,     0,
+     0,     0,     0,    34,    36,    38,    40,     0,     0,    10,
+    22,    23,    25,    26,    27,     0,     0,    59,    14,     0,
+     0,     0,     0,     0,     0,    37,    42,    45,    46,    43,
+    44,     0,     0,     0,     0,     0,     0,     0,    62,    61,
+    74,     0,     0,     0,    39,    41,    21,     4,    33,    35,
+    53,    58,     0,    60,    73,    15,    76,    16,     0,    57,
+    75,     0,    19,    20,     0,     0,     0,     0,     0,     0,
+     0,     0,     0,     0,     0,     0,     0
 };
 
-static const short yydefgoto[] = {   108,
-     3,    23,    24,    25,    26,    43,    28,    29,    30,    31,
-    32,    33,    34,    52,    78,    89,    35,    36,    80,    82,
-     4,     5
+static const short yydefgoto[] = {   145,
+    18,    19,    20,    21,    22,    23,    24,    25,    26,    27,
+    73,    74,    75,    76,    77,   102,    28,    42,    29,    30,
+    31,    32,    50,    33,    65,    88,    34,    35,    36,    91,
+    93
 };
 
-static const short yypact[] = {    -4,
-    -4,    -4,-32768,-32768,    14,-32768,-32768,-32768,-32768,-32768,
--32768,-32768,-32768,-32768,-32768,-32768,     2,    13,    47,    39,
-    35,    39,    -4,-32768,-32768,-32768,    22,    32,-32768,   -13,
-    41,-32768,-32768,-32768,    -4,-32768,    -3,    58,    39,    49,
-   -16,-32768,    53,-32768,-32768,-32768,    54,    54,    52,    66,
-    67,    54,    54,    54,    54,-32768,    72,    73,    93,    70,
-    71,   -11,-32768,-32768,    54,    32,    32,-32768,-32768,-32768,
-   -15,-32768,-32768,-32768,    39,    39,     5,    83,    98,    85,
-    79,    87,    14,    69,    41,-32768,    77,    93,-32768,-32768,
-    70,    90,   103,    92,-32768,    94,    80,-32768,-32768,-32768,
-    71,-32768,    14,-32768,-32768,-32768,-32768,   114,   115,-32768
+static const short yypact[] = {     9,
+-32768,-32768,-32768,-32768,   160,-32768,-32768,-32768,-32768,    -4,
+     8,    53,    28,    38,    40,     9,    95,-32768,     9,-32768,
+-32768,-32768,-32768,-32768,    83,   106,-32768,   -29,-32768,-32768,
+-32768,     9,-32768,    58,-32768,-32768,-32768,-32768,-32768,-32768,
+-32768,    53,    43,    66,-32768,    -8,    41,    41,    81,-32768,
+    54,-32768,-32768,-32768,-32768,    53,    53,    53,    53,    53,
+-32768,-32768,-32768,   -10,    73,    34,    64,    68,-32768,    41,
+    41,   158,    31,    92,-32768,-32768,-32768,    50,    77,-32768,
+   106,   106,-32768,-32768,-32768,    74,    58,-32768,-32768,   116,
+   123,    96,   136,    80,    51,-32768,-32768,-32768,-32768,-32768,
+-32768,    53,     9,    41,    41,     9,    53,    -1,   109,-32768,
+    64,   120,   151,   126,-32768,    34,-32768,   141,    92,-32768,
+-32768,-32768,   112,-32768,-32768,-32768,    68,-32768,   125,-32768,
+-32768,   165,-32768,-32768,   159,    41,   166,    55,    41,   159,
+    63,   159,   155,   159,   175,   182,-32768
 };
 
 static const short yypgoto[] = {-32768,
-    95,    33,-32768,   -74,    16,    -5,    -8,    40,    -7,    42,
-   -21,-32768,-32768,-32768,    34,    23,-32768,    36,    30,    24,
-     1,-32768
+    13,    85,   -31,   -30,-32768,-32768,    67,   -12,    69,    91,
+   -45,    79,   -67,-32768,-32768,-32768,-32768,-32768,-32768,-32768,
+-32768,   -98,-32768,-32768,   105,    88,-32768,   115,   -11,    87,
+    75
 };
 
 
-#define	YYLAST		125
+#define	YYLAST		203
 
 
-static const short yytable[] = {    27,
-    44,     6,     7,     1,    64,    56,    47,    48,    96,    83,
-    57,    60,    41,    57,    40,    57,     8,     9,    10,    11,
-    12,    37,    13,    14,    15,    16,    17,    18,   106,     2,
-    19,    62,    38,    20,    87,    59,    21,    88,    66,    67,
-    46,    42,    22,    47,    48,    12,    71,    13,    14,    15,
-    16,    49,    50,    51,    86,    53,    54,    55,    20,    84,
-    12,    21,    13,    14,    15,    16,    39,    22,    58,    63,
-    47,    48,    61,    65,    47,    48,    21,    27,    49,    50,
-    51,    68,    49,    50,    51,    13,    14,    15,    16,    63,
-    47,    48,    72,    73,    74,    69,    70,    27,    75,    77,
-    76,    90,    79,    81,    91,    92,    93,    94,   100,   101,
-   102,   103,    88,   109,   110,    95,    85,    45,   107,   104,
-    99,    98,    97,     0,   105
+static const short yytable[] = {    46,
+    62,    63,    78,    96,    61,    53,     6,    69,     8,     9,
+    43,     1,     2,     3,     4,     5,     6,     7,     8,     9,
+    10,    11,    44,    12,    95,    13,    56,    57,    51,    66,
+   135,    54,    86,    87,    72,    72,   135,   120,    14,    15,
+    16,   135,    47,   135,    17,   135,   103,    45,     6,     7,
+     8,     9,    48,   104,    49,    70,    67,    94,    72,    45,
+     6,     7,     8,     9,    64,   106,   115,    12,    56,    57,
+   140,   118,   104,   104,   121,   122,    17,   104,   142,    68,
+    71,     6,     7,     8,     9,   104,    80,    79,    17,   116,
+   138,    72,    72,   141,   123,    69,    53,   133,    97,    98,
+    99,    52,     6,    62,     8,     9,    89,    90,   121,   108,
+   143,    92,   133,   105,    56,    57,    55,    56,    57,   107,
+   100,   101,   111,    72,    81,    82,    72,     1,     2,     3,
+     4,     5,     6,     7,     8,     9,    10,    11,   112,    12,
+   113,    13,    58,    59,    60,   130,    56,    57,    83,    84,
+    85,   114,    87,   126,   132,    15,    16,   127,   129,   128,
+    17,     1,     2,     3,     4,     5,     6,     7,     8,     9,
+    10,    11,   144,    12,   146,   137,    97,    98,    99,   136,
+   139,   147,   119,    37,    38,    39,    40,   117,   132,    15,
+    16,   110,    56,    57,    17,   134,   124,   125,   100,   101,
+   109,   131,    41
 };
 
-static const short yycheck[] = {     5,
-    22,     1,     2,     8,    21,    19,    22,    23,    83,    21,
-    27,    15,    20,    27,    20,    27,     3,     4,     5,     6,
-     7,    20,     9,    10,    11,    12,    13,    14,   103,    34,
-    17,    39,    20,    20,    30,    35,    23,    33,    47,    48,
-    19,     7,    29,    22,    23,     7,    52,     9,    10,    11,
-    12,    30,    31,    32,    76,    24,    25,    26,    20,    65,
-     7,    23,     9,    10,    11,    12,    20,    29,    28,    21,
-    22,    23,    15,    20,    22,    23,    23,    83,    30,    31,
-    32,    30,    30,    31,    32,     9,    10,    11,    12,    21,
-    22,    23,    53,    54,    55,    30,    30,   103,    27,     7,
-    28,    19,    33,    33,     7,    21,    28,    21,    19,     7,
-    19,    18,    33,     0,     0,    83,    75,    23,   103,    97,
-    91,    88,    87,    -1,   101
+static const short yycheck[] = {    12,
+    32,    32,    48,    71,    34,    17,     8,    16,    10,    11,
+    15,     3,     4,     5,     6,     7,     8,     9,    10,    11,
+    12,    13,    15,    15,    70,    17,    35,    36,    16,    42,
+   129,    19,    43,    44,    47,    48,   135,   105,    30,    31,
+    32,   140,    15,   142,    36,   144,    16,     7,     8,     9,
+    10,    11,    15,    23,    15,    15,    14,    70,    71,     7,
+     8,     9,    10,    11,     7,    16,    16,    15,    35,    36,
+    16,   103,    23,    23,   106,   106,    36,    23,    16,    14,
+    40,     8,     9,    10,    11,    23,    33,     7,    36,   102,
+   136,   104,   105,   139,   107,    16,   108,   129,    19,    20,
+    21,     7,     8,   135,    10,    11,    34,    44,   140,    36,
+   142,    44,   144,    22,    35,    36,    34,    35,    36,    43,
+    41,    42,     7,   136,    56,    57,   139,     3,     4,     5,
+     6,     7,     8,     9,    10,    11,    12,    13,    16,    15,
+    45,    17,    37,    38,    39,    34,    35,    36,    58,    59,
+    60,    16,    44,    34,    30,    31,    32,     7,    18,    34,
+    36,     3,     4,     5,     6,     7,     8,     9,    10,    11,
+    12,    13,    18,    15,     0,    17,    19,    20,    21,    15,
+    15,     0,   104,    24,    25,    26,    27,   103,    30,    31,
+    32,    87,    35,    36,    36,   129,   109,   111,    41,    42,
+    86,   127,    43
 };
 
 #line 352 "/usr/share/bison++/bison.cc"
@@ -1180,75 +1272,125 @@ YYLABEL(yyreduce)
   switch (yyn) {
 
 case 1:
-#line 29 "testCv.y"
-{printf("valid\n");return(0);;
+#line 41 "converter.y"
+{printf("valid\n");
+              printf("%s",yyvsp[0].strVal);return(0);;
     break;}
 case 2:
-#line 32 "testCv.y"
-{printf("%s",yyvsp[-1].stringValue);;
+#line 45 "converter.y"
+{ yyval.strVal=concat(concat(yyvsp[-1].strVal," \n"),yyvsp[0].strVal);
+    break;}
+case 3:
+#line 46 "converter.y"
+{yyval.strVal="";  ;
+    break;}
+case 4:
+#line 49 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal);;
+    break;}
+case 5:
+#line 50 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal);;
     break;}
 case 6:
-#line 40 "testCv.y"
-{ 
-                                              yyval.stringValue=strdup("Dim "); 
+#line 53 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal);;
+    break;}
+case 7:
+#line 54 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal); ;
+    break;}
+case 8:
+#line 55 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal); ;
+    break;}
+case 9:
+#line 56 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal); ;
+    break;}
+case 10:
+#line 57 "converter.y"
+{yyval.strVal=strdup(yyvsp[-1].strVal); ;
+    break;}
+case 11:
+#line 60 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal);;
+    break;}
+case 12:
+#line 61 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal);;
+    break;}
+case 13:
+#line 62 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal);;
+    break;}
+case 14:
+#line 65 "converter.y"
+{    str="Dim "; 
                                               flag=0;
                                               variable=pop(&variablesStack);
                                               if(variable){
                                                 flag=1;
-                                                strcat(yyval.stringValue,variable);
+                                                str=concat(str,variable);
                                                 variable=pop(&variablesStack);
                                                 while(variable){ 
-                                                strcat(yyval.stringValue,", ");
-                                                strcat(yyval.stringValue,variable);
+                                                     str=concat(str," , ");
+                                                    str=concat(str,variable);
                                                 variable=pop(&variablesStack);  
                                                 }
-                                               strcat(yyval.stringValue,"As ");
-                                               strcat(yyval.stringValue,yyvsp[-3].stringValue);
+                                                str=concat(str," As ");
+                                                str=concat(str,yyvsp[-2].strVal);
                                              }
                                              variable=pop(&variablesWithValuesStack);
                                              value=pop(&variablesValuesStack);
                                              while(variable){
                                                 if(flag)
-                                                     strcat(yyval.stringValue,", ");
-                                                strcat(yyval.stringValue,variable);
-                                                strcat(yyval.stringValue," As ");
-                                                strcat(yyval.stringValue,yyvsp[-3].stringValue);
-                                                strcat(yyval.stringValue," = ");
-                                                strcat(yyval.stringValue,value);
-                                                strcat(yyval.stringValue," ");
+                                                  str=concat(str,", ");
+                                                  str=concat(str,variable);
+                                                  str=concat(str," As ");
+                                                  str=concat(str,yyvsp[-2].strVal);
+                                                  str=concat(str," = ");
+                                                  str=concat(str,value);
                                                 variable=pop(&variablesWithValuesStack);
                                                 value=pop(&variablesValuesStack);
                                                 flag=1;
                                              }
-                                              strcat(yyval.stringValue,"\n");
+                                          yyval.strVal=str;
                                         ;
     break;}
-case 7:
-#line 73 "testCv.y"
+case 15:
+#line 96 "converter.y"
 { 
-                                    yyval.stringValue=strdup("Console.Write(");
-                                    text=yyvsp[-3].stringValue;
+                                    str="Console.Write(";
+                                    text=yyvsp[-3].strVal;
                                     counter=0;
-                                    for(i=0;i<strlen(text);i++)
+                                    N=strlen(text);
+                                    for(i=0;i<N-1;i++)
                                         if(text[i]=='\\' && text[i+1]=='n'){
-                                            strcat(yyval.stringValue,"\"& vbcrlf &\"");
+                                           str=concat(str,"\"& vbcrlf &\"");
                                             i++;
                                         }
                                             
                                         else if(text[i]=='%' && (text[i+1]=='d' || text[i+1]=='c' || text[i+1]=='f' 
                                                                  || (text[i+1]=='l' && text[i+2]=='f' && (i=i+1) )))
                                         {  
-                                           sprintf(yyval.stringValue, "%s{%d}",yyval.stringValue, counter);
+                                            str=concat(str,"{");
+                                            str=concat(str,stringValue(strdup(" "),3,counter));
+                                            str=concat(str,"}");
                                            counter++;
                                            i+=1;
                                         }
                                         else
-                                            strncat(yyval.stringValue, text+i, 1);
-                                   
+                                            str=append(str,text[i]);
+                                        
+                                     str=append(str,'"');
                                     while(counter > 0){
                                        variable=pop(&variablesStack);
                                        if(variable)
-                                           sprintf(yyval.stringValue, "%s,%s",yyval.stringValue,variable);
+                                       {
+                                           str=concat(str," , ");
+                                           str=concat(str,variable);
+                                       }
                                        else
                                            yyerror("Not enough arguments");
                                        counter--;
@@ -1256,12 +1398,14 @@ case 7:
                                    if(pop(&variablesStack))
                                        yyerror("Too many arguments");
                                    
-                                     strcat(yyval.stringValue,") \n");
+                                    yyval.strVal=concat(str,") ");
+                                    free(str);
                                   ;
     break;}
-case 8:
-#line 106 "testCv.y"
-{  text=yyvsp[-3].stringValue;
+case 16:
+#line 137 "converter.y"
+{ str="";
+                                    text=yyvsp[-3].strVal;
                                     for(i=1;i<strlen(text)-1;i++)
                                         if(text[i]==' ')
                                             continue;
@@ -1270,7 +1414,7 @@ case 8:
                                         { 
                                           variable=pop(&variablesStack);
                                           if(variable)
-                                             printf("%s = Console.ReadLine()\n",variable);
+                                          str=concat(str,concat(variable," = Console.ReadLine()\n"));
                                           else
                                            yyerror("Not enough arguments");
                                            i+=1;
@@ -1281,142 +1425,318 @@ case 8:
                                        }
                                    if(pop(&variablesStack))
                                        yyerror("Too many arguments");
+                                    str[strlen(str)-1]='\0';
+                                    yyval.strVal=str;
                                   ;
     break;}
-case 9:
-#line 127 "testCv.y"
-{ printf("%s ;\n",yyval.stringValue); ;
-    break;}
-case 10:
-#line 128 "testCv.y"
-{ printf("%s ;\n",yyval.stringValue); ;
-    break;}
-case 15:
-#line 137 "testCv.y"
-{ yyval.stringValue=yyvsp[-2].stringValue;
-                                   strcat(yyval.stringValue," + ");
-                                   strcat(yyval.stringValue,yyvsp[0].stringValue);
-                                  ;
-    break;}
-case 16:
-#line 141 "testCv.y"
-{ yyval.stringValue=yyvsp[-2].stringValue;
-                                   strcat(yyval.stringValue," - ");
-                                   strcat(yyval.stringValue,yyvsp[0].stringValue);
-                                  ;
+case 17:
+#line 161 "converter.y"
+{yyval.strVal=strdup(yyvsp[-1].strVal); ;
     break;}
 case 18:
-#line 148 "testCv.y"
-{ yyval.stringValue=yyvsp[-2].stringValue;
-                             strcat(yyval.stringValue," * ");
-                             strcat(yyval.stringValue,yyvsp[0].stringValue);
-                            ;
+#line 162 "converter.y"
+{yyval.strVal=strdup(yyvsp[-1].strVal); ;
     break;}
 case 19:
-#line 152 "testCv.y"
-{ yyval.stringValue=yyvsp[-2].stringValue;
-                             strcat(yyval.stringValue," / ");
-                             strcat(yyval.stringValue,yyvsp[0].stringValue);
-                            ;
+#line 165 "converter.y"
+{
+                                str=concat("If ",yyvsp[-4].strVal);
+                                str=concat(str,strdup(" Then\n\t"));
+                                buff=strdup(yyvsp[-2].strVal);
+                                for(i=0;i<strlen(buff);i++)
+                                    if(buff[i]=='\n')
+                                        str=concat(str,"\n\t");
+                                    else
+                                         str=append(str,buff[i]);
+                                str=concat(str,strdup("\nElse\n\t"));
+                                buff=strdup(yyvsp[0].strVal);
+                                for(i=0;i<strlen(buff);i++)
+                                     if(buff[i]=='\n')
+                                      str=concat(str,"\n\t");
+                                     else
+                                          str=append(str,buff[i]);
+                                yyval.strVal=concat(str,strdup("\nEnd If"));
+                                ;
     break;}
 case 20:
-#line 156 "testCv.y"
-{ yyval.stringValue=yyvsp[-2].stringValue;
-                             strcat(yyval.stringValue," Mod ");
-                             strcat(yyval.stringValue,yyvsp[0].stringValue);
-                            ;
+#line 185 "converter.y"
+{
+                               str=concat("If ",yyvsp[-4].strVal);
+                               str=concat(str," Then\n\t");
+                               buff=yyvsp[-2].strVal;
+                                for(i=0;i<strlen(buff);i++)
+                                    if(buff[i]=='\n')
+                                        str=concat(str,"\n\t");
+                                    else
+                                         str=append(str,buff[i]);
+                                str=concat(str,"\nElse\n\t");
+                                buff=yyvsp[0].strVal;
+                                for(i=0;i<strlen(buff);i++)
+                                    if(buff[i]=='\n')
+                                        str=concat(str,"\n\t");
+                                    else
+                                         str=append(str,buff[i]);
+                                yyval.strVal=concat(str,"\nEnd If");
+                                ;
+    break;}
+case 21:
+#line 203 "converter.y"
+{ 
+                                str=concat("If ",yyvsp[-2].strVal);
+                                str=concat(str," Then\n\t");
+                                buff=yyvsp[0].strVal;
+                                for(i=0;i<strlen(buff);i++)
+                                     if(buff[i]=='\n')
+                                        str=concat(str,"\n\t");
+                                    else
+                                         str=append(str,buff[i]);
+                               yyval.strVal=concat(str,"\nEnd If");
+                                ;
     break;}
 case 22:
-#line 163 "testCv.y"
-{ yyval.stringValue=strdup("( ");
-                              strcat(yyval.stringValue,yyvsp[-1].stringValue);
-                              strcat(yyval.stringValue," )");
-                             ;
+#line 216 "converter.y"
+{
+                                   str=concat(yyvsp[-2].strVal,strdup(" + "));
+                                   yyval.strVal=concat(str,yyvsp[0].strVal);
+                                  ;
+    break;}
+case 23:
+#line 220 "converter.y"
+{ str=concat(yyvsp[-2].strVal," - ");
+                                   yyval.strVal=concat(str,yyvsp[0].strVal);
+                                  ;
     break;}
 case 24:
-#line 168 "testCv.y"
-{ yyval.stringValue=strdup("-");
-            strcat(yyval.stringValue,yyvsp[0].stringValue);
-           ;
+#line 223 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal);;
+    break;}
+case 25:
+#line 226 "converter.y"
+{  str=concat(yyvsp[-2].strVal," * ");
+                              yyval.strVal=concat(str,yyvsp[0].strVal);
+                            ;
     break;}
 case 26:
-#line 174 "testCv.y"
-{ yyval.stringValue=yyvsp[-3].stringValue;
-                                                   strcat(yyval.stringValue," Or ");
-                                                   strcat(yyval.stringValue,yyvsp[0].stringValue);
-                                                  ;
+#line 229 "converter.y"
+{  str=concat(yyvsp[-2].strVal," / ");
+                              yyval.strVal=concat(str,yyvsp[0].strVal);
+                            ;
+    break;}
+case 27:
+#line 232 "converter.y"
+{ str=concat(yyvsp[-2].strVal," Mod ");
+                             yyval.strVal=concat(str,yyvsp[0].strVal);
+                            ;
     break;}
 case 28:
-#line 181 "testCv.y"
-{ yyval.stringValue=yyvsp[-3].stringValue;
-                                          strcat(yyval.stringValue," And ");
-                                          strcat(yyval.stringValue,yyvsp[0].stringValue);
-                                         ;
+#line 235 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal);;
+    break;}
+case 29:
+#line 238 "converter.y"
+{ str=concat("( ",yyvsp[-1].strVal);
+                                        yyval.strVal=concat(str," )");
+                                      ;
     break;}
 case 30:
-#line 188 "testCv.y"
-{ yyval.stringValue=strdup("Not ");
-                               strcat(yyval.stringValue,yyvsp[0].stringValue);
-                             ;
+#line 241 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal); ;
+    break;}
+case 31:
+#line 242 "converter.y"
+{ yyval.strVal=concat("-",yyvsp[0].strVal);;
     break;}
 case 32:
-#line 194 "testCv.y"
-{ yyval.stringValue=strdup("( ");
-                                        strcat(yyval.stringValue,yyvsp[-1].stringValue);
-                                        strcat(yyval.stringValue," )");
-                                       ;
+#line 243 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal); ;
+    break;}
+case 33:
+#line 246 "converter.y"
+{ str=concat(yyvsp[-2].strVal," Or ");
+                                                 yyval.strVal=concat(str,yyvsp[0].strVal);        
+                                                  ;
     break;}
 case 34:
-#line 201 "testCv.y"
-{ yyval.stringValue=yyvsp[-2].stringValue;
-                                                                    strcat(yyval.stringValue,yyvsp[-1].stringValue);
-                                                                    strcat(yyval.stringValue,yyvsp[0].stringValue);
-                                                                   ;
+#line 249 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal);;
     break;}
 case 35:
-#line 207 "testCv.y"
-{yyval.stringValue= " = " ;;
+#line 252 "converter.y"
+{ str=concat(yyvsp[-2].strVal," And ");
+                                         yyval.strVal=concat(str,yyvsp[0].strVal);
+                                         ;
     break;}
 case 36:
-#line 208 "testCv.y"
-{yyval.stringValue= " > " ;;
+#line 255 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal);;
     break;}
 case 37:
-#line 209 "testCv.y"
-{yyval.stringValue= " < " ;;
+#line 258 "converter.y"
+{ yyval.strVal=concat("Not ",yyvsp[0].strVal); ;
     break;}
 case 38:
-#line 210 "testCv.y"
-{yyval.stringValue= " <= " ;;
+#line 259 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal);;
     break;}
 case 39:
-#line 211 "testCv.y"
-{yyval.stringValue= " >= " ;;
+#line 262 "converter.y"
+{ str=concat("( ",yyvsp[-1].strVal);
+                                         yyval.strVal=concat(str," )");
+                                    ;
     break;}
 case 40:
-#line 214 "testCv.y"
-{ push(&variablesStack,yyvsp[-1].stringValue); ;
+#line 265 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal);;
     break;}
 case 41:
-#line 215 "testCv.y"
-{ push(&variablesWithValuesStack,yyvsp[-3].stringValue);
-                      push(&variablesValuesStack,yyvsp[-1].stringValue); ;
+#line 268 "converter.y"
+{ str=concat(yyvsp[-2].strVal,yyvsp[-1].strVal);
+                                                                  yyval.strVal=concat(str,yyvsp[0].strVal);
+                                                                 ;
+    break;}
+case 42:
+#line 273 "converter.y"
+{yyval.strVal= " = " ;;
+    break;}
+case 43:
+#line 274 "converter.y"
+{yyval.strVal= " > " ;;
+    break;}
+case 44:
+#line 275 "converter.y"
+{yyval.strVal= " < " ;;
+    break;}
+case 45:
+#line 276 "converter.y"
+{yyval.strVal= " <= " ;;
+    break;}
+case 46:
+#line 277 "converter.y"
+{yyval.strVal= " >= " ;;
+    break;}
+case 47:
+#line 280 "converter.y"
+{  yyval.strVal=concat(concat(yyvsp[-2].strVal,yyvsp[-1].strVal),yyvsp[0].strVal);
+                                         ;
+    break;}
+case 48:
+#line 284 "converter.y"
+{yyval.strVal= " = " ;;
+    break;}
+case 49:
+#line 285 "converter.y"
+{yyval.strVal= " += " ;;
+    break;}
+case 50:
+#line 286 "converter.y"
+{yyval.strVal= " -= " ;;
+    break;}
+case 51:
+#line 287 "converter.y"
+{yyval.strVal= " *= " ;;
     break;}
 case 52:
-#line 233 "testCv.y"
-{ push(&variablesStack,yyvsp[-1].stringValue); ;
+#line 288 "converter.y"
+{yyval.strVal= " /= " ;;
+    break;}
+case 53:
+#line 293 "converter.y"
+{   str=concat("While ",yyvsp[-2].strVal);
+                                                       str=concat(str,"\n\t");
+                                                       buff=yyvsp[0].strVal;
+                                                       for(i=0;i<strlen(buff);i++)
+                                                          if(buff[i]=='\n')
+                                                              str=concat(str,"\n\t");
+                                                           else
+                                                               str=append(str,buff[i]);
+                                                        yyval.strVal=concat(str,"\nEnd While");;
     break;}
 case 54:
-#line 237 "testCv.y"
-{ push(&variablesStack,yyvsp[-1].stringValue); ;
+#line 304 "converter.y"
+{ ;
+    break;}
+case 55:
+#line 306 "converter.y"
+{ ;
+    break;}
+case 56:
+#line 311 "converter.y"
+{ ;
     break;}
 case 57:
-#line 242 "testCv.y"
-{lineNb++;;
+#line 314 "converter.y"
+{yyval.strVals[0]=strdup(yyvsp[-2].strVal);
+                                                yyval.strVals[1]=strdup(yyvsp[-3].strVal);;
+    break;}
+case 58:
+#line 318 "converter.y"
+{   str=concat("While ",yyvsp[-2].strVal);
+                                                       str=concat(str,"\n\t");
+                                                       buff=yyvsp[0].strVal;
+                                                       for(i=0;i<strlen(buff);i++)
+                                                          if(buff[i]=='\n')
+                                                              str=concat(str,"\n\t");
+                                                           else
+                                                               str=append(str,buff[i]);
+                                                        yyval.strVal=concat(str,"\nEnd While");;
     break;}
 case 59:
-#line 244 "testCv.y"
-{lineNb++;;
+#line 329 "converter.y"
+{ push(&variablesStack,yyvsp[-1].strVal); ;
+    break;}
+case 60:
+#line 330 "converter.y"
+{ push(&variablesWithValuesStack,yyvsp[-3].strVal);
+                      push(&variablesValuesStack,yyvsp[-1].strVal); ;
+    break;}
+case 63:
+#line 337 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal);;
+    break;}
+case 64:
+#line 338 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal);;
+    break;}
+case 65:
+#line 339 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal);;
+    break;}
+case 66:
+#line 340 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal);;
+    break;}
+case 67:
+#line 342 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal);;
+    break;}
+case 68:
+#line 343 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal);;
+    break;}
+case 69:
+#line 344 "converter.y"
+{ yyval.strVal=strdup(" -");
+                    yyval.strVal=concat(yyval.strVal,strdup(yyvsp[0].strVal));;
+    break;}
+case 70:
+#line 348 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal);;
+    break;}
+case 71:
+#line 349 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal);;
+    break;}
+case 72:
+#line 350 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal);;
+    break;}
+case 73:
+#line 353 "converter.y"
+{ push(&variablesStack,yyvsp[-1].strVal); ;
+    break;}
+case 75:
+#line 357 "converter.y"
+{ push(&variablesStack,yyvsp[-1].strVal); ;
     break;}
 }
 
@@ -1622,7 +1942,7 @@ YYLABEL(yyerrhandle)
 /* END */
 
  #line 1038 "/usr/share/bison++/bison.cc"
-#line 250 "testCv.y"
+#line 360 "converter.y"
 
 int yyerror(char* s){fprintf(stderr,"line %d :%s\n",lineNb,s);}
 int main(void){ yyparse();}

@@ -59,3 +59,29 @@ char *stringValue(char *dest, size_t n, int x) {
   *p = 0;
   return dest;
 }  
+
+int isNumeric(const char *str,int * value) 
+{
+	int flag=0,p=1, i=0;
+	*value=0;
+	if(*str=='-'){
+		str++;
+		flag=1;
+	}
+    for(i=strlen(str)-1; i>=0 ;i--)
+    {
+        if(str[i] < '0' || str[i] > '9')
+            return -1;
+		*value = *value + (str[i]-'0')*p;
+		p*=10;
+       
+    }
+	if(flag)
+		*value = - *value;
+    return 1;
+}
+
+
+
+
+

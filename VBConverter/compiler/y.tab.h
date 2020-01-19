@@ -13,10 +13,11 @@
 
  #line 8 "/usr/share/bison++/bison.h"
 
-#line 22 "converter.y"
+#line 30 "converter.y"
 typedef union
 {
    char* strVal;
+   char* strVals[2];
 } yy_parse_stype;
 #define YY_parse_STYPE yy_parse_stype
 #ifndef YY_USE_CLASS
@@ -190,20 +191,20 @@ typedef
 
 
  #line 169 "/usr/share/bison++/bison.h"
-#define	Integer	258
-#define	Char	259
-#define	Single	260
-#define	Double	261
-#define	Id	262
-#define	IntegerValue	263
-#define	CharacterValue	264
-#define	SingleValue	265
-#define	DoubleValue	266
-#define	Print	267
-#define	Scan	268
-#define	Text	269
-#define	If	270
-#define	Else	271
+#define	INTEGER	258
+#define	CHAR	259
+#define	SINGLE	260
+#define	DOUBLE	261
+#define	ID	262
+#define	INTEGERVALUE	263
+#define	CHARVALUE	264
+#define	SINGLEVALUE	265
+#define	DOUBLEVALUE	266
+#define	PRINT	267
+#define	SCAN	268
+#define	TEXT	269
+#define	IF	270
+#define	ELSE	271
 #define	EQ	272
 #define	LE	273
 #define	GE	274
@@ -215,8 +216,8 @@ typedef
 #define	DIV	280
 #define	INC	281
 #define	DEC	282
-#define	While	283
-#define	For	284
+#define	WHILE	283
+#define	FOR	284
 
 
 #line 169 "/usr/share/bison++/bison.h"
@@ -265,20 +266,20 @@ public:
   /* static const int token ... */
   
  #line 212 "/usr/share/bison++/bison.h"
-static const int Integer;
-static const int Char;
-static const int Single;
-static const int Double;
-static const int Id;
-static const int IntegerValue;
-static const int CharacterValue;
-static const int SingleValue;
-static const int DoubleValue;
-static const int Print;
-static const int Scan;
-static const int Text;
-static const int If;
-static const int Else;
+static const int INTEGER;
+static const int CHAR;
+static const int SINGLE;
+static const int DOUBLE;
+static const int ID;
+static const int INTEGERVALUE;
+static const int CHARVALUE;
+static const int SINGLEVALUE;
+static const int DOUBLEVALUE;
+static const int PRINT;
+static const int SCAN;
+static const int TEXT;
+static const int IF;
+static const int ELSE;
 static const int EQ;
 static const int LE;
 static const int GE;
@@ -290,8 +291,8 @@ static const int MUL;
 static const int DIV;
 static const int INC;
 static const int DEC;
-static const int While;
-static const int For;
+static const int WHILE;
+static const int FOR;
 
 
 #line 212 "/usr/share/bison++/bison.h"
@@ -300,20 +301,20 @@ static const int For;
   enum YY_parse_ENUM_TOKEN { YY_parse_NULL_TOKEN=0
   
  #line 215 "/usr/share/bison++/bison.h"
-	,Integer=258
-	,Char=259
-	,Single=260
-	,Double=261
-	,Id=262
-	,IntegerValue=263
-	,CharacterValue=264
-	,SingleValue=265
-	,DoubleValue=266
-	,Print=267
-	,Scan=268
-	,Text=269
-	,If=270
-	,Else=271
+	,INTEGER=258
+	,CHAR=259
+	,SINGLE=260
+	,DOUBLE=261
+	,ID=262
+	,INTEGERVALUE=263
+	,CHARVALUE=264
+	,SINGLEVALUE=265
+	,DOUBLEVALUE=266
+	,PRINT=267
+	,SCAN=268
+	,TEXT=269
+	,IF=270
+	,ELSE=271
 	,EQ=272
 	,LE=273
 	,GE=274
@@ -325,8 +326,8 @@ static const int For;
 	,DIV=280
 	,INC=281
 	,DEC=282
-	,While=283
-	,For=284
+	,WHILE=283
+	,FOR=284
 
 
 #line 215 "/usr/share/bison++/bison.h"

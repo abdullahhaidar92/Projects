@@ -277,9 +277,8 @@ comparisonOperator: EQ {$<strVal>$= " = " ;}
 | GE   {$<strVal>$= " >= " ;} 
 ; 
 
-assignment: ID assignementOperation arithmaticExpression  { $<strVal>$=concat(concat($<strVal>1,$<strVal>2),$<strVal>3);}  
-| ID INC  {  $<strVal>$=concat($<strVal>1," += 1 ");} 
-| ID DEC  {  $<strVal>$=concat($<strVal>1," -= 1 ");} 
+assignment: ID assignementOperation arithmaticExpression  {  $<strVal>$=concat(concat($<strVal>1,$<strVal>2),$<strVal>3);
+                                         }
 ;
 
 assignementOperation: '=' {$<strVal>$= " = " ;}
@@ -302,55 +301,51 @@ whileLoop: WHILE '(' logicExpression ')' stmt {   str=concat("While ",$<strVal>3
                                                         $<strVal>$=concat(str,"\nEnd While");}
 ;
 
-forLoop: forExpr stmt  {str=concat($<strVals>1[0],indent($<strVal>2));
-                         $<strVal>$=concat(concat(str,"\nNext "),$<strVals>1[1]);}                                                           
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+forLoop: forExpr stmt  {$<strVal>$=concat($<strVals>1[0],$<strVals>1[1]); }                                                           
+;
+openForLoop: forExpr openStmt  {$<strVal>$=concat($<strVals>1[0],$<strVals>1[1]);}                                                           
 ;
 
-openForLoop: forExpr openStmt  {str=concat($<strVals>1[0],indent($<strVal>2));
-                         $<strVal>$=concat(concat(str,"\nNext "),$<strVals>1[1]);} 
+
+
+forExpr : FOR initExpr { printf("4\n");$<strVals>$[0]=concat($<strVals>2[0],$<strVals>2[1]); printf("5\n");$<strVals>$[1]=strdup($<strVals>2[1]);printf("6\n")}
 ;
 
-forExpr : FOR initExpr boundExpr stepExpr {if(strcmp($<strVals>2[1],$<strVals>3[1])!=0
-                                       || strcmp($<strVals>3[1],$<strVals>4[1])!=0 )
-                                       yyerror(" Index of for loop must be the same ");
-                                       str=concat("For ",$<strVals>2[1]);
-                                       str=concat(str," = ");
-                                       str=concat(str,$<strVals>2[0]);
-                                       str=concat(str," To ");
-                                       str=concat(str,$<strVals>3[0]);
-                                       str=concat(str," Step ");
-                                       str=concat(str,$<strVals>4[0]);
-                                       $<strVals>$[0]=concat(str,"\n\t");
-                                       $<strVals>$[1]=strdup($<strVals>2[1]);
-                                             }
-;
+initExpr : '(' ID '=' arithmaticExpression ')' {printf("1\n");
+    $<strVals>$[0]=strdup($<strVal>2);
+                                                printf("2\n");
+                                                $<strVals>$[1]=strdup($<strVal>4);
+                                               printf("3\n");}
 
-initExpr : '(' ID '=' arithmaticExpression ';' {$<strVals>$[0]=strdup($<strVal>4);
-                                                $<strVals>$[1]=strdup($<strVal>2);}
-
-boundExpr : ID LE arithmaticExpression ';' {$<strVals>$[0]=strdup($<strVal>3);$<strVals>$[1]=strdup($<strVal>2);}
-| ID GE arithmaticExpression ';'  {$<strVals>$[0]=strdup($<strVal>3);$<strVals>$[1]=strdup($<strVal>2);}
-| ID '<' arithmaticExpression ';' {if(isNumeric($<strVal>3,&n))
-                                            $<strVals>$[0]=stringValue(strdup(" "),16,n-1);
-                                        else
-                                            $<strVals>$[0]=concat($<strVal>3," - 1");
-                                  $<strVals>$[1]=strdup($<strVal>2);}
-| ID '>' arithmaticExpression ';' {if(isNumeric($<strVal>3,&n))
-                                            $<strVals>$[0]=stringValue(strdup(" "),16,n-1);
-                                        else
-                                            $<strVals>$[0]=concat($<strVal>3," - 1");
-                                  $<strVals>$[1]=strdup($<strVal>2);}
-
-;
-stepExpr : ID ADD arithmaticExpression ')' {$<strVals>$[0]=strdup($<strVal>3);$<strVals>$[1]=strdup($<strVal>2);}
-|ID SUB  arithmaticExpression ')' {if(isNumeric($<strVal>3,&n))
-                                            $<strVals>$[0]=stringValue(strdup(" "),16,-n);
-                                        else
-                                            $<strVals>$[0]=concat(concat("- ( ",$<strVal>3)," )");
-                                  $<strVals>$[1]=strdup($<strVal>2);}
-|ID INC  ')' {  $<strVals>$[0]=strdup("1");$<strVals>$[1]=strdup($<strVal>2);} 
-|ID DEC  ')' {  $<strVals>$[0]=strdup("-1");$<strVals>$[1]=strdup($<strVal>2);}
-;
 
 openWhileLoop: WHILE '(' logicExpression ')' openStmt {   str=concat("While ",$<strVal>3);
                                                        str=concat(str,"\n\t");

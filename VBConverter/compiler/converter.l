@@ -22,22 +22,22 @@ Text \"[a-zA-Z0-9%\\n+-=}{)( ]*\"
 Delim [ \t\n]+
 %%
 
-int{Delim} {yylval.strVal="Integer";return(Integer);}
-char{Delim} {yylval.strVal="Char";return (Char);}
-float{Delim} {yylval.strVal="Single";return(Single);}
-double{Delim} {yylval.strVal="Double";return(Double);}
-if {return(If);} 
-else[ \t\n]+ {return(Else);} 
-while {return(While);}
-for {return(For);}
-{Text} {yylval.strVal = strdup(yytext);return(Text);}
-printf {return(Print); }
-scanf {return(Scan);}
-{IntegerValue} {yylval.strVal=strdup(yytext);return(IntegerValue);}
-{CharacterValue} {yylval.strVal=fixCharacterString(yytext);return(CharacterValue);}
-{SingleValue} {yylval.strVal=strdup(yytext);return(SingleValue);}
-{DoubleValue} {yylval.strVal=strdup(yytext);return(DoubleValue);}
-{Id} {yylval.strVal = strdup(yytext);return(Id);}
+int{Delim} {yylval.strVal="Integer";return(INTEGER);}
+char{Delim} {yylval.strVal="Char";return (CHAR);}
+float{Delim} {yylval.strVal="Single";return(SINGLE);}
+double{Delim} {yylval.strVal="Double";return(DOUBLE);}
+if {return(IF);} 
+else {return(ELSE);} 
+while {return(WHILE);}
+for {return(FOR);}
+{Text} {yylval.strVal = strdup(yytext);return(TEXT);}
+printf {return(PRINT); }
+scanf {return(SCAN);}
+{IntegerValue} {yylval.strVal=strdup(yytext);return(INTEGERVALUE);}
+{CharacterValue} {yylval.strVal=fixCharacterString(yytext);return(CHARVALUE);}
+{SingleValue} {yylval.strVal=strdup(yytext);return(SINGLEVALUE);}
+{DoubleValue} {yylval.strVal=strdup(yytext);return(DOUBLEVALUE);}
+{Id} {yylval.strVal = strdup(yytext);return(ID);}
 "==" {return(EQ);}
 "<=" {return(LE);}
 ">=" {return(GE);}
