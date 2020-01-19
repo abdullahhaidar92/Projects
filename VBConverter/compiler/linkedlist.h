@@ -49,6 +49,16 @@ char* pop(node_t ** head) {
     return retval;
 }
 
+int contains(node_t * head,char* value) {
+    node_t * current = head;
+    while (current != NULL) {
+        if(strcmp(value,current->val)==0)
+            return 1;
+        current = current->next;
+    }
+    return -1;
+}
+
 void print_list(node_t * head) {
     node_t * current = head;
 

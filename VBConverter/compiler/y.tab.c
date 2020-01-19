@@ -117,7 +117,18 @@ int flag,N=0,n;
 char* str;
 char *text;
 char *newText,*buff;
-char * indent(char* buff){
+node_t * vlist = NULL;
+void verifyDoesntExist(char* id){
+    if(contains(vlist,id) > 0 )
+        yyerror(concat(id," already defined\n"));
+    else
+        push(&vlist,id);       
+}
+void verifyExists(char* id){
+    if(contains(vlist,id) <=0 )
+        yyerror(concat(id," is not defined\n"));      
+}
+char* indent(char* buff){
     char* res="";
     for(i=0;i<strlen(buff);i++)
         if(buff[i]=='\n')
@@ -127,7 +138,7 @@ char * indent(char* buff){
     return res;
 }
 
-#line 30 "converter.y"
+#line 41 "converter.y"
 typedef union
 {
    char* strVal;
@@ -637,15 +648,15 @@ static const short yyrhs[] = {    47,
 
 #if (YY_parse_DEBUG != 0) || defined(YY_parse_ERROR_VERBOSE) 
 static const short yyrline[] = { 0,
-    41,    45,    46,    49,    50,    53,    54,    55,    56,    57,
-    60,    61,    62,    65,    96,   137,   161,   162,   165,   185,
-   203,   216,   220,   223,   226,   229,   232,   235,   238,   241,
-   242,   243,   246,   249,   252,   255,   258,   259,   262,   265,
-   268,   273,   274,   275,   276,   277,   280,   281,   282,   285,
-   286,   287,   288,   289,   294,   305,   309,   313,   328,   331,
-   332,   333,   338,   345,   346,   351,   352,   355,   366,   367,
-   370,   371,   374,   375,   376,   377,   379,   380,   381,   385,
-   386,   387,   390,   391,   394,   395
+    52,    56,    57,    60,    61,    64,    65,    66,    67,    68,
+    71,    72,    73,    76,   107,   148,   172,   173,   176,   186,
+   194,   202,   206,   209,   212,   215,   218,   221,   224,   227,
+   228,   229,   232,   235,   238,   241,   244,   245,   248,   251,
+   254,   259,   260,   261,   262,   263,   266,   267,   268,   271,
+   272,   273,   274,   275,   280,   286,   290,   294,   309,   313,
+   314,   315,   320,   327,   328,   333,   334,   337,   348,   350,
+   354,   355,   358,   359,   360,   361,   363,   364,   365,   369,
+   370,   371,   374,   376,   379,   381
 };
 
 static const char * const yytname[] = {   "$","error","$illegal.","INTEGER",
@@ -1295,60 +1306,60 @@ YYLABEL(yyreduce)
   switch (yyn) {
 
 case 1:
-#line 41 "converter.y"
+#line 52 "converter.y"
 {printf("valid\n");
               printf("%s",yyvsp[0].strVal);return(0);;
     break;}
 case 2:
-#line 45 "converter.y"
+#line 56 "converter.y"
 { yyval.strVal=concat(concat(yyvsp[-1].strVal," \n"),yyvsp[0].strVal);
     break;}
 case 3:
-#line 46 "converter.y"
+#line 57 "converter.y"
 {yyval.strVal="";  ;
     break;}
 case 4:
-#line 49 "converter.y"
-{yyval.strVal=strdup(yyvsp[0].strVal);;
-    break;}
-case 5:
-#line 50 "converter.y"
-{yyval.strVal=strdup(yyvsp[0].strVal);;
-    break;}
-case 6:
-#line 53 "converter.y"
-{yyval.strVal=strdup(yyvsp[0].strVal);;
-    break;}
-case 7:
-#line 54 "converter.y"
-{yyval.strVal=strdup(yyvsp[0].strVal); ;
-    break;}
-case 8:
-#line 55 "converter.y"
-{yyval.strVal=strdup(yyvsp[0].strVal); ;
-    break;}
-case 9:
-#line 56 "converter.y"
-{yyval.strVal=strdup(yyvsp[0].strVal); ;
-    break;}
-case 10:
-#line 57 "converter.y"
-{yyval.strVal=strdup(yyvsp[-1].strVal); ;
-    break;}
-case 11:
 #line 60 "converter.y"
 {yyval.strVal=strdup(yyvsp[0].strVal);;
     break;}
-case 12:
+case 5:
 #line 61 "converter.y"
 {yyval.strVal=strdup(yyvsp[0].strVal);;
     break;}
+case 6:
+#line 64 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal);;
+    break;}
+case 7:
+#line 65 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal); ;
+    break;}
+case 8:
+#line 66 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal); ;
+    break;}
+case 9:
+#line 67 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal); ;
+    break;}
+case 10:
+#line 68 "converter.y"
+{yyval.strVal=strdup(yyvsp[-1].strVal); ;
+    break;}
+case 11:
+#line 71 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal);;
+    break;}
+case 12:
+#line 72 "converter.y"
+{yyval.strVal=strdup(yyvsp[0].strVal);;
+    break;}
 case 13:
-#line 62 "converter.y"
+#line 73 "converter.y"
 {yyval.strVal=strdup(yyvsp[0].strVal);;
     break;}
 case 14:
-#line 65 "converter.y"
+#line 76 "converter.y"
 {    str="Dim "; 
                                               flag=0;
                                               variable=pop(&variablesStack);
@@ -1382,7 +1393,7 @@ case 14:
                                         ;
     break;}
 case 15:
-#line 96 "converter.y"
+#line 107 "converter.y"
 { 
                                     str="Console.Write(";
                                     text=yyvsp[-3].strVal;
@@ -1426,7 +1437,7 @@ case 15:
                                   ;
     break;}
 case 16:
-#line 137 "converter.y"
+#line 148 "converter.y"
 { str="";
                                     text=yyvsp[-3].strVal;
                                     for(i=1;i<strlen(text)-1;i++)
@@ -1453,246 +1464,216 @@ case 16:
                                   ;
     break;}
 case 17:
-#line 161 "converter.y"
+#line 172 "converter.y"
 {yyval.strVal=strdup(yyvsp[-1].strVal); ;
     break;}
 case 18:
-#line 162 "converter.y"
+#line 173 "converter.y"
 {yyval.strVal=strdup(yyvsp[-1].strVal); ;
     break;}
 case 19:
-#line 165 "converter.y"
+#line 176 "converter.y"
 {
                                 str=concat("If ",yyvsp[-4].strVal);
                                 str=concat(str,strdup(" Then\n\t"));
-                                buff=strdup(yyvsp[-2].strVal);
-                                for(i=0;i<strlen(buff);i++)
-                                    if(buff[i]=='\n')
-                                        str=concat(str,"\n\t");
-                                    else
-                                         str=append(str,buff[i]);
+                                str=concat(str,indent(yyvsp[-2].strVal));
                                 str=concat(str,strdup("\nElse\n\t"));
-                                buff=strdup(yyvsp[0].strVal);
-                                for(i=0;i<strlen(buff);i++)
-                                     if(buff[i]=='\n')
-                                      str=concat(str,"\n\t");
-                                     else
-                                          str=append(str,buff[i]);
+                                str=concat(str,indent(yyvsp[0].strVal));
                                 yyval.strVal=concat(str,strdup("\nEnd If"));
                                 ;
     break;}
 case 20:
-#line 185 "converter.y"
+#line 186 "converter.y"
 {
                                str=concat("If ",yyvsp[-4].strVal);
                                str=concat(str," Then\n\t");
-                               buff=yyvsp[-2].strVal;
-                                for(i=0;i<strlen(buff);i++)
-                                    if(buff[i]=='\n')
-                                        str=concat(str,"\n\t");
-                                    else
-                                         str=append(str,buff[i]);
+                                str=concat(str,indent(yyvsp[-2].strVal));
                                 str=concat(str,"\nElse\n\t");
-                                buff=yyvsp[0].strVal;
-                                for(i=0;i<strlen(buff);i++)
-                                    if(buff[i]=='\n')
-                                        str=concat(str,"\n\t");
-                                    else
-                                         str=append(str,buff[i]);
+                               str=concat(str,indent(yyvsp[0].strVal));
                                 yyval.strVal=concat(str,"\nEnd If");
                                 ;
     break;}
 case 21:
-#line 203 "converter.y"
+#line 194 "converter.y"
 { 
                                 str=concat("If ",yyvsp[-2].strVal);
                                 str=concat(str," Then\n\t");
-                                buff=yyvsp[0].strVal;
-                                for(i=0;i<strlen(buff);i++)
-                                     if(buff[i]=='\n')
-                                        str=concat(str,"\n\t");
-                                    else
-                                         str=append(str,buff[i]);
+                               str=concat(str,indent(yyvsp[0].strVal));
                                yyval.strVal=concat(str,"\nEnd If");
                                 ;
     break;}
 case 22:
-#line 216 "converter.y"
+#line 202 "converter.y"
 {
                                    str=concat(yyvsp[-2].strVal,strdup(" + "));
                                    yyval.strVal=concat(str,yyvsp[0].strVal);
                                   ;
     break;}
 case 23:
-#line 220 "converter.y"
+#line 206 "converter.y"
 { str=concat(yyvsp[-2].strVal," - ");
                                    yyval.strVal=concat(str,yyvsp[0].strVal);
                                   ;
     break;}
 case 24:
-#line 223 "converter.y"
+#line 209 "converter.y"
 {yyval.strVal=strdup(yyvsp[0].strVal);;
     break;}
 case 25:
-#line 226 "converter.y"
+#line 212 "converter.y"
 {  str=concat(yyvsp[-2].strVal," * ");
                               yyval.strVal=concat(str,yyvsp[0].strVal);
                             ;
     break;}
 case 26:
-#line 229 "converter.y"
+#line 215 "converter.y"
 {  str=concat(yyvsp[-2].strVal," / ");
                               yyval.strVal=concat(str,yyvsp[0].strVal);
                             ;
     break;}
 case 27:
-#line 232 "converter.y"
+#line 218 "converter.y"
 { str=concat(yyvsp[-2].strVal," Mod ");
                              yyval.strVal=concat(str,yyvsp[0].strVal);
                             ;
     break;}
 case 28:
-#line 235 "converter.y"
+#line 221 "converter.y"
 {yyval.strVal=strdup(yyvsp[0].strVal);;
     break;}
 case 29:
-#line 238 "converter.y"
+#line 224 "converter.y"
 { str=concat("( ",yyvsp[-1].strVal);
                                         yyval.strVal=concat(str," )");
                                       ;
     break;}
 case 30:
-#line 241 "converter.y"
-{yyval.strVal=strdup(yyvsp[0].strVal); ;
+#line 227 "converter.y"
+{verifyExists(yyvsp[0].strVal); yyval.strVal=strdup(yyvsp[0].strVal); ;
     break;}
 case 31:
-#line 242 "converter.y"
-{ yyval.strVal=concat("-",yyvsp[0].strVal);;
+#line 228 "converter.y"
+{ verifyExists(yyvsp[-1].strVal); yyval.strVal=concat("-",yyvsp[0].strVal);;
     break;}
 case 32:
-#line 243 "converter.y"
+#line 229 "converter.y"
 {yyval.strVal=strdup(yyvsp[0].strVal); ;
     break;}
 case 33:
-#line 246 "converter.y"
+#line 232 "converter.y"
 { str=concat(yyvsp[-2].strVal," Or ");
                                                  yyval.strVal=concat(str,yyvsp[0].strVal);        
                                                   ;
     break;}
 case 34:
-#line 249 "converter.y"
+#line 235 "converter.y"
 {yyval.strVal=strdup(yyvsp[0].strVal);;
     break;}
 case 35:
-#line 252 "converter.y"
+#line 238 "converter.y"
 { str=concat(yyvsp[-2].strVal," And ");
                                          yyval.strVal=concat(str,yyvsp[0].strVal);
                                          ;
     break;}
 case 36:
-#line 255 "converter.y"
+#line 241 "converter.y"
 {yyval.strVal=strdup(yyvsp[0].strVal);;
     break;}
 case 37:
-#line 258 "converter.y"
+#line 244 "converter.y"
 { yyval.strVal=concat("Not ",yyvsp[0].strVal); ;
     break;}
 case 38:
-#line 259 "converter.y"
+#line 245 "converter.y"
 {yyval.strVal=strdup(yyvsp[0].strVal);;
     break;}
 case 39:
-#line 262 "converter.y"
+#line 248 "converter.y"
 { str=concat("( ",yyvsp[-1].strVal);
                                          yyval.strVal=concat(str," )");
                                     ;
     break;}
 case 40:
-#line 265 "converter.y"
+#line 251 "converter.y"
 {yyval.strVal=strdup(yyvsp[0].strVal);;
     break;}
 case 41:
-#line 268 "converter.y"
+#line 254 "converter.y"
 { str=concat(yyvsp[-2].strVal,yyvsp[-1].strVal);
                                                                   yyval.strVal=concat(str,yyvsp[0].strVal);
                                                                  ;
     break;}
 case 42:
-#line 273 "converter.y"
+#line 259 "converter.y"
 {yyval.strVal= " = " ;;
     break;}
 case 43:
-#line 274 "converter.y"
+#line 260 "converter.y"
 {yyval.strVal= " > " ;;
     break;}
 case 44:
-#line 275 "converter.y"
+#line 261 "converter.y"
 {yyval.strVal= " < " ;;
     break;}
 case 45:
-#line 276 "converter.y"
+#line 262 "converter.y"
 {yyval.strVal= " <= " ;;
     break;}
 case 46:
-#line 277 "converter.y"
+#line 263 "converter.y"
 {yyval.strVal= " >= " ;;
     break;}
 case 47:
-#line 280 "converter.y"
-{ yyval.strVal=concat(concat(yyvsp[-2].strVal,yyvsp[-1].strVal),yyvsp[0].strVal);;
+#line 266 "converter.y"
+{ verifyExists(yyvsp[-2].strVal);yyval.strVal=concat(concat(yyvsp[-2].strVal,yyvsp[-1].strVal),yyvsp[0].strVal);;
     break;}
 case 48:
-#line 281 "converter.y"
-{  yyval.strVal=concat(yyvsp[-1].strVal," += 1 ");;
+#line 267 "converter.y"
+{ verifyExists(yyvsp[-1].strVal);yyval.strVal=concat(yyvsp[-1].strVal," += 1 ");;
     break;}
 case 49:
-#line 282 "converter.y"
-{  yyval.strVal=concat(yyvsp[-1].strVal," -= 1 ");;
+#line 268 "converter.y"
+{ verifyExists(yyvsp[-1].strVal);yyval.strVal=concat(yyvsp[-1].strVal," -= 1 ");;
     break;}
 case 50:
-#line 285 "converter.y"
+#line 271 "converter.y"
 {yyval.strVal= " = " ;;
     break;}
 case 51:
-#line 286 "converter.y"
+#line 272 "converter.y"
 {yyval.strVal= " += " ;;
     break;}
 case 52:
-#line 287 "converter.y"
+#line 273 "converter.y"
 {yyval.strVal= " -= " ;;
     break;}
 case 53:
-#line 288 "converter.y"
+#line 274 "converter.y"
 {yyval.strVal= " *= " ;;
     break;}
 case 54:
-#line 289 "converter.y"
+#line 275 "converter.y"
 {yyval.strVal= " /= " ;;
     break;}
 case 55:
-#line 294 "converter.y"
+#line 280 "converter.y"
 {   str=concat("While ",yyvsp[-2].strVal);
-                                                       str=concat(str,"\n\t");
-                                                       buff=yyvsp[0].strVal;
-                                                       for(i=0;i<strlen(buff);i++)
-                                                          if(buff[i]=='\n')
-                                                              str=concat(str,"\n\t");
-                                                           else
-                                                               str=append(str,buff[i]);
-                                                        yyval.strVal=concat(str,"\nEnd While");;
+                                                  str=concat(str,"\n\t");
+                                                  str=concat(str,indent(yyvsp[0].strVal));
+                                                  yyval.strVal=concat(str,"\nEnd While");;
     break;}
 case 56:
-#line 305 "converter.y"
-{str=concat(yyvsp[-1].strVals[0],indent(yyvsp[0].strVal));
+#line 286 "converter.y"
+{ str=concat(yyvsp[-1].strVals[0],indent(yyvsp[0].strVal));
                          yyval.strVal=concat(concat(str,"\nNext "),yyvsp[-1].strVals[1]);;
     break;}
 case 57:
-#line 309 "converter.y"
-{str=concat(yyvsp[-1].strVals[0],indent(yyvsp[0].strVal));
-                         yyval.strVal=concat(concat(str,"\nNext "),yyvsp[-1].strVals[1]);;
+#line 290 "converter.y"
+{ str=concat(yyvsp[-1].strVals[0],indent(yyvsp[0].strVal));
+                                 yyval.strVal=concat(concat(str,"\nNext "),yyvsp[-1].strVals[1]);;
     break;}
 case 58:
-#line 313 "converter.y"
+#line 294 "converter.y"
 {if(strcmp(yyvsp[-2].strVals[1],yyvsp[-1].strVals[1])!=0
                                        || strcmp(yyvsp[-1].strVals[1],yyvsp[0].strVals[1])!=0 )
                                        yyerror(" Index of for loop must be the same ");
@@ -1708,20 +1689,21 @@ case 58:
                                              ;
     break;}
 case 59:
-#line 328 "converter.y"
-{yyval.strVals[0]=strdup(yyvsp[-1].strVal);
+#line 309 "converter.y"
+{ verifyExists(yyvsp[-3].strVal);
+                                                yyval.strVals[0]=strdup(yyvsp[-1].strVal);
                                                 yyval.strVals[1]=strdup(yyvsp[-3].strVal);;
     break;}
 case 60:
-#line 331 "converter.y"
+#line 313 "converter.y"
 {yyval.strVals[0]=strdup(yyvsp[-1].strVal);yyval.strVals[1]=strdup(yyvsp[-2].strVal);;
     break;}
 case 61:
-#line 332 "converter.y"
+#line 314 "converter.y"
 {yyval.strVals[0]=strdup(yyvsp[-1].strVal);yyval.strVals[1]=strdup(yyvsp[-2].strVal);;
     break;}
 case 62:
-#line 333 "converter.y"
+#line 315 "converter.y"
 {if(isNumeric(yyvsp[-1].strVal,&n))
                                             yyval.strVals[0]=stringValue(strdup(" "),16,n-1);
                                         else
@@ -1729,7 +1711,7 @@ case 62:
                                   yyval.strVals[1]=strdup(yyvsp[-2].strVal);;
     break;}
 case 63:
-#line 338 "converter.y"
+#line 320 "converter.y"
 {if(isNumeric(yyvsp[-1].strVal,&n))
                                             yyval.strVals[0]=stringValue(strdup(" "),16,n-1);
                                         else
@@ -1737,11 +1719,11 @@ case 63:
                                   yyval.strVals[1]=strdup(yyvsp[-2].strVal);;
     break;}
 case 64:
-#line 345 "converter.y"
+#line 327 "converter.y"
 {yyval.strVals[0]=strdup(yyvsp[-1].strVal);yyval.strVals[1]=strdup(yyvsp[-2].strVal);;
     break;}
 case 65:
-#line 346 "converter.y"
+#line 328 "converter.y"
 {if(isNumeric(yyvsp[-1].strVal,&n))
                                             yyval.strVals[0]=stringValue(strdup(" "),16,-n);
                                         else
@@ -1749,15 +1731,15 @@ case 65:
                                   yyval.strVals[1]=strdup(yyvsp[-2].strVal);;
     break;}
 case 66:
-#line 351 "converter.y"
+#line 333 "converter.y"
 {  yyval.strVals[0]=strdup("1");yyval.strVals[1]=strdup(yyvsp[-1].strVal);;
     break;}
 case 67:
-#line 352 "converter.y"
+#line 334 "converter.y"
 {  yyval.strVals[0]=strdup("-1");yyval.strVals[1]=strdup(yyvsp[-1].strVal);;
     break;}
 case 68:
-#line 355 "converter.y"
+#line 337 "converter.y"
 {   str=concat("While ",yyvsp[-2].strVal);
                                                        str=concat(str,"\n\t");
                                                        buff=yyvsp[0].strVal;
@@ -1769,62 +1751,66 @@ case 68:
                                                         yyval.strVal=concat(str,"\nEnd While");;
     break;}
 case 69:
-#line 366 "converter.y"
-{ push(&variablesStack,yyvsp[-1].strVal); ;
+#line 348 "converter.y"
+{ verifyDoesntExist(yyvsp[-1].strVal);
+                      push(&variablesStack,yyvsp[-1].strVal); ;
     break;}
 case 70:
-#line 367 "converter.y"
-{ push(&variablesWithValuesStack,yyvsp[-3].strVal);
+#line 350 "converter.y"
+{ verifyDoesntExist(yyvsp[-3].strVal);
+                      push(&variablesWithValuesStack,yyvsp[-3].strVal);
                       push(&variablesValuesStack,yyvsp[-1].strVal); ;
     break;}
 case 73:
-#line 374 "converter.y"
+#line 358 "converter.y"
 {yyval.strVal=strdup(yyvsp[0].strVal);;
     break;}
 case 74:
-#line 375 "converter.y"
+#line 359 "converter.y"
 {yyval.strVal=strdup(yyvsp[0].strVal);;
     break;}
 case 75:
-#line 376 "converter.y"
+#line 360 "converter.y"
 {yyval.strVal=strdup(yyvsp[0].strVal);;
     break;}
 case 76:
-#line 377 "converter.y"
+#line 361 "converter.y"
 {yyval.strVal=strdup(yyvsp[0].strVal);;
     break;}
 case 77:
-#line 379 "converter.y"
+#line 363 "converter.y"
 {yyval.strVal=strdup(yyvsp[0].strVal);;
     break;}
 case 78:
-#line 380 "converter.y"
+#line 364 "converter.y"
 {yyval.strVal=strdup(yyvsp[0].strVal);;
     break;}
 case 79:
-#line 381 "converter.y"
+#line 365 "converter.y"
 { yyval.strVal=strdup(" -");
                     yyval.strVal=concat(yyval.strVal,strdup(yyvsp[0].strVal));;
     break;}
 case 80:
-#line 385 "converter.y"
+#line 369 "converter.y"
 {yyval.strVal=strdup(yyvsp[0].strVal);;
     break;}
 case 81:
-#line 386 "converter.y"
+#line 370 "converter.y"
 {yyval.strVal=strdup(yyvsp[0].strVal);;
     break;}
 case 82:
-#line 387 "converter.y"
+#line 371 "converter.y"
 {yyval.strVal=strdup(yyvsp[0].strVal);;
     break;}
 case 83:
-#line 390 "converter.y"
-{ push(&variablesStack,yyvsp[-1].strVal); ;
+#line 374 "converter.y"
+{ verifyExists(yyvsp[-1].strVal);
+                     push(&variablesStack,yyvsp[-1].strVal); ;
     break;}
 case 85:
-#line 394 "converter.y"
-{ push(&variablesStack,yyvsp[-1].strVal); ;
+#line 379 "converter.y"
+{ verifyExists(yyvsp[-1].strVal);
+                                   push(&variablesStack,yyvsp[-1].strVal); ;
     break;}
 }
 
@@ -2030,7 +2016,7 @@ YYLABEL(yyerrhandle)
 /* END */
 
  #line 1038 "/usr/share/bison++/bison.cc"
-#line 397 "converter.y"
+#line 383 "converter.y"
 
-int yyerror(char* s){fprintf(stderr,"line %d :%s\n",lineNb,s);}
+int yyerror(char* s){fprintf(stderr,"%s\n",s);exit(0);}
 int main(void){ yyparse();}
