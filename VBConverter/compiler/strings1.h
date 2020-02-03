@@ -1,14 +1,10 @@
 #include <stdlib.h>
+#include<string.h>
 char* concat(char* buff1,char* buff2)
 {
 	int i=0;
-	int N1,N2;
-	if(buff1==NULL)
-		return strdup(buff2);
-	if(buff2==NULL)
-		return strdup(buff1);		
-	N1=strlen(buff1);
-	N2=strlen(buff2);
+	int N1=strlen(buff1);
+	int N2=strlen(buff2);
 	char* buff=(char*)malloc(N1+N2+2);
 	for(i=0;i<N1;i++)
 	{
@@ -46,11 +42,14 @@ static char *int_to_string_helper(char *dest, size_t n, int x) {
   return dest + 1;
 }
 
-char *stringValue(int x) {
-  char *dest = strdup(" ");
+char *stringValue(char *dest, size_t n, int x) {
   char *p = dest;
-  size_t n=4;
+  if (n == 0) {
+    return NULL;
+  }
+  n--;
   if (x < 0) {
+    if (n == 0) return NULL;
     n--;
     *p++ = '-';
   } else {
