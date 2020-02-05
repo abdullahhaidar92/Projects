@@ -19,8 +19,8 @@ rule 16   simpleStmt -> input ';'
 rule 17   simpleStmt -> arithmaticExpression ';'
 rule 18   simpleStmt -> assignment ';'
 rule 19   declaration -> type varList
-rule 20   varList -> ID ',' varList
-rule 21   varList -> ID '=' arithmaticExpression ',' varList
+rule 20   varList -> varList ',' ID
+rule 21   varList -> varList ',' ID '=' arithmaticExpression
 rule 22   varList -> ID
 rule 23   varList -> ID '=' arithmaticExpression
 rule 24   type -> INTEGER
@@ -1026,13 +1026,10 @@ state 65
 
 state 66
 
-    varList  ->  ID . ',' varList   (rule 20)
-    varList  ->  ID . '=' arithmaticExpression ',' varList   (rule 21)
     varList  ->  ID .   (rule 22)
     varList  ->  ID . '=' arithmaticExpression   (rule 23)
 
-    ',' 	shift, and go to state 97
-    '=' 	shift, and go to state 98
+    '=' 	shift, and go to state 97
 
     $default	reduce using rule 22 (varList)
 
@@ -1041,6 +1038,10 @@ state 66
 state 67
 
     declaration  ->  type varList .   (rule 19)
+    varList  ->  varList . ',' ID   (rule 20)
+    varList  ->  varList . ',' ID '=' arithmaticExpression   (rule 21)
+
+    ',' 	shift, and go to state 98
 
     $default	reduce using rule 19 (declaration)
 
@@ -1397,17 +1398,6 @@ state 96
 
 state 97
 
-    varList  ->  ID ',' . varList   (rule 20)
-
-    ID  	shift, and go to state 66
-
-    varList	go to state 131
-
-
-
-state 98
-
-    varList  ->  ID '=' . arithmaticExpression ',' varList   (rule 21)
     varList  ->  ID '=' . arithmaticExpression   (rule 23)
 
     ID  	shift, and go to state 59
@@ -1418,11 +1408,20 @@ state 98
     '(' 	shift, and go to state 20
     '-' 	shift, and go to state 22
 
-    arithmaticExpression	go to state 132
+    arithmaticExpression	go to state 131
     term	go to state 35
     factor	go to state 36
     value	go to state 42
     numberValue	go to state 43
+
+
+
+state 98
+
+    varList  ->  varList ',' . ID   (rule 20)
+    varList  ->  varList ',' . ID '=' arithmaticExpression   (rule 21)
+
+    ID  	shift, and go to state 132
 
 
 
@@ -1904,24 +1903,25 @@ state 130
 
 state 131
 
-    varList  ->  ID ',' varList .   (rule 20)
+    varList  ->  ID '=' arithmaticExpression .   (rule 23)
+    arithmaticExpression  ->  arithmaticExpression . '+' term   (rule 40)
+    arithmaticExpression  ->  arithmaticExpression . '-' term   (rule 41)
 
-    $default	reduce using rule 20 (varList)
+    '+' 	shift, and go to state 71
+    '-' 	shift, and go to state 72
+
+    $default	reduce using rule 23 (varList)
 
 
 
 state 132
 
-    varList  ->  ID '=' arithmaticExpression . ',' varList   (rule 21)
-    varList  ->  ID '=' arithmaticExpression .   (rule 23)
-    arithmaticExpression  ->  arithmaticExpression . '+' term   (rule 40)
-    arithmaticExpression  ->  arithmaticExpression . '-' term   (rule 41)
+    varList  ->  varList ',' ID .   (rule 20)
+    varList  ->  varList ',' ID . '=' arithmaticExpression   (rule 21)
 
-    ',' 	shift, and go to state 155
-    '+' 	shift, and go to state 71
-    '-' 	shift, and go to state 72
+    '=' 	shift, and go to state 155
 
-    $default	reduce using rule 23 (varList)
+    $default	reduce using rule 20 (varList)
 
 
 
@@ -2171,11 +2171,21 @@ state 154
 
 state 155
 
-    varList  ->  ID '=' arithmaticExpression ',' . varList   (rule 21)
+    varList  ->  varList ',' ID '=' . arithmaticExpression   (rule 21)
 
-    ID  	shift, and go to state 66
+    ID  	shift, and go to state 59
+    INTEGERVALUE	shift, and go to state 13
+    CHARVALUE	shift, and go to state 14
+    SINGLEVALUE	shift, and go to state 15
+    DOUBLEVALUE	shift, and go to state 16
+    '(' 	shift, and go to state 20
+    '-' 	shift, and go to state 22
 
-    varList	go to state 170
+    arithmaticExpression	go to state 170
+    term	go to state 35
+    factor	go to state 36
+    value	go to state 42
+    numberValue	go to state 43
 
 
 
@@ -2353,7 +2363,12 @@ state 169
 
 state 170
 
-    varList  ->  ID '=' arithmaticExpression ',' varList .   (rule 21)
+    varList  ->  varList ',' ID '=' arithmaticExpression .   (rule 21)
+    arithmaticExpression  ->  arithmaticExpression . '+' term   (rule 40)
+    arithmaticExpression  ->  arithmaticExpression . '-' term   (rule 41)
+
+    '+' 	shift, and go to state 71
+    '-' 	shift, and go to state 72
 
     $default	reduce using rule 21 (varList)
 

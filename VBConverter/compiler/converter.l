@@ -10,6 +10,7 @@ char* fixCharacterString(char* str){
 	s[2]='"';
 	return s;
 }
+extern int yylex();
 %}
 %option noyywrap
 
@@ -18,7 +19,10 @@ CharacterValue \'[a-zA-Z0-9]\'
 SingleValue [0-9]+(\.[0-9]{1,8})?
 DoubleValue [0-9]+(\.[0-9]{1,16})?
 Id [a-zA-Z][a-zA-Z0-9]*
-Text \"([^"\\]|\\.)*\"
+OpenString \"([^%"\\]|\\.)*%
+InnerString ([dcf]|lf)([^%("\\]|\\.)*%
+CloseString ([dcf]|lf)([^"%(\\]|\\.)*\"
+PureString \"([^%"\\]|\\.)*\"
 Delim [ \t\n]+
 BlockComment  "/*"([^*]|\*+[^*/])*\*+"/"  
 LineComment "//".*\n
@@ -36,7 +40,15 @@ if {return(IF);}
 else {return(ELSE);} 
 while {return(WHILE);}
 for {return(FOR);}
-{Text} {yylval.strVal = strdup(yytext);return(TEXT);}
+{OpenString} {yylval.strVal=strdup(yytext);yylval.strVal[strlen(yylval.strVal)-1]='\0';return(OPENSTRING); }
+{InnerString} {yylval.strVal=strdup(yytext+1);
+			   yylval.strVal[strlen(yylval.strVal)-1]='\0';
+			   if(yytext[0]=='l') yylval.strVal=yylval.strVal+1;
+			   return(INNERSTRING);}
+{CloseString} {yylval.strVal=strdup(yytext+1);
+			   if(yytext[0]=='l') yylval.strVal=yylval.strVal+1;
+			   return(CLOSESTRING);}
+{PureString} {yylval.strVal=strdup(yytext);return(PURESTRING); }
 printf {return(PRINT); }
 scanf {return(SCAN);}
 {IntegerValue} {yylval.strVal=strdup(yytext);return(INTEGERVALUE);}
@@ -55,7 +67,7 @@ scanf {return(SCAN);}
 "/=" {return(DIV);}
 "++" {return(INC);}
 "--" {return(DEC);}
-[+\-*/=,;&()%><|!}{] return(yytext[0]);
+[+\-*/=,;&()><|!}{] return(yytext[0]);
 [ \t]+ ;
 [\n] {lnb++;}
 				 

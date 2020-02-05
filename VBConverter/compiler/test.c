@@ -1,6 +1,11 @@
+#include <stdio.h>
+#include <string.h>
+#define N 10
 void main(){
-int x,y,z=8,i;
-for(i=0;i<3;i++)
-	printf("Hello");
-
+	int i;
+	char *buff=strdup("test");
+	for(i=0;i<N;i++)
+		strcat(buff,"test");
+	printf("%s\n",buff);
 }
+

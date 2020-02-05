@@ -2,18 +2,26 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cdb932d9-7e58-4d94-93a9-e7b232ef17da" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/bst.l" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/bst.l" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/bst.y" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/bst.y" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/compiler/converter.l" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/converter.l" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/compiler/converter.y" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/converter.y" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/compiler/lex.yy.c" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/lex.yy.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compiler/linkedlist.h" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/linkedlist.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/compiler/target.exe" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/target.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/test" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/test" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/compiler/test.c" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/test.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/testConv.l" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/testConv.l" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/testConv.y" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/testConv.y" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/compiler/y.output" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/y.output" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/compiler/y.tab.c" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/y.tab.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/compiler/y.tab.h" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/y.tab.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/VBConverter/META-INF/VBConverter.kotlin_module" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/example1.c" beforeDir="false" afterPath="$PROJECT_DIR$/examples/example1.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/example2.c" beforeDir="false" afterPath="$PROJECT_DIR$/examples/example2.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/example3.c" beforeDir="false" afterPath="$PROJECT_DIR$/examples/example3.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/example4.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/example5.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/editor/Top.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/editor/Top.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,7 +109,7 @@
     <property name="OverrideImplement.combined" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="dynamic.classpath" value="false" />
-    <property name="last_opened_file_path" value="$USER_HOME$/eclipse-workspace/untitled" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.11820328" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -250,22 +258,22 @@
       <screen x="67" y="27" width="1299" height="741" />
     </state>
     <state x="517" y="154" width="735" height="484" key="FileChooserDialogImpl/67.27.1299.741@67.27.1299.741" timestamp="1579808775774" />
-    <state width="1253" height="2" key="GridCell.Tab.0.bottom" timestamp="1580225338787">
+    <state width="1253" height="2" key="GridCell.Tab.0.bottom" timestamp="1580860956988">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
-    <state width="1253" height="2" key="GridCell.Tab.0.bottom/67.27.1299.741@67.27.1299.741" timestamp="1580225338787" />
-    <state width="1253" height="2" key="GridCell.Tab.0.center" timestamp="1580225338786">
+    <state width="1253" height="2" key="GridCell.Tab.0.bottom/67.27.1299.741@67.27.1299.741" timestamp="1580860956988" />
+    <state width="1253" height="2" key="GridCell.Tab.0.center" timestamp="1580860956987">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
-    <state width="1253" height="2" key="GridCell.Tab.0.center/67.27.1299.741@67.27.1299.741" timestamp="1580225338786" />
-    <state width="1253" height="2" key="GridCell.Tab.0.left" timestamp="1580225338785">
+    <state width="1253" height="2" key="GridCell.Tab.0.center/67.27.1299.741@67.27.1299.741" timestamp="1580860956987" />
+    <state width="1253" height="2" key="GridCell.Tab.0.left" timestamp="1580860956987">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
-    <state width="1253" height="2" key="GridCell.Tab.0.left/67.27.1299.741@67.27.1299.741" timestamp="1580225338785" />
-    <state width="1253" height="2" key="GridCell.Tab.0.right" timestamp="1580225338787">
+    <state width="1253" height="2" key="GridCell.Tab.0.left/67.27.1299.741@67.27.1299.741" timestamp="1580860956987" />
+    <state width="1253" height="2" key="GridCell.Tab.0.right" timestamp="1580860956987">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
-    <state width="1253" height="2" key="GridCell.Tab.0.right/67.27.1299.741@67.27.1299.741" timestamp="1580225338787" />
+    <state width="1253" height="2" key="GridCell.Tab.0.right/67.27.1299.741@67.27.1299.741" timestamp="1580860956987" />
     <state width="1253" height="2" key="GridCell.Tab.1.bottom" timestamp="1576883406656">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
@@ -282,10 +290,10 @@
       <screen x="67" y="27" width="1299" height="741" />
     </state>
     <state width="1253" height="2" key="GridCell.Tab.1.right/67.27.1299.741@67.27.1299.741" timestamp="1576883406655" />
-    <state x="372" y="224" key="com.intellij.ide.util.TipDialog" timestamp="1579808699585">
+    <state x="372" y="224" key="com.intellij.ide.util.TipDialog" timestamp="1580859772731">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
-    <state x="372" y="224" key="com.intellij.ide.util.TipDialog/67.27.1299.741@67.27.1299.741" timestamp="1579808699585" />
+    <state x="372" y="224" key="com.intellij.ide.util.TipDialog/67.27.1299.741@67.27.1299.741" timestamp="1580859772731" />
     <state x="380" y="175" key="run.anything.popup" timestamp="1576789826885">
       <screen x="67" y="27" width="1299" height="741" />
     </state>

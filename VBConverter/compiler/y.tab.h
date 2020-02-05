@@ -13,7 +13,7 @@
 
  #line 8 "/usr/share/bison++/bison.h"
 
-#line 40 "testConv.y"
+#line 40 "converter.y"
 typedef union {
   char *strVal;
   struct {

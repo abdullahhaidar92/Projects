@@ -4,27 +4,26 @@
 #include <stdlib.h> 
 #include "linkedlist.h"
 #include "strings.h"
-int lineNb=1,i,counter;
-int yyerror();
-int yylex();
-node_t * variablesStack = NULL;      
-node_t * variablesWithValuesStack = NULL;  
-node_t * variablesValuesStack = NULL;  
-char* variable; 
+extern int yylex();
+int yyerror(const char *);
+int counter=0;
+char *temp;
+int lineNb=1,i; 
+char* inhType; 
 char* value;
 int flag,N=0,n; 
 char* str;
 char *text;
 char *newText,*buff;
-node_t * vlist = NULL;
+node_t * symbolTable = NULL;
 void verifyDoesntExist(char* id){
-    if(contains(vlist,id) > 0 )
+    if(contains(symbolTable,id) > 0 )
         yyerror(concat(id," already defined\n"));
     else
-        push(&vlist,id);       
+        push(&symbolTable,id);       
 }
 void verifyExists(char* id){
-    if(contains(vlist,id) <=0 )
+    if(contains(symbolTable,id) <=0 )
         yyerror(concat(id," is not defined\n"));      
 }
 char* indent(char* buff){
@@ -38,344 +37,288 @@ char* indent(char* buff){
 }
 %}
 %name parse
-%union
-{
-   char* strVal;
-   char* strVals[2];
+%union {
+  char *strVal;
+  struct {
+  	char *varWithValues;
+	char *varWithoutValues;
+  } variables;
+  struct {
+  	char *expr;
+	char *index;
+  } forStruct;
 }
-%token MAIN VOID INTEGER CHAR SINGLE DOUBLE ID  
-%token INTEGERVALUE CHARVALUE SINGLEVALUE DOUBLEVALUE
-%token PRINT SCAN TEXT 
+%token <strVal> OPENSTRING INNERSTRING CLOSESTRING PURESTRING ID 
+%token PRINT SCAN 
+%token <strVal> MAIN VOID INTEGER CHAR SINGLE DOUBLE 
+%token <strVal> INTEGERVALUE CHARVALUE SINGLEVALUE DOUBLEVALUE
 %token IF ELSE EQ LE GE AND OR ADD SUB MUL DIV INC DEC
-%token WHILE FOR 
+%token WHILE FOR
+%type <strVal> line code output input declaration type
+%type <strVal> stmt simpleStmt ifStmt
+%type <strVal> openStmt openIfStmt whileLoop openWhileLoop
+%type <strVal> forLoop openForLoop 
+%type <strVal> printfExpression stringAndArguments innerString stringAndAddresses
+%type <strVal> arithmaticExpression factor term value numberValue
+%type <strVal> assignment assignementOperation 
+%type <strVal> logicExpression logicTerm logicFactor notFactor comparator comparisonOperator 
+%type <variables> varList 
+%type <forStruct> forExpr initExpr stepExpr boundExpr 
 %%
 start: VOID MAIN '(' ')' '{' code '}' {printf("Module VBModule\n\tSub Main()\n");
-              printf("\t\t%s\n\tEnd Sub\nEnd Module\n",indent(indent($<strVal>6)));return(0);}
+              printf("\t\t%s\n\tEnd Sub\nEnd Module\n",indent(indent($6)));return(0);}
+;
+code : line code  { $$=concat(concat($1,"\n"),$2)};
+|  {$$="";  }
 ;
 
-code : line code  { $<strVal>$=concat(concat($<strVal>1," \n"),$<strVal>2)};
-|  {$<strVal>$="";  }
-;
-line : stmt {$<strVal>$=strdup($<strVal>1);}
-| openStmt {$<strVal>$=strdup($<strVal>1);}
+line : stmt {$$=strdup($1);}
+| openStmt {$$=strdup($1);}
 ;
 
-stmt : simpleStmt {$<strVal>$=strdup($<strVal>1);}
-| whileLoop  {$<strVal>$=strdup($<strVal>1); }
-| forLoop  {$<strVal>$=strdup($<strVal>1); }
-| ifStmt  {$<strVal>$=strdup($<strVal>1); }
-| '{' code '}'   {$<strVal>$=strdup($<strVal>2); }
+stmt : simpleStmt
+| whileLoop
+| forLoop
+| ifStmt 
+| '{' code '}'  { $$ = $2 }
 ;
 
-openStmt:openIfStmt {$<strVal>$=strdup($<strVal>1);}
-| openWhileLoop {$<strVal>$=strdup($<strVal>1);}
-| openForLoop {$<strVal>$=strdup($<strVal>1);}
+openStmt:openIfStmt
+| openWhileLoop 
+| openForLoop 
 ;
 
-simpleStmt: type variables  ';' {    str="Dim "; 
-                                              flag=0;
-                                              variable=pop(&variablesStack);
-                                              if(variable){
-                                                flag=1;
-                                                str=concat(str,variable);
-                                                variable=pop(&variablesStack);
-                                                while(variable){ 
-                                                     str=concat(str," , ");
-                                                    str=concat(str,variable);
-                                                variable=pop(&variablesStack);  
-                                                }
-                                                str=concat(str," As ");
-                                                str=concat(str,$<strVal>1);
-                                             }
-                                             variable=pop(&variablesWithValuesStack);
-                                             value=pop(&variablesValuesStack);
-                                             while(variable){
-                                                if(flag)
-                                                  str=concat(str,", ");
-                                                  str=concat(str,variable);
-                                                  str=concat(str," As ");
-                                                  str=concat(str,$<strVal>1);
-                                                  str=concat(str," = ");
-                                                  str=concat(str,value);
-                                                variable=pop(&variablesWithValuesStack);
-                                                value=pop(&variablesValuesStack);
-                                                flag=1;
-                                             }
-                                          $<strVal>$=str;
-                                        }
-| PRINT '(' TEXT args ')' ';'  { 
-                                    str="Console.Write(";
-                                    text=$<strVal>3;
-                                    counter=0;
-                                    N=strlen(text);
-                                    for(i=0;i<N-1;i++)
-                                        if(text[i]=='\\' && text[i+1]=='n'){
-                                           str=concat(str,"\"& vbcrlf &\"");
-                                            i++;
-                                        }
-                                            
-                                        else if(text[i]=='%' && (text[i+1]=='d' || text[i+1]=='c' || text[i+1]=='f' 
-                                                                 || (text[i+1]=='l' && text[i+2]=='f' && (i=i+1) )))
-                                        {  
-                                            str=concat(str,"{");
-                                            str=concat(str,stringValue(strdup(" "),3,counter));
-                                            str=concat(str,"}");
-                                           counter++;
-                                           i+=1;
-                                        }
-                                        else
-                                            str=append(str,text[i]);
-                                        
-                                     str=append(str,'"');
-                                    while(counter > 0){
-                                       variable=pop(&variablesStack);
-                                       if(variable)
-                                       {
-                                           str=concat(str," , ");
-                                           str=concat(str,variable);
-                                       }
-                                       else
-                                           yyerror("Not enough arguments");
-                                       counter--;
-                                   }
-                                   if(pop(&variablesStack))
-                                       yyerror("Too many arguments");
-                                   
-                                    $<strVal>$=concat(str,") ");
-                                    free(str);
-                                  }
-| SCAN  '(' TEXT addresses ')'  ';'   { str="";
-                                    text=$<strVal>3;
-                                    for(i=1;i<strlen(text)-1;i++)
-                                        if(text[i]==' ')
-                                            continue;
-                                        else if(text[i]=='%' && (text[i+1]=='d' || text[i+1]=='c' || text[i+1]=='f' 
-                                                                 || (text[i+1]=='l' && text[i+2]=='f' && (i=i+1) )))
-                                        { 
-                                          variable=pop(&variablesStack);
-                                          if(variable)
-                                          str=concat(str,concat(variable," = Console.ReadLine()\n"));
-                                          else
-                                           yyerror("Not enough arguments");
-                                           i+=1;
-                                        }
-                                       else{
-                                          yyerror("Invalid string in scanf");
-                                           break;
-                                       }
-                                   if(pop(&variablesStack))
-                                       yyerror("Too many arguments");
-                                    str[strlen(str)-1]='\0';
-                                    $<strVal>$=str;
-                                  }
-| arithmaticExpression  ';'  {$<strVal>$=strdup($<strVal>1); }  
-| assignment  ';'  {$<strVal>$=strdup($<strVal>1); }
+simpleStmt : declaration ';'
+| output ';'
+| input ';'
+| arithmaticExpression  ';' 
+| assignment  ';' 
 ;
+
+declaration : type varList  { if(strcmp($2.varWithoutValues,"")==0)
+									str=strdup($2.varWithValues);
+								else if(strcmp($2.varWithValues,"")==0)
+										str=strdup($2.varWithoutValues);
+									else str=concat(concat($2.varWithoutValues,concat(" As ",$1)),$2.varWithValues);
+								$$=concat("Dim ",str);
+									
+                            }
+;
+
+varList : varList ',' ID { verifyDoesntExist($3);
+						  $$.varWithoutValues = concat($1.varWithoutValues,concat(" , ",$3));
+						  $$.varWithValues=$1.varWithValues;
+						 }
+| varList ',' ID '=' arithmaticExpression  { verifyDoesntExist($3);
+							    temp = concat(concat($3," As "),concat(inhType," = " ));
+							    $$.varWithValues = concat(concat($1.varWithValues," , "),concat(temp,$5));          
+							  $$.varWithoutValues=$1.varWithoutValues;
+										   }
+| ID {verifyDoesntExist($1);
+	  $$.varWithoutValues = strdup($1);
+	  $$.varWithValues="";
+	 }
+| ID '=' arithmaticExpression { verifyDoesntExist($1);
+							    temp = concat(concat($1," As "),concat(inhType," = " ));
+							    $$.varWithValues = concat(temp,$3); 
+							   $$.varWithoutValues="";
+							   
+							  }
+;
+
+type : INTEGER {inhType=strdup($1);}
+| CHAR  {inhType=strdup($1);}
+| SINGLE  {inhType=strdup($1);}
+| DOUBLE  {inhType=strdup($1);}
+;
+
+output: PRINT '(' printfExpression  ')'   {$$=concat(concat("Console.Write(",$3),")");}
+;
+
+printfExpression : PURESTRING 
+| OPENSTRING stringAndArguments  {$$=concat($1,$2);}
+;
+
+stringAndArguments : innerString stringAndArguments ',' arithmaticExpression {
+	$$=concat(concat(concat(concat("{",stringValue(--counter)),"}"),$1),concat($2,concat(",",$4)));
+	
+}
+|CLOSESTRING ',' arithmaticExpression {
+	$$=concat(concat(concat(concat("{",stringValue(counter)),"}"),$1),concat(",",$3));}
+;
+
+innerString: INNERSTRING {counter++;}
+;
+
+input: SCAN '(' OPENSTRING stringAndAddresses   ')'  {$$=$4;}
+;
+
+stringAndAddresses : INNERSTRING stringAndAddresses ',' '&' ID 
+{ $$ = concat($2,concat(concat("\n",$5)," = Console.ReadLine()")); }
+|CLOSESTRING ',' '&' ID { $$=concat($4," = Console.ReadLine()");}
+;
+
 
 ifStmt :IF '(' logicExpression ')' stmt ELSE stmt {
-                                str=concat("If ",$<strVal>3);
-                                str=concat(str,strdup(" Then\n\t"));
-                                str=concat(str,indent($<strVal>5));
-                                str=concat(str,strdup("\nElse\n\t"));
-                                str=concat(str,indent($<strVal>7));
-                                $<strVal>$=concat(str,strdup("\nEnd If"));
+                                 str = concat(concat("If ",$3)," Then\n\t");
+                                 str = concat(str,concat(indent($5),"\nElse\n\t"));
+                                 $$ = concat(str,concat(indent($7),"\nEnd If"));
                                 }
 ;
 
-openIfStmt :IF '(' logicExpression ')' stmt ELSE openIfStmt   {
-                               str=concat("If ",$<strVal>3);
-                               str=concat(str," Then\n\t");
-                                str=concat(str,indent($<strVal>5));
-                                str=concat(str,"\nElse\n\t");
-                               str=concat(str,indent($<strVal>7));
-                                $<strVal>$=concat(str,"\nEnd If");
+openIfStmt :IF '(' logicExpression ')' stmt ELSE openIfStmt   {                 
+                                str = concat(concat("If ",$3)," Then\n\t");
+                                str = concat(str,concat(indent($5),"\nElse\n\t"));
+                                 $$ = concat(str,concat(indent($7),"\nEnd If"));
                                 }
 | IF '(' logicExpression ')'  line { 
-                                str=concat("If ",$<strVal>3);
-                                str=concat(str," Then\n\t");
-                               str=concat(str,indent($<strVal>5));
-                               $<strVal>$=concat(str,"\nEnd If");
+                               str = concat(concat("If ",$3)," Then\n\t");
+                               $$ = concat(str,concat(indent($5),"\nEnd If"));
                                 }
 ;
 
-arithmaticExpression: arithmaticExpression '+' term  {
-                                   str=concat($<strVal>1,strdup(" + "));
-                                   $<strVal>$=concat(str,$<strVal>3);
-                                  }
-|arithmaticExpression '-' term   { str=concat($<strVal>1," - ");
-                                   $<strVal>$=concat(str,$<strVal>3);
-                                  }
-|term {$<strVal>$=strdup($<strVal>1);}
+arithmaticExpression: arithmaticExpression '+' term  { $$=concat($1,concat(strdup(" + "),$3)); }
+|arithmaticExpression '-' term   { $$=concat(concat($1," - "),$3); }
+|term {$$=strdup($1);}
 ;
 
-term: term '*' factor      {  str=concat($<strVal>1," * ");
-                              $<strVal>$=concat(str,$<strVal>3);
-                            }
-|term '/' factor           {  str=concat($<strVal>1," / ");
-                              $<strVal>$=concat(str,$<strVal>3);
-                            }
-|term '%' factor           { str=concat($<strVal>1," Mod ");
-                             $<strVal>$=concat(str,$<strVal>3);
-                            }
-|factor {$<strVal>$=strdup($<strVal>1);}
+term: term '*' factor      { $$=concat(concat($1," * "),$3);}
+|term '/' factor           { $$=concat(concat($1," / "),$3);}
+|factor {$$=strdup($1);}
 ;
 
-factor: '(' arithmaticExpression ')'  { str=concat("( ",$<strVal>2);
-                                        $<strVal>$=concat(str," )");
-                                      }
-| '-' factor {$<strVal>$=concat("-",$<strVal>2);}
-|ID {verifyExists($<strVal>1); $<strVal>$=strdup($<strVal>1); }
-|value {$<strVal>$=strdup($<strVal>1); }
+factor: '(' arithmaticExpression ')'  { $$=concat(concat("( ",$2)," )");}
+| '-' factor {$$=concat("-",$2);}
+|ID {verifyExists($1); $$=strdup($1); }
+|value {$$=strdup($1); }
 ;
 
-logicExpression: logicExpression OR logicTerm  { str=concat($<strVal>1," Or ");
-                                                 $<strVal>$=concat(str,$<strVal>3);        
-                                                  }
-|logicTerm {$<strVal>$=strdup($<strVal>1);}
+logicExpression: logicExpression OR logicTerm  {$$=concat(concat($1," Or "),$3); }
+|logicTerm {$$=strdup($1);}
 ;
 
-logicTerm: logicTerm AND logicFactor   { str=concat($<strVal>1," And ");
-                                         $<strVal>$=concat(str,$<strVal>3);
-                                         }
-|logicFactor {$<strVal>$=strdup($<strVal>1);}
+logicTerm: logicTerm AND logicFactor   { $$=concat(concat($1," And "),$3);}
+|logicFactor {$$=strdup($1);}
 ;
 
-logicFactor :'!' logicFactor   { $<strVal>$=concat("Not ",$<strVal>2); }
-|notFactor  {$<strVal>$=strdup($<strVal>1);}
+logicFactor :'!' logicFactor   { $$=concat("Not ",$2); }
+|notFactor  {$$=strdup($1);}
 ;
 
-notFactor: '(' logicExpression ')'  { str=concat("( ",$<strVal>2);
-                                         $<strVal>$=concat(str," )");
-                                    }
-| comparator  {$<strVal>$=strdup($<strVal>1);}
+notFactor: '(' logicExpression ')'  {  $$=concat(concat("( ",$2)," )");}
+| comparator  {$$=strdup($1);}
 ;
 
-comparator: arithmaticExpression comparisonOperator arithmaticExpression { str=concat($<strVal>1,$<strVal>2);
-                                                                  $<strVal>$=concat(str,$<strVal>3);
-                                                                 }
+comparator: arithmaticExpression comparisonOperator arithmaticExpression { $$=concat(concat($1,$2),$3);}
 ;
 
-comparisonOperator: EQ {$<strVal>$= " = " ;}
-| '>'  {$<strVal>$= " > " ;}
-| '<'  {$<strVal>$= " < " ;}
-| LE   {$<strVal>$= " <= " ;}
-| GE   {$<strVal>$= " >= " ;} 
+comparisonOperator: EQ {$$= " = " ;}
+| '>'  {$$= " > " ;}
+| '<'  {$$= " < " ;}
+| LE   {$$= " <= " ;}
+| GE   {$$= " >= " ;} 
 ; 
 
-assignment: ID assignementOperation arithmaticExpression  { verifyExists($<strVal>1);$<strVal>$=concat(concat($<strVal>1,$<strVal>2),$<strVal>3);}  
-| ID INC  { verifyExists($<strVal>1);$<strVal>$=concat($<strVal>1," += 1 ");} 
-| ID DEC  { verifyExists($<strVal>1);$<strVal>$=concat($<strVal>1," -= 1 ");} 
+assignment: ID assignementOperation arithmaticExpression  { verifyExists($1);$$=concat(concat($1,$2),$3);}  
+| ID INC  { verifyExists($1);$$=concat($1," += 1 ");} 
+| ID DEC  { verifyExists($1);$$=concat($1," -= 1 ");} 
 ;
 
-assignementOperation: '=' {$<strVal>$= " = " ;}
-| ADD  {$<strVal>$= " += " ;}
-| SUB  {$<strVal>$= " -= " ;}
-| MUL  {$<strVal>$= " *= " ;}
-| DIV  {$<strVal>$= " /= " ;} 
+assignementOperation: '=' {$$= " = " ;}
+| ADD  {$$= " += " ;}
+| SUB  {$$= " -= " ;}
+| MUL  {$$= " *= " ;}
+| DIV  {$$= " /= " ;} 
 ;
 
 
-
-whileLoop: WHILE '(' logicExpression ')' stmt {   str=concat("While ",$<strVal>3);
+whileLoop: WHILE '(' logicExpression ')' stmt {   str=concat("While ",$3);
                                                   str=concat(str,"\n\t");
-                                                  str=concat(str,indent($<strVal>5));
-                                                  $<strVal>$=concat(str,"\nEnd While");}
+                                                  str=concat(str,indent($5));
+                                                  $$=concat(str,"\nEnd While");}
 ;
 
-forLoop: forExpr stmt  { str=concat($<strVals>1[0],indent($<strVal>2));
-                         $<strVal>$=concat(concat(str,"\nNext "),$<strVals>1[1]);}                                                           
+forLoop: forExpr stmt  { str=concat($1.expr,indent($2));
+                         $$=concat(concat(str,"\nNext "),$1.index);}                                                           
 ;
 
-openForLoop: forExpr openStmt  { str=concat($<strVals>1[0],indent($<strVal>2));
-                                 $<strVal>$=concat(concat(str,"\nNext "),$<strVals>1[1]);} 
+openForLoop: forExpr openStmt  { str=concat($1.expr,indent($2));
+                                 $$=concat(concat(str,"\nNext "),$1.index);} 
 ;
 
-forExpr : FOR initExpr boundExpr stepExpr {if(strcmp($<strVals>2[1],$<strVals>3[1])!=0
-                                       || strcmp($<strVals>3[1],$<strVals>4[1])!=0 )
+forExpr : FOR initExpr boundExpr stepExpr {if(strcmp($2.index,$3.index)!=0
+                                       || strcmp($3.index,$4.index)!=0 )
                                        yyerror(" Index of for loop must be the same ");
-                                       str=concat("For ",$<strVals>2[1]);
+                                       str=concat("For ",$2.index);
                                        str=concat(str," = ");
-                                       str=concat(str,$<strVals>2[0]);
+                                       str=concat(str,$2.expr);
                                        str=concat(str," To ");
-                                       str=concat(str,$<strVals>3[0]);
+                                       str=concat(str,$3.expr);
                                        str=concat(str," Step ");
-                                       str=concat(str,$<strVals>4[0]);
-                                       $<strVals>$[0]=concat(str,"\n\t");
-                                       $<strVals>$[1]=strdup($<strVals>2[1]);
+                                       str=concat(str,$4.expr);
+                                       $$.expr=concat(str,"\n\t");
+                                       $$.index=$2.index;
                                              }
 ;
 
-initExpr : '(' ID '=' arithmaticExpression ';' { verifyExists($<strVal>2);
-                                                $<strVals>$[0]=strdup($<strVal>4);
-                                                $<strVals>$[1]=strdup($<strVal>2);}
+initExpr : '(' ID '=' arithmaticExpression ';' { verifyExists($2);
+                                                $$.expr=$4;
+                                                $$.index=$2;}
 
-boundExpr : ID LE arithmaticExpression ';' {$<strVals>$[0]=strdup($<strVal>3);$<strVals>$[1]=strdup($<strVal>1);}
-| ID GE arithmaticExpression ';'  {$<strVals>$[0]=strdup($<strVal>3);$<strVals>$[1]=strdup($<strVal>1);}
-| ID '<' arithmaticExpression ';' {if(isNumeric($<strVal>3,&n)!=-1)
-                                            $<strVals>$[0]=stringValue(strdup(" "),16,n-1);
+boundExpr : ID LE arithmaticExpression ';' {$$.expr=$3;$$.index=$1;}
+| ID GE arithmaticExpression ';'  {$$.expr=$3;$$.index=$1;}
+| ID '<' arithmaticExpression ';' {if(isNumeric($3,&n)!=-1)
+                                            $$.expr=stringValue(n-1);
                                         else
-                                            $<strVals>$[0]=concat($<strVal>3," - 1");
-                                  $<strVals>$[1]=strdup($<strVal>1);}
-| ID '>' arithmaticExpression ';' {if(isNumeric($<strVal>3,&n)!=-1)
-                                            $<strVals>$[0]=stringValue(strdup(" "),16,n-1);
+                                            $$.expr=concat($3," - 1");
+                                  $$.index=$1;}
+| ID '>' arithmaticExpression ';' {if(isNumeric($3,&n)!=-1)
+                                            $$.expr=stringValue(n-1);
                                         else
-                                            $<strVals>$[0]=concat($<strVal>3," - 1");
-                                  $<strVals>$[1]=strdup($<strVal>1);}
+                                            $$.expr=concat($3," - 1");
+                                  $$.index=$1;}
 
 ;
-stepExpr : ID ADD arithmaticExpression ')' {$<strVals>$[0]=strdup($<strVal>3);$<strVals>$[1]=strdup($<strVal>1);}
-|ID SUB  arithmaticExpression ')' {if(isNumeric($<strVal>3,&n))
-                                            $<strVals>$[0]=stringValue(strdup(" "),16,-n);
+stepExpr : ID ADD arithmaticExpression ')' {$$.expr=strdup($3);$$.index=$1;}
+|ID SUB  arithmaticExpression ')' {if(isNumeric($3,&n))
+                                            $$.expr=stringValue(-n);
                                         else
-                                            $<strVals>$[0]=concat(concat("- ( ",$<strVal>3)," )");
-                                  $<strVals>$[1]=strdup($<strVal>1);}
-|ID INC  ')' {  $<strVals>$[0]=strdup("1");$<strVals>$[1]=strdup($<strVal>1);} 
-|ID DEC  ')' {  $<strVals>$[0]=strdup("-1");$<strVals>$[1]=strdup($<strVal>1);}
+                                            $$.expr=concat(concat("- ( ",$3)," )");
+                                  $$.index=strdup($1);}
+|ID INC  ')' {  $$.expr=strdup("1");$$.index=strdup($1);} 
+|ID DEC  ')' {  $$.expr=strdup("-1");$$.index=strdup($1);}
 ;
 
-openWhileLoop: WHILE '(' logicExpression ')' openStmt {   str=concat("While ",$<strVal>3);
+
+value: CHARVALUE {$$=strdup($1);}
+| numberValue {$$=strdup($1);}
+;
+
+numberValue: INTEGERVALUE {$$=strdup($1);}
+| SINGLEVALUE {$$=strdup($1);}
+| DOUBLEVALUE {$$=strdup($1);}
+;
+
+openWhileLoop: WHILE '(' logicExpression ')' openStmt {   str=concat("While ",$3);
                                                        str=concat(str,"\n\t");
-                                                       buff=$<strVal>5;
+                                                       buff=$5;
                                                        for(i=0;i<strlen(buff);i++)
                                                           if(buff[i]=='\n')
                                                               str=concat(str,"\n\t");
                                                            else
                                                                str=append(str,buff[i]);
-                                                        $<strVal>$=concat(str,"\nEnd While");}
+                                                        $$=concat(str,"\nEnd While");}
 ;
 
-variables :list ID  { verifyDoesntExist($<strVal>2);
-                      pushBack(&variablesStack,$<strVal>2); }
-|  list ID '=' arithmaticExpression { verifyDoesntExist($<strVal>2);
-                      pushBack(&variablesWithValuesStack,$<strVal>2);
-                      pushBack(&variablesValuesStack,$<strVal>4); }
-;
-list:  variables ','
-|
-;
 
-type:INTEGER {$<strVal>$=strdup($<strVal>1);}
-|CHAR  {$<strVal>$=strdup($<strVal>1);}
-|SINGLE  {$<strVal>$=strdup($<strVal>1);}
-|DOUBLE  {$<strVal>$=strdup($<strVal>1);}
-;
-value: CHARVALUE {$<strVal>$=strdup($<strVal>1);}
-| numberValue {$<strVal>$=strdup($<strVal>1);}
-;
 
-numberValue: INTEGERVALUE {$<strVal>$=strdup($<strVal>1);}
-| SINGLEVALUE {$<strVal>$=strdup($<strVal>1);}
-| DOUBLEVALUE {$<strVal>$=strdup($<strVal>1);}
-;
-
-args : ',' arithmaticExpression args  { push(&variablesStack,$<strVal>2); }
-|                     
-;
-
-addresses : ',' '&' ID addresses  { verifyExists($<strVal>3);
-                                   push(&variablesStack,$<strVal>3); }
-|                     
-;
 %%
-int yyerror(char* s){fprintf(stderr,"%s\n",s);exit(0);}
-int main(void){ yyparse();}
+
+int main(){yyparse();return -1;}
+int yyerror(const char*s){fprintf(stderr,"%s\n",s);return -1;}
+
+
+
+
+
+

@@ -18,11 +18,7 @@ int flag=1;
 %token <intVal> INT 
 %type <node> tree
 %%
-start : tree  { if(flag==1) 
-					printf("Binary Search Tree\n"); 
-				else 
-					printf("Not Binary Search Tree\n");
-			   }
+start : tree  { if(flag==1) printf("Binary Search Tree\n"); else printf("Not Binary Search Tree\n");}
 tree : INT tree tree {	
 						if($2.isEmpty!=1)
 							if($2.max >= $1)
