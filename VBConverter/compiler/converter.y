@@ -6,15 +6,9 @@
 #include "strings.h"
 extern int yylex();
 int yyerror(const char *);
-int counter=0;
-char *temp;
-int lineNb=1,i; 
+int counter=0,i=0,n;
 char* inhType; 
-char* value;
-int flag,N=0,n; 
-char* str;
-char *text;
-char *newText,*buff;
+char *str,*temp,*buff;
 node_t * symbolTable = NULL;
 void verifyDoesntExist(char* id){
     if(contains(symbolTable,id) > 0 )
@@ -48,12 +42,12 @@ char* indent(char* buff){
 	char *index;
   } forStruct;
 }
+
+%token IF ELSE EQ LE GE AND OR ADD SUB MUL DIV INC DEC
+%token WHILE FOR PRINT SCAN 
 %token <strVal> OPENSTRING INNERSTRING CLOSESTRING PURESTRING ID 
-%token PRINT SCAN 
 %token <strVal> MAIN VOID INTEGER CHAR SINGLE DOUBLE 
 %token <strVal> INTEGERVALUE CHARVALUE SINGLEVALUE DOUBLEVALUE
-%token IF ELSE EQ LE GE AND OR ADD SUB MUL DIV INC DEC
-%token WHILE FOR
 %type <strVal> line code output input declaration type
 %type <strVal> stmt simpleStmt ifStmt
 %type <strVal> openStmt openIfStmt whileLoop openWhileLoop
@@ -72,8 +66,8 @@ code : line code  { $$=concat(concat($1,"\n"),$2)};
 |  {$$="";  }
 ;
 
-line : stmt {$$=strdup($1);}
-| openStmt {$$=strdup($1);}
+line : stmt 
+| openStmt 
 ;
 
 stmt : simpleStmt
@@ -98,7 +92,7 @@ simpleStmt : declaration ';'
 declaration : type varList  { if(strcmp($2.varWithoutValues,"")==0)
 									str=strdup($2.varWithValues);
 								else if(strcmp($2.varWithValues,"")==0)
-										str=strdup($2.varWithoutValues);
+										str=concat($2.varWithoutValues,concat(" As ",$1));
 									else str=concat(concat($2.varWithoutValues,concat(" As ",$1)),$2.varWithValues);
 								$$=concat("Dim ",str);
 									
@@ -242,9 +236,6 @@ forLoop: forExpr stmt  { str=concat($1.expr,indent($2));
                          $$=concat(concat(str,"\nNext "),$1.index);}                                                           
 ;
 
-openForLoop: forExpr openStmt  { str=concat($1.expr,indent($2));
-                                 $$=concat(concat(str,"\nNext "),$1.index);} 
-;
 
 forExpr : FOR initExpr boundExpr stepExpr {if(strcmp($2.index,$3.index)!=0
                                        || strcmp($3.index,$4.index)!=0 )
@@ -290,13 +281,8 @@ stepExpr : ID ADD arithmaticExpression ')' {$$.expr=strdup($3);$$.index=$1;}
 ;
 
 
-value: CHARVALUE {$$=strdup($1);}
-| numberValue {$$=strdup($1);}
-;
-
-numberValue: INTEGERVALUE {$$=strdup($1);}
-| SINGLEVALUE {$$=strdup($1);}
-| DOUBLEVALUE {$$=strdup($1);}
+openForLoop: forExpr openStmt  { str=concat($1.expr,indent($2));
+                                 $$=concat(concat(str,"\nNext "),$1.index);} 
 ;
 
 openWhileLoop: WHILE '(' logicExpression ')' openStmt {   str=concat("While ",$3);
@@ -310,6 +296,15 @@ openWhileLoop: WHILE '(' logicExpression ')' openStmt {   str=concat("While ",$3
                                                         $$=concat(str,"\nEnd While");}
 ;
 
+
+value: CHARVALUE {$$=strdup($1);}
+| numberValue {$$=strdup($1);}
+;
+
+numberValue: INTEGERVALUE {$$=strdup($1);}
+| SINGLEVALUE {$$=strdup($1);}
+| DOUBLEVALUE {$$=strdup($1);}
+;
 
 
 %%

@@ -13,7 +13,7 @@
 
  #line 8 "/usr/share/bison++/bison.h"
 
-#line 40 "converter.y"
+#line 34 "converter.y"
 typedef union {
   char *strVal;
   struct {
@@ -197,38 +197,38 @@ typedef
 
 
  #line 169 "/usr/share/bison++/bison.h"
-#define	OPENSTRING	258
-#define	INNERSTRING	259
-#define	CLOSESTRING	260
-#define	PURESTRING	261
-#define	ID	262
-#define	PRINT	263
-#define	SCAN	264
-#define	MAIN	265
-#define	VOID	266
-#define	INTEGER	267
-#define	CHAR	268
-#define	SINGLE	269
-#define	DOUBLE	270
-#define	INTEGERVALUE	271
-#define	CHARVALUE	272
-#define	SINGLEVALUE	273
-#define	DOUBLEVALUE	274
-#define	IF	275
-#define	ELSE	276
-#define	EQ	277
-#define	LE	278
-#define	GE	279
-#define	AND	280
-#define	OR	281
-#define	ADD	282
-#define	SUB	283
-#define	MUL	284
-#define	DIV	285
-#define	INC	286
-#define	DEC	287
-#define	WHILE	288
-#define	FOR	289
+#define	IF	258
+#define	ELSE	259
+#define	EQ	260
+#define	LE	261
+#define	GE	262
+#define	AND	263
+#define	OR	264
+#define	ADD	265
+#define	SUB	266
+#define	MUL	267
+#define	DIV	268
+#define	INC	269
+#define	DEC	270
+#define	WHILE	271
+#define	FOR	272
+#define	PRINT	273
+#define	SCAN	274
+#define	OPENSTRING	275
+#define	INNERSTRING	276
+#define	CLOSESTRING	277
+#define	PURESTRING	278
+#define	ID	279
+#define	MAIN	280
+#define	VOID	281
+#define	INTEGER	282
+#define	CHAR	283
+#define	SINGLE	284
+#define	DOUBLE	285
+#define	INTEGERVALUE	286
+#define	CHARVALUE	287
+#define	SINGLEVALUE	288
+#define	DOUBLEVALUE	289
 
 
 #line 169 "/usr/share/bison++/bison.h"
@@ -277,23 +277,6 @@ public:
   /* static const int token ... */
   
  #line 212 "/usr/share/bison++/bison.h"
-static const int OPENSTRING;
-static const int INNERSTRING;
-static const int CLOSESTRING;
-static const int PURESTRING;
-static const int ID;
-static const int PRINT;
-static const int SCAN;
-static const int MAIN;
-static const int VOID;
-static const int INTEGER;
-static const int CHAR;
-static const int SINGLE;
-static const int DOUBLE;
-static const int INTEGERVALUE;
-static const int CHARVALUE;
-static const int SINGLEVALUE;
-static const int DOUBLEVALUE;
 static const int IF;
 static const int ELSE;
 static const int EQ;
@@ -309,6 +292,23 @@ static const int INC;
 static const int DEC;
 static const int WHILE;
 static const int FOR;
+static const int PRINT;
+static const int SCAN;
+static const int OPENSTRING;
+static const int INNERSTRING;
+static const int CLOSESTRING;
+static const int PURESTRING;
+static const int ID;
+static const int MAIN;
+static const int VOID;
+static const int INTEGER;
+static const int CHAR;
+static const int SINGLE;
+static const int DOUBLE;
+static const int INTEGERVALUE;
+static const int CHARVALUE;
+static const int SINGLEVALUE;
+static const int DOUBLEVALUE;
 
 
 #line 212 "/usr/share/bison++/bison.h"
@@ -317,38 +317,38 @@ static const int FOR;
   enum YY_parse_ENUM_TOKEN { YY_parse_NULL_TOKEN=0
   
  #line 215 "/usr/share/bison++/bison.h"
-	,OPENSTRING=258
-	,INNERSTRING=259
-	,CLOSESTRING=260
-	,PURESTRING=261
-	,ID=262
-	,PRINT=263
-	,SCAN=264
-	,MAIN=265
-	,VOID=266
-	,INTEGER=267
-	,CHAR=268
-	,SINGLE=269
-	,DOUBLE=270
-	,INTEGERVALUE=271
-	,CHARVALUE=272
-	,SINGLEVALUE=273
-	,DOUBLEVALUE=274
-	,IF=275
-	,ELSE=276
-	,EQ=277
-	,LE=278
-	,GE=279
-	,AND=280
-	,OR=281
-	,ADD=282
-	,SUB=283
-	,MUL=284
-	,DIV=285
-	,INC=286
-	,DEC=287
-	,WHILE=288
-	,FOR=289
+	,IF=258
+	,ELSE=259
+	,EQ=260
+	,LE=261
+	,GE=262
+	,AND=263
+	,OR=264
+	,ADD=265
+	,SUB=266
+	,MUL=267
+	,DIV=268
+	,INC=269
+	,DEC=270
+	,WHILE=271
+	,FOR=272
+	,PRINT=273
+	,SCAN=274
+	,OPENSTRING=275
+	,INNERSTRING=276
+	,CLOSESTRING=277
+	,PURESTRING=278
+	,ID=279
+	,MAIN=280
+	,VOID=281
+	,INTEGER=282
+	,CHAR=283
+	,SINGLE=284
+	,DOUBLE=285
+	,INTEGERVALUE=286
+	,CHARVALUE=287
+	,SINGLEVALUE=288
+	,DOUBLEVALUE=289
 
 
 #line 215 "/usr/share/bison++/bison.h"

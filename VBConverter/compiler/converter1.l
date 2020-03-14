@@ -14,7 +14,7 @@ char* fixCharacterString(char* str){
 %option noyywrap
 
 IntegerValue [0-9]+
-CharacterValue \'[a-zA-Z0-9]\'
+CharacterValue \'(.|\n)\'
 SingleValue [0-9]+(\.[0-9]{1,8})?
 DoubleValue [0-9]+(\.[0-9]{1,16})?
 Id [a-zA-Z][a-zA-Z0-9]*

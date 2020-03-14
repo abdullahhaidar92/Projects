@@ -3,25 +3,47 @@
   <component name="ChangeListManager">
     <list default="true" id="cdb932d9-7e58-4d94-93a9-e7b232ef17da" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compiler/bst.l" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/bst.l" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compiler/bst.y" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/bst.y" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/GrammerRules" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/Productions" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/bst (copy).l" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/bst (copy).y" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/bst.l" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/bst.y" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/bst.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/bst/bst.l" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/bst/bst.y" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/bst/test.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/converter (copy).y" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/compiler/converter.l" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/converter.l" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/compiler/converter.y" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/converter.y" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/converter1.l" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/converter1.l" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/converter1.y" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/compiler/lex.yy.c" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/lex.yy.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/linkedlist1.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/new 2.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/new 3.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/new 4.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/new 4.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/new 5.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/new 6.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/prin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/printfTest.l" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/printfTest.y" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/strings1.h" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/compiler/target.exe" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/target.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compiler/test" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/test" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compiler/test.c" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/test.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compiler/testConv.l" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/testConv.l" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compiler/testConv.y" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/testConv.y" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/test" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/test.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/test1.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/testConv.l" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/testConv.y" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/testCv.l" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/compiler/tryIT" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/compiler/y.output" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/y.output" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/compiler/y.tab.c" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/y.tab.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/compiler/y.tab.h" beforeDir="false" afterPath="$PROJECT_DIR$/compiler/y.tab.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/examples/example1.c" beforeDir="false" afterPath="$PROJECT_DIR$/examples/example1.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/example2.c" beforeDir="false" afterPath="$PROJECT_DIR$/examples/example2.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/example3.c" beforeDir="false" afterPath="$PROJECT_DIR$/examples/example3.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/example4.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/example5.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/editor/Top.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/editor/Top.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/example6.c" beforeDir="false" afterPath="$PROJECT_DIR$/examples/example6.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/report.odt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -258,22 +280,22 @@
       <screen x="67" y="27" width="1299" height="741" />
     </state>
     <state x="517" y="154" width="735" height="484" key="FileChooserDialogImpl/67.27.1299.741@67.27.1299.741" timestamp="1579808775774" />
-    <state width="1253" height="2" key="GridCell.Tab.0.bottom" timestamp="1580860956988">
+    <state width="1253" height="2" key="GridCell.Tab.0.bottom" timestamp="1581004283137">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
-    <state width="1253" height="2" key="GridCell.Tab.0.bottom/67.27.1299.741@67.27.1299.741" timestamp="1580860956988" />
-    <state width="1253" height="2" key="GridCell.Tab.0.center" timestamp="1580860956987">
+    <state width="1253" height="2" key="GridCell.Tab.0.bottom/67.27.1299.741@67.27.1299.741" timestamp="1581004283137" />
+    <state width="1253" height="2" key="GridCell.Tab.0.center" timestamp="1581004283136">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
-    <state width="1253" height="2" key="GridCell.Tab.0.center/67.27.1299.741@67.27.1299.741" timestamp="1580860956987" />
-    <state width="1253" height="2" key="GridCell.Tab.0.left" timestamp="1580860956987">
+    <state width="1253" height="2" key="GridCell.Tab.0.center/67.27.1299.741@67.27.1299.741" timestamp="1581004283136" />
+    <state width="1253" height="2" key="GridCell.Tab.0.left" timestamp="1581004283136">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
-    <state width="1253" height="2" key="GridCell.Tab.0.left/67.27.1299.741@67.27.1299.741" timestamp="1580860956987" />
-    <state width="1253" height="2" key="GridCell.Tab.0.right" timestamp="1580860956987">
+    <state width="1253" height="2" key="GridCell.Tab.0.left/67.27.1299.741@67.27.1299.741" timestamp="1581004283136" />
+    <state width="1253" height="2" key="GridCell.Tab.0.right" timestamp="1581004283136">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
-    <state width="1253" height="2" key="GridCell.Tab.0.right/67.27.1299.741@67.27.1299.741" timestamp="1580860956987" />
+    <state width="1253" height="2" key="GridCell.Tab.0.right/67.27.1299.741@67.27.1299.741" timestamp="1581004283136" />
     <state width="1253" height="2" key="GridCell.Tab.1.bottom" timestamp="1576883406656">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
@@ -290,10 +312,14 @@
       <screen x="67" y="27" width="1299" height="741" />
     </state>
     <state width="1253" height="2" key="GridCell.Tab.1.right/67.27.1299.741@67.27.1299.741" timestamp="1576883406655" />
-    <state x="372" y="224" key="com.intellij.ide.util.TipDialog" timestamp="1580859772731">
+    <state x="372" y="224" key="com.intellij.ide.util.TipDialog" timestamp="1581029257900">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
-    <state x="372" y="224" key="com.intellij.ide.util.TipDialog/67.27.1299.741@67.27.1299.741" timestamp="1580859772731" />
+    <state x="372" y="224" key="com.intellij.ide.util.TipDialog/67.27.1299.741@67.27.1299.741" timestamp="1581029257900" />
+    <state x="67" y="27" width="1289" height="741" key="new project wizard" timestamp="1581029771541">
+      <screen x="67" y="27" width="1299" height="741" />
+    </state>
+    <state x="67" y="27" width="1289" height="741" key="new project wizard/67.27.1299.741@67.27.1299.741" timestamp="1581029771541" />
     <state x="380" y="175" key="run.anything.popup" timestamp="1576789826885">
       <screen x="67" y="27" width="1299" height="741" />
     </state>

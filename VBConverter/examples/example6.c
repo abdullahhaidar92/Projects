@@ -1,7 +1,7 @@
 void main(){
-int d,x;
+int a,x;
 
-if(d>0)
+if(a>0)
 	while(x>0)
 	   	if(x>0)
 	   	printf("88");
